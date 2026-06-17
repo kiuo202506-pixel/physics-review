@@ -1,0 +1,137 @@
+/* === Night Mode + Font Size + Shared Styles === */
+
+/* Dark theme via data-theme attribute on <html> */
+:root {
+  --bg: #faf8f3;
+  --surface: #fff;
+  --text: #2c2416;
+  --text-dim: #8a8070;
+  --accent: #c05020;
+  --border: #e0d8c8;
+  --shadow: 0 1px 3px rgba(0,0,0,.06);
+  --kp-bg: rgba(192,80,32,.08);
+}
+
+[data-theme="dark"] {
+  --bg: #1a1a22;
+  --surface: #24242f;
+  --text: #d8d4c8;
+  --text-dim: #988870;
+  --accent: #e08050;
+  --border: #3a3a44;
+  --shadow: 0 1px 3px rgba(0,0,0,.3);
+  --kp-bg: rgba(224,128,80,.15);
+}
+
+body {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+  transition: background .3s, color .3s;
+}
+
+/* Font size presets */
+html[data-font="s"] body { font-size: 13px; }
+html[data-font="m"] body { font-size: 15px; }
+html[data-font="l"] body { font-size: 18px; }
+html[data-font="xl"] body { font-size: 21px; }
+
+/* === Bottom Navigation Bar === */
+#epa-mobile-nav {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0; z-index: 9999;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 6px 8px;
+  padding-bottom: max(6px, env(safe-area-inset-bottom));
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 -1px 6px rgba(0,0,0,.08);
+}
+#epa-mobile-nav button {
+  background: none; border: none; color: var(--text);
+  font-size: .82em; padding: 6px 10px; cursor: pointer;
+  border-radius: 6px; transition: background .15s;
+  font-family: inherit; -webkit-tap-highlight-color: transparent;
+}
+#epa-mobile-nav button:active { background: var(--border); }
+#epa-mobile-nav .nav-icon { font-size: 1.2em; display: block; text-align: center; }
+body { padding-bottom: 70px !important; } /* reserve space for nav */
+
+/* Desktop: hide bottom nav, show as top bar */
+@media (min-width: 901px) {
+  #epa-mobile-nav { top: 0; bottom: auto; padding: 4px 16px; }
+  #epa-mobile-nav .nav-icon { display: inline; font-size: 1em; }
+  body { padding-bottom: 40px !important; padding-top: 50px !important; }
+}
+
+/* === Toolbar (theme / font / TTS) === */
+#epa-toolbar {
+  position: fixed; top: 8px; right: 12px; z-index: 9998;
+  display: flex; gap: 6px;
+}
+#epa-toolbar button {
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text); font-size: .78em; padding: 5px 10px;
+  border-radius: 6px; cursor: pointer; font-family: inherit;
+  box-shadow: var(--shadow); -webkit-tap-highlight-color: transparent;
+}
+#epa-toolbar button:active { background: var(--border); }
+
+/* === Search === */
+#epa-search-box {
+  display: block; width: 100%; max-width: 400px; margin: 10px auto 16px;
+  padding: 8px 14px; font-size: .9em; border: 1px solid var(--border);
+  border-radius: 8px; background: var(--surface); color: var(--text);
+  font-family: inherit;
+}
+.epa-search-highlight { background: #ffeb3b; color: #000; border-radius: 2px; }
+
+/* === Wrong Answer Review Page === */
+.wrong-item {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px 18px; margin-bottom: 12px;
+  box-shadow: var(--shadow);
+}
+.wrong-item .wrong-q { font-weight: 600; margin-bottom: 6px; }
+.wrong-item .wrong-meta { font-size: .75em; color: var(--text-dim); }
+.wrong-item .wrong-answer { color: #c04040; font-weight: 600; }
+.wrong-item .correct-answer { color: #40a040; font-weight: 600; }
+
+/* === Progress Dashboard === */
+#epa-dashboard {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 16px 20px; margin: 16px 0;
+  box-shadow: var(--shadow);
+}
+#epa-dashboard .ds-row {
+  display: flex; gap: 12px; justify-content: space-around; flex-wrap: wrap;
+}
+#epa-dashboard .ds-item { text-align: center; }
+#epa-dashboard .ds-val { font-size: 1.6em; font-weight: 700; color: var(--accent); }
+#epa-dashboard .ds-label { font-size: .72em; color: var(--text-dim); }
+#epa-dashboard .ds-bar {
+  height: 6px; background: var(--border); border-radius: 3px; margin-top: 10px;
+}
+#epa-dashboard .ds-bar-fill {
+  height: 100%; background: var(--accent); border-radius: 3px; transition: width .4s;
+}
+
+/* === TTS controls === */
+#epa-tts-bar {
+  position: fixed; bottom: 56px; left: 0; right: 0; z-index: 9997;
+  background: var(--surface); border-top: 1px solid var(--border);
+  padding: 8px 16px; display: none; gap: 10px; align-items: center;
+  justify-content: center;
+}
+#epa-tts-bar.active { display: flex; }
+#epa-tts-bar button {
+  background: var(--accent); color: #fff; border: none;
+  padding: 6px 14px; border-radius: 20px; font-size: .82em;
+  cursor: pointer; font-family: inherit;
+}
+#epa-tts-bar select { padding: 4px 8px; border-radius: 6px; }
+@media (min-width: 901px) {
+  #epa-tts-bar { bottom: auto; top: 44px; }
+}

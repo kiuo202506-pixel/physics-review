@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>错题本 · 大学物理 A1</title>
+<link rel="stylesheet" href="shared.css">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#faf8f3">
+<style>
+  h1 { text-align: center; font-size: 1.3em; margin: 16px 0 4px; }
+  .subtitle { text-align: center; color: var(--text-dim); font-size: .85em; margin-bottom: 16px; }
+  .empty-state { text-align: center; color: var(--text-dim); padding: 60px 20px; font-size: .9em; }
+  .due-soon { border-left: 3px solid #e08040 !important; }
+  .reviewed { opacity: .65; }
+</style>
+</head>
+<body>
+
+<h1>错题本</h1>
+<div class="subtitle" id="subtitle">加载中...</div>
+
+<div id="epa-toolbar">
+  <button onclick="epaToggleTheme()">&#9790; 主题</button>
+  <button onclick="location.href='index.html'">&#127968; 首页</button>
+</div>
+
+<div id="wrong-list"></div>
+
+<script src="shared-core.js"></script>
+<script>
+function renderWrongBook() {
+  var wrong = epaGetWrongAnswers();
+  var el = document.getElementById('wrong-list');
+  var sub = document.getElementById('subtitle');
+
+  if (wrong.length === 0) {
+    el.innerHTML = '<div class="empty-state">还没有错题<br>做完测验后批改，错题会自动收集到这里</div>';
+    sub.textContent = '0 道错题';
+    return;
+  }
+
+  // Sort: due for review first
+  var now = Date.now();
+  wrong.sort(function(a, b) { return (a.nextReview || now) - (b.nextReview || now); });
+  var dueCount = wrong.filter(function(w) { return (w.nextReview || now) <= now; }).length;
+  sub.textContent = wrong.length + ' 道错题 | ' + dueCount + ' 道待复习';
+
+  var html = '';
+  wrong.forEach(function(w, i) {
+    var isDue = (w.nextReview || now) <= now;
+    var reviewed = (w.reviewCount || 0) > 0;
+    var cls = isDue ? 'due-soon' : '';
+    if (reviewed && !isDue) cls += ' reviewed';
+
+    var nextReviewStr = '';
+    if (w.nextReview) {
+      var d = new Date(w.nextReview);
+      nextReviewStr = isDue ? '<span style="color:#e04040">现在复习</span>' : '下次复习: ' + d.toLocaleDateString();
+    }
+
+    html += '<div class="wrong-item ' + cls + '">' +
+      '<div class="wrong-q">' + (i+1) + '. ' + (w.question || '') + '</div>' +
+      '<div class="wrong-meta">来源: ' + (w.chapter || '') + ' | ' + nextReviewStr + ' | 已复习 ' + (w.reviewCount||0) + ' 次</div>';
+
+    // Show options for choice questions
+    if (w.options && w.options.length && w.type === 'choice') {
+      html += '<div style="margin:6px 0;font-size:.85em">';
+      w.options.forEach(function(opt, j) {
+        var isCorrect = j === w.answer;
+        html += '<div style="' + (isCorrect ? 'color:#40a040;font-weight:600' : '') + '">' +
+          String.fromCharCode(65+j) + '. ' + opt + (isCorrect ? ' &#10004;' : '') + '</div>';
+      });
+      html += '</div>';
+    }
+
+    // Show explanation
+    if (w.explanation) {
+      html += '<details style="font-size:.85em;margin-top:4px"><summary>查看解析</summary>' +
+        '<div style="margin-top:4px;color:var(--text-dim)">' + w.explanation + '</div></details>';
+    }
+
+    html += '<div style="margin-top:8px;display:flex;gap:8px">' +
+      '<button onclick="epaMarkReviewed(' + i + ');renderWrongBook()" style="padding:4px 12px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--accent);cursor:pointer;font-family:inherit">' +
+        (isDue ? '&#9989; 已复习' : '再次复习') + '</button>' +
+      '<button onclick="epaRemoveWrongAnswer(' + i + ');renderWrongBook()" style="padding:4px 12px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);cursor:pointer;font-family:inherit">删除</button>' +
+      '</div>' +
+      '</div>';
+  });
+  el.innerHTML = html;
+}
+
+renderWrongBook();
+</script>
+</body>
+</html>
