@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Chapter 7 Kinetic Theory of Ideal Gas</title>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\(', '\)']],
+    displayMath: [['$$', '$$'], ['\[', '\]']]
+  }
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"></script>
+<style>
+/* === ExamPass Shared Styles === */
+/* Paper-like warm background, clean typography, responsive */
+
+:root {
+  --paper: #fdf6e3;
+  --paper-dark: #f5ecd7;
+  --ink: #2c2c2c;
+  --ink-light: #555;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --divider: #d6c8a8;
+  --card-bg: #fef9ef;
+  --card-border: #e8dcc8;
+  --correct: #22c55e;
+  --correct-bg: #f0fdf4;
+  --wrong: #ef4444;
+  --wrong-bg: #fef2f2;
+  --tag-bg: #fef3c7;
+  --tag-text: #92400e;
+  --radius: 6px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: "Microsoft YaHei", "Noto Sans SC", "SimSun", sans-serif;
+  font-size: 12pt; line-height: 1.75; color: var(--ink);
+  max-width: 860px; margin: auto; padding: 24px 20px 60px;
+  background: var(--paper);
+}
+
+@media print {
+  body { font-size: 10.5pt; background: #fff; }
+  .no-print { display: none !important; }
+  h1, h2, h3 { page-break-after: avoid; }
+}
+
+/* ── Header ── */
+#exampass-header {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 6px 0; margin-bottom: 0;
+}
+.header-brand { font-size: 1.2em; font-weight: 700; color: #1a1a2e; letter-spacing: 0.3px; }
+.header-url  { font-size: 0.78em; color: #999; }
+.header-divider { border: none; border-top: 2px solid var(--divider); margin: 4px 0 20px 0; }
+
+/* ── Typography ── */
+h1 { font-size: 1.55em; text-align: center; border-bottom: 2px solid var(--divider); padding-bottom: 8px; margin-top: 0; }
+h2 { font-size: 1.25em; border-bottom: 1px solid var(--divider); padding-bottom: 4px; margin-top: 28px; }
+h3 { font-size: 1.08em; margin-top: 20px; color: var(--ink); }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── Tables ── */
+table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 0.95em; }
+td, th { border: 1px solid var(--card-border); padding: 5px 9px; text-align: left; }
+th { background: var(--paper-dark); font-weight: 700; }
+
+/* ── Knowledge point vs explanation ── */
+.kp { font-weight: 700; color: var(--ink); }           /* key point: bold dark */
+.exp { font-weight: 400; color: var(--ink-light); }    /* explanation: lighter */
+.exp em, .exp strong { color: var(--ink); }             /* emphasis inside explanation */
+
+/* ── Block elements ── */
+blockquote {
+  border-left: 3px solid #c0392b; background: #fef9ef;
+  padding: 6px 14px; margin: 10px 0; font-size: 0.95em;
+}
+/* Modern monospace stack — avoids the ugly Courier New fallback on Windows. */
+:root {
+  --mono: "Cascadia Code", "JetBrains Mono", "Fira Code", "Source Code Pro",
+          Consolas, "SF Mono", Menlo, "DejaVu Sans Mono", monospace;
+}
+code {
+  font-family: var(--mono);
+  background: #eee8d8; color: #8a4b1e;
+  padding: 1px 5px; border-radius: 4px; font-size: 0.9em;
+}
+pre {
+  font-family: var(--mono);
+  background: #2d2a26; color: #ece6da;
+  padding: 14px 16px; border-radius: var(--radius);
+  overflow-x: auto; line-height: 1.6; font-size: 0.9em;
+  border: 1px solid #3d3934; tab-size: 2;
+}
+pre code {
+  background: none; color: inherit; padding: 0; font-size: 1em; border-radius: 0;
+}
+
+/* ── Long display formulas: scroll inside their column, never overflow ── */
+mjx-container[display="true"] {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* ── TOC ── */
+div.toc {
+  background: var(--card-bg); padding: 14px 18px;
+  border: 1px solid var(--card-border); border-radius: var(--radius); margin-bottom: 22px;
+}
+div.toc ul { padding-left: 18px; }
+div.toc li { margin: 3px 0; font-size: 0.95em; }
+
+/* ── Priority tags ── */
+.tag-must   { background: #fee2e2; color: #991b1b; padding: 1px 6px; border-radius: 3px; font-size: 0.82em; font-weight: 600; }
+.tag-key    { background: #fef3c7; color: #92400e; padding: 1px 6px; border-radius: 3px; font-size: 0.82em; font-weight: 600; }
+.tag-freq   { background: #dbeafe; color: #1e40af; padding: 1px 6px; border-radius: 3px; font-size: 0.82em; font-weight: 600; }
+.tag-info   { background: #f0fdf4; color: #166534; padding: 1px 6px; border-radius: 3px; font-size: 0.82em; font-weight: 600; }
+
+/* ── Checkpoint self-test ── */
+.checkpoint {
+  background: #eff6ff; border: 1px solid #bfdbfe; border-radius: var(--radius);
+  padding: 10px 16px; margin: 18px 0;
+  font-size: 0.95em;
+}
+.checkpoint::before {
+  content: '🧠 自测：';
+  font-weight: 700; color: #1e40af;
+}
+.checkpoint .cp-answer { margin-top: 10px; border-top: 1px dashed #bfdbfe; padding-top: 8px; }
+.checkpoint .cp-answer summary {
+  cursor: pointer; color: #1e40af; font-weight: 600; user-select: none;
+  list-style: none;
+}
+.checkpoint .cp-answer summary::before { content: '💡 '; }
+.checkpoint .cp-answer summary::-webkit-details-marker { display: none; }
+.checkpoint .cp-answer[open] summary { margin-bottom: 6px; }
+.checkpoint .cp-answer ol, .checkpoint .cp-answer p { font-weight: 400; color: var(--ink); }
+
+/* ── TL;DR summary ── */
+.tldr {
+  background: #fefce8; border-left: 3px solid #eab308;
+  padding: 8px 14px; margin: 10px 0;
+  font-weight: 600; font-size: 0.95em;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  body { max-width: 100%; padding: 12px 10px 40px; font-size: 11pt; }
+  h1 { font-size: 1.3em; }
+  h2 { font-size: 1.12em; }
+  table { font-size: 0.85em; }
+  td, th { padding: 4px 6px; }
+  pre { font-size: 0.85em; padding: 6px; }
+}
+@media (max-width: 400px) {
+  body { padding: 8px 6px 32px; font-size: 10.5pt; }
+}
+
+/* === Interactive Test Styles === */
+
+/* ── Score box ── */
+#score-box {
+  display: none; background: var(--paper-dark); color: var(--ink);
+  padding: 16px 20px; border-radius: var(--radius); margin: 14px 0;
+  text-align: center; border: 1px solid var(--card-border);
+}
+#score-box .score-num { font-size: 2.2em; font-weight: 700; }
+#score-box .score-label { font-size: 0.85em; color: var(--ink-light); }
+
+/* ── Question card ── */
+.q-card {
+  background: var(--card-bg); border: 1px solid var(--card-border);
+  border-radius: var(--radius); padding: 12px 14px; margin: 10px 0;
+  transition: all 0.15s;
+}
+.q-card.correct { border-left: 3px solid var(--correct); background: #f7fdf4; }
+.q-card.wrong   { border-left: 3px solid var(--wrong); background: #fef9f9; }
+
+.q-num  { font-weight: 700; font-size: 0.98em; margin-bottom: 4px; }
+.q-text { margin-bottom: 8px; font-size: 0.98em; }
+
+/* ── Options (compact) ── */
+.option {
+  display: block; padding: 4px 10px; margin: 3px 0;
+  border: 1px solid var(--card-border); border-radius: 4px;
+  cursor: pointer; transition: all 0.12s; font-size: 0.93em;
+  background: #fefcf5;
+}
+.option:hover            { background: #f0ede0; }
+.option input            { margin-right: 6px; }
+.option.selected         { border-color: var(--accent); background: #eff6ff; }
+.option.correct-answer   { border-color: var(--correct); background: var(--correct-bg); }
+.option.wrong-answer     { border-color: var(--wrong); background: var(--wrong-bg); }
+
+/* ── Textareas (compact) ── */
+.q-textarea {
+  width: 100%; min-height: 56px; border: 1px solid var(--card-border);
+  border-radius: 4px; padding: 6px 10px; font-family: inherit;
+  font-size: 0.93em; background: #fefcf5; resize: vertical;
+}
+.q-textarea:focus { outline: none; border-color: var(--accent); }
+.q-code {
+  font-family: "Consolas", "Monaco", "Courier New", monospace;
+  font-size: 0.88em; line-height: 1.5; background: #1e1e2e; color: #e0e0e0;
+  tab-size: 4; white-space: pre;
+}
+.q-code:focus { border-color: var(--accent); }
+
+/* ── Partial-credit badge ── */
+.badge-partial { background: #fef3c7; color: #92400e; }
+.q-card.partial { border-color: #f59e0b; }
+
+/* ── Result after grading ── */
+.result {
+  display: none; margin-top: 8px; padding: 8px 12px;
+  background: #fefcf5; border: 1px solid var(--card-border);
+  border-radius: 4px; font-size: 0.9em; line-height: 1.6;
+}
+.result .badge {
+  display: inline-block; padding: 1px 9px; border-radius: 3px;
+  font-weight: 700; font-size: 0.82em; margin-right: 6px;
+}
+.badge-ok  { background: var(--correct-bg); color: #166534; }
+.badge-no  { background: var(--wrong-bg); color: #991b1b; }
+.badge-ref { background: #dbeafe; color: #1e40af; }
+
+.result .explanation { margin-top: 4px; color: var(--ink); }
+.result .pitfall { color: #b45309; margin-top: 3px; font-size: 0.9em; }
+
+/* ── Grading button ── */
+.grading-bar { text-align: center; margin: 20px 0; }
+.grading-bar button {
+  font-size: 1em; padding: 8px 32px; background: var(--accent);
+  color: #fff; border: none; border-radius: var(--radius);
+  cursor: pointer; font-weight: 600; letter-spacing: 0.3px;
+}
+.grading-bar button:hover     { background: var(--accent-hover); }
+.grading-bar button:disabled  { background: #bbb; cursor: not-allowed; }
+
+
+/* ── Notion-style slide cross-reference layout ── */
+/* Override base.css body max-width (860px); fill the viewport edge-to-edge,
+   capped only on ultra-wide screens for readability. */
+body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
+.kn-layout { display: flex; gap: 36px; align-items: flex-start; width: 100%; margin: 0 auto; }
+.kn-main { flex: 1 1 auto; min-width: 0; overflow-x: clip; }
+.kn-main mjx-container[display="true"] { max-width: 100%; overflow-x: auto; overflow-y: hidden; }
+.kn-rail { flex: 0 0 32%; max-width: 520px; min-width: 300px; position: sticky; top: 12px;
+  align-self: flex-start; max-height: calc(100vh - 30px); overflow-y: auto; padding-right: 4px; }
+.kn-rail-title { font-weight: 700; color: var(--ink-light); font-size: 0.9em; margin-bottom: 10px;
+  padding-bottom: 6px; border-bottom: 1px solid var(--divider); }
+.slide-card { border: 1px solid var(--card-border); border-radius: var(--radius);
+  background: var(--card-bg); padding: 8px; margin-bottom: 14px; }
+.slide-card-label { font-size: 0.78em; color: var(--ink-light); margin-bottom: 6px; }
+.slide-img { width: 100%; height: auto; border-radius: 4px; cursor: zoom-in; display: block;
+  border: 1px solid var(--divider); background: #fff; }
+.slide-text { margin-top: 6px; font-size: 0.85em; }
+.slide-text summary { cursor: pointer; color: var(--accent); user-select: none; }
+.slide-text-body { margin-top: 6px; color: var(--ink-light); line-height: 1.6;
+  max-height: 220px; overflow-y: auto; padding: 6px 8px; background: #fff;
+  border-radius: 4px; border: 1px solid var(--divider); }
+/* heading-side page chips */
+.pg-chip { display: inline-block; font-size: 0.72em; font-weight: 600; color: var(--accent);
+  background: #eff4ff; border: 1px solid #cfe0ff; border-radius: 10px; padding: 0 7px;
+  margin-left: 6px; cursor: pointer; vertical-align: middle; }
+.pg-chip:hover { background: #dbe8ff; }
+.slide-card.flash { animation: slideflash 1.2s ease; }
+@keyframes slideflash { 0%,100%{box-shadow:none;} 30%{box-shadow:0 0 0 3px var(--accent);} }
+/* lightbox */
+#epa-lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.82); display: none;
+  align-items: center; justify-content: center; z-index: 9999; cursor: zoom-out; }
+#epa-lightbox img { max-width: 94vw; max-height: 94vh; border-radius: 6px; }
+/* Tablet / narrow desktop: keep two columns but rebalance + tighten margins */
+@media (max-width: 1280px) {
+  body { width: 98vw; padding-left: 1vw; padding-right: 1vw; }
+  .kn-layout { gap: 24px; }
+  .kn-main { flex: 1 1 54%; }
+  .kn-rail { flex: 1 1 46%; }
+}
+/* Mobile: stack the rail below the notes */
+@media (max-width: 900px) {
+  body { width: 100%; padding-left: 12px; padding-right: 12px; }
+  /* align-items:stretch is critical — in a COLUMN flex, flex-start would size
+     children to max-content (overflowing the viewport). */
+  .kn-layout { flex-direction: column; align-items: stretch; gap: 16px; }
+  .kn-main { flex: none; width: 100%; }
+  .kn-rail { position: static; flex: none; max-width: 100%; width: 100%; min-width: 0; max-height: none; }
+}
+
+
+/* ── Combined page: top tab bar (清单 | 题目) ── */
+#epa-tabs { display: flex; gap: 0; justify-content: center; margin: 6px auto 22px;
+  max-width: 520px; border: 1px solid var(--divider); border-radius: 10px; overflow: hidden; }
+#epa-tabs .tab-btn { flex: 1; padding: 10px 18px; cursor: pointer; border: none;
+  background: var(--paper-dark); color: var(--ink-light); font-size: 1.02em; font-weight: 600;
+  font-family: inherit; transition: background .15s, color .15s; }
+#epa-tabs .tab-btn + .tab-btn { border-left: 1px solid var(--divider); }
+#epa-tabs .tab-btn.active { background: var(--accent); color: #fff; }
+#epa-tabs .tab-btn:not(.active):hover { background: #efe7d3; color: var(--ink); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+/* keep the test readable/centered even though the body is wide for the rail */
+#panel-test { max-width: 980px; margin: 0 auto; }
+@media print { #epa-tabs { display: none; } .tab-panel { display: block !important; } }
+
+</style>
+</head>
+<body>
+
+<header id="exampass-header">
+  <div class="header-left"><span class="header-brand">ExamPass Assistant</span></div>
+  <div class="header-right"><span class="header-url">github.com/WUBING2023/ExamPass-Assistant</span></div>
+</header>
+<hr class="header-divider">
+
+<h1>Chapter 7 Kinetic Theory of Ideal Gas</h1><div id="epa-tabs" class="no-print"><button class="tab-btn active" data-tab="kn">📖 知识清单</button><button class="tab-btn" data-tab="test">📝 章节测试</button></div><div id="panel-kn" class="tab-panel active"><div class="kn-layout"><div class="kn-main"><h1></h1>
+<div class="toc">
+<h2>目录</h2>
+<ul>
+<li><a href="#s31771137">平衡态、状态参量与温度</a></li>
+  <li><a href="#s63982746">热力学系统与平衡态 必考 </a></li>
+  <li><a href="#s58389867">状态参量与热力学第零定律 必考 </a></li>
+  <li><a href="#s30057156">温标：摄氏温标与热力学温标 必考 </a></li>
+<li><a href="#s69025146">理想气体状态方程</a></li>
+  <li><a href="#s65007303">理想气体模型与三大实验定律 必考 </a></li>
+  <li><a href="#s13153090">理想气体状态方程 必考 </a></li>
+<li><a href="#s38498433">微观模型与压强公式</a></li>
+  <li><a href="#s41622092">理想气体微观模型 必考 </a></li>
+  <li><a href="#s78193648">压强公式的物理图像 必考 </a></li>
+<li><a href="#s73610319">温度与分子动能</a></li>
+  <li><a href="#s61915374">温度公式：温度是分子平均平动动能的量度 必考 </a></li>
+<li><a href="#s14510612">能均分定理与理想气体内能</a></li>
+  <li><a href="#s59924315">自由度 重点 </a></li>
+  <li><a href="#s89120205">能量均分定理 必考 </a></li>
+  <li><a href="#s45952686">理想气体的内能 必考 </a></li>
+<li><a href="#s17704373">麦克斯韦速率分布</a></li>
+  <li><a href="#s29843706">统计规律与速率分布函数 重点 </a></li>
+  <li><a href="#s89767119">三种特征速率 必考 </a></li>
+<li><a href="#s77169270">平均自由程与碰撞频率</a></li>
+  <li><a href="#s16670092">分子碰撞与平均自由程 重点 </a></li>
+</ul>
+</div>
+<h1>第7章 理想气体动理论<sub>Kinetic Theory of Ideal Gas — 从宏观到微观的桥梁</sub></h1>
+
+<div class="hook">
+  一罐氧气瓶能供车间用几天？为什么温度越高气体压强越大？这些问题的答案，藏在万亿个分子的无序碰撞之中。本章搭建从「宏观量 p, V, T」到「微观分子运动」的桥梁 —— 压强是分子撞壁的集体表现，温度是分子平均平动动能的量度，而内能则是所有分子各自由度动能的总和。
+</div>
+
+<div class="tldr">
+  <strong>TL;DR</strong> 理想气体状态方程 <span class="kp">pV = νRT</span> 和 <span class="kp">p = nkT</span> 是宏观描述；微观上，<span class="kp">压强 p = $1/3$nm₀⟨v²⟩</span>（分子撞壁的统计平均），<span class="kp">温度 $3/2$kT = $1/2$m₀⟨v²⟩</span>（平均平动动能的量度）。能均分定理给每个自由度分配 <span class="kp">$1/2$kT</span> 的平均动能，内能 <span class="kp">E = $i/2$νRT</span> 只取决于温度和自由度。麦克斯韦速率分布描述分子速率的统计规律，三种特征速率大小关系：<span class="kp">v_p &lt; ⟨v⟩ &lt; v_rms</span>（方均根最大）。
+</div>
+
+<!-- ====== 一、平衡态与温度 ====== -->
+<h2 id="s31771137">平衡态、状态参量与温度</h2>
+
+<h3 id="s63982746">热力学系统与平衡态 <span class="tag-must">必考</span> <span class="slide-ref"><span class="pg-chip" data-page="3">页3</span><span class="pg-chip" data-page="4">页4</span></span></h3>
+
+<p><span class="kp">热力学系统</span><span class="exp">：由大量微观粒子组成的有限宏观物质系统。系统之外与系统有相互作用的环境称为「外界」。按能量/物质交换分为三类：</span></p>
+<ul>
+  <li><span class="kp">开放系统</span> —— 与外界既有能量交换也有物质交换</li>
+  <li><span class="kp">封闭系统</span> —— 与外界有能量交换但无物质交换</li>
+  <li><span class="kp">孤立系统</span> —— 与外界既无能量交换也无物质交换</li>
+</ul>
+
+<p><span class="kp">平衡态</span><span class="exp">：在不受外界影响的条件下，孤立系统的宏观性质长时间不随时间变化的状态。注意：平衡态是</span><span class="kp">热动平衡</span><span class="exp">—— 微观粒子仍在做无规则热运动，只是宏观性质的统计平均值不再变化。</span></p>
+
+<blockquote>易错：平衡态 ≠ 静止。微观分子始终在无规则运动，平衡态只是宏观性质（p, V, T）不再变化，是动态平衡。</blockquote>
+
+<h3 id="s58389867">状态参量与热力学第零定律 <span class="tag-must">必考</span> <span class="slide-ref"><span class="pg-chip" data-page="5">页5</span><span class="pg-chip" data-page="6">页6</span><span class="pg-chip" data-page="7">页7</span></span></h3>
+
+<p><span class="kp">宏观量</span><span class="exp">：描述大量分子集体行为特征的物理量（如 p, V, T），由微观量的统计平均决定。</span></p>
+<p><span class="kp">微观量</span><span class="exp">：描述单个分子行为的物理量（如分子质量 m₀、速度 v、动能 ε）。</span></p>
+
+<table>
+  <tr><th>对比维度</th><th>宏观量 $Macroscopic$</th><th>微观量 $Microscopic$</th></tr>
+  <tr><td>描述对象</td><td>大量分子的集体行为</td><td>单个分子</td></tr>
+  <tr><td>典型例子</td><td>压强 p、体积 V、温度 T</td><td>分子质量 m₀、速度 v、动能 ε</td></tr>
+  <tr><td>测量方式</td><td>直接可测（压力表、温度计等）</td><td>不能直接测量，通过统计间接推得</td></tr>
+  <tr><td>决定关系</td><td>由微观量的统计平均决定</td><td>—</td></tr>
+</table>
+
+<p><span class="kp">三个状态参量：</span></p>
+<ul>
+  <li><span class="kp">体积 V</span> —— 气体分子自由运动的空间，单位 m³</li>
+  <li><span class="kp">压强 p</span> —— 垂直作用在容器壁单位面积上的气体压力，p = F/S，单位 Pa（帕斯卡），1 atm = 1.01325×10⁵ Pa</li>
+  <li><span class="kp">温度 T</span> —— 表征物体冷热程度的物理量</li>
+</ul>
+
+<p><span class="kp">热力学第零定律</span><span class="exp">：如果两个系统分别与第三个系统处于热平衡，则这两个系统也彼此处于热平衡。这一定律是</span><span class="kp">测温原理</span><span class="exp">的基础 —— 温度计与被测物体达到热平衡时，温度计读数即为被测物体的温度。</span></p>
+
+<h3 id="s30057156">温标：摄氏温标与热力学温标 <span class="tag-must">必考</span> <span class="slide-ref"><span class="pg-chip" data-page="8">页8</span><span class="pg-chip" data-page="9">页9</span></span></h3>
+
+<p><span class="kp">摄氏温标 t</span><span class="exp">：以水的冰点（0 ℃）和沸点（100 ℃）为基准，利用水银或酒精的热胀冷缩特性标定。</span></p>
+<p><span class="kp">热力学温标 T</span><span class="exp">：以绝对零度为起点，单位 K（开尔文）。</span></p>
+
+<p style="text-align:center;font-size:1.1rem;margin:16px 0;">
+  <span class="kp">T = t + 273.15</span>
+</p>
+
+<p><span class="exp">绝对零度 T = 0 K 对应 t = −273.15 ℃，只能无限逼近而不可达到。</span></p>
+
+<div class="checkpoint">平衡态下，气体的宏观性质是否随时间变化？微观分子是否静止？
+<details class="cp-answer"><summary>参考答案</summary>宏观性质不随时间变化；但微观分子仍在做无规则热运动，平衡态是热动平衡，不是静止状态。</details></div>
+
+<div class="checkpoint">热力学温标 T 与摄氏温标 t 的关系是什么？
+<details class="cp-answer"><summary>参考答案</summary>T = t + 273.15。绝对零度 T = 0 K 对应 t = −273.15 ℃。</details></div>
+
+<!-- ====== 二、理想气体状态方程 ====== -->
+<h2 id="s69025146">理想气体状态方程</h2>
+
+<h3 id="s65007303">理想气体模型与三大实验定律 <span class="tag-must">必考</span> <span class="slide-ref"><span class="pg-chip" data-page="10">页10</span><span class="pg-chip" data-page="11">页11</span></span></h3>
+
+<p><span class="kp">理想气体</span><span class="exp">：在任何情况下都严格遵守三条实验定律的气体。实际气体在</span><span class="kp">压强不太高（相对大气压）、温度不太低（相对室温）</span><span class="exp">的条件下可近似为理想气体。</span></p>
+
+<p><span class="exp">三条实验定律（一定质量气体）：</span></p>
+<ul>
+  <li><span class="kp">玻意耳-马略特定律（Boyle-Mariotte）</span>：等温条件下，pV = 常数（p ∝ 1/V）</li>
+  <li><span class="kp">盖-吕萨克定律（Gay-Lussac）</span>：等压条件下，V ∝ T</li>
+  <li><span class="kp">查理定律（Charles）</span>：等容条件下，p ∝ T</li>
+</ul>
+
+<h3 id="s13153090">理想气体状态方程 <span class="tag-must">必考</span> <span class="slide-ref"><span class="pg-chip" data-page="12">页12</span><span class="pg-chip" data-page="13">页13</span><span class="pg-chip" data-page="14">页14</span></span></h3>
+
+<p><span class="kp">物质的量：</span><span class="exp">1 mol = 6.022×10²³ 个微粒（阿伏伽德罗常数 N_A）。</span></p>
+
+<p><span class="exp">由三大定律综合，得到理想气体状态方程：</span></p>
+<div class="math">
+  $$pV = \nu RT = \frac{m}{M}RT$$
+</div>
+<p><span class="exp">其中 ν = m/M 为摩尔数，M 为摩尔质量（kg/mol），R = 8.31 J·mol⁻¹·K⁻¹ 为摩尔气体常量。</span></p>
+
+<p><span class="exp">引入玻尔兹曼常数 k = R/N_A = 1.38×10⁻²³ J·K⁻¹，以及分子数密度 n = N/V（单位体积分子数），状态方程可改写为：</span></p>
+<div class="math">
+  $$p = nkT$$
+</div>
+
+<p><span class="kp">标准状态</span><span class="exp">：p₀ = 1.01325×10⁵ Pa，T₀ = 273.15 K，此时 1 mol 理想气体的体积 V_mol = 22.4×10⁻³ m³ = 22.4 L，分子数密度 n₀ = 2.69×10²⁵ m⁻³（洛喜密脱数）。</span></p>
+
+<blockquote>易错：状态方程 pV = νRT 中的 T 必须是热力学温度（单位 K），不能直接代入摄氏温度！T = t + 273.15。</blockquote>
+
+<div class="checkpoint">一瓶氧气体积 V₁=32 L，初始压强 p₁=1.317×10⁷ Pa，当压强降到 p₂=1.031×10⁶ Pa 时需充气。车间每天用 p₃=1.031×10⁵ Pa、V₃=400 L 的氧气，温度不变，问可用几天？
+<details class="cp-answer"><summary>参考答案</summary>温度不变，m ∝ pV。初始质量 m₁ ∝ p₁V₁，需充气时剩余 m₂ ∝ p₂V₁，可用质量 Δm ∝ $p₁−p₂$V₁。每天用量 m_daily ∝ p₃V₃。N = Δm/m_daily = $p₁−p₂$V₁/$p₃V₃$ ≈ 9.4 天。</details></div>
+
+<!-- ====== 三、微观模型与压强公式 ====== -->
+<h2 id="s38498433">微观模型与压强公式</h2>
+
+<h3 id="s41622092">理想气体微观模型 <span class="tag-must">必考</span> <span class="slide-ref"><span class="pg-chip" data-page="16">页16</span><span class="pg-chip" data-page="17">页17</span></span></h3>
+
+<p><span class="kp">四条基本假设：</span></p>
+<ol>
+  <li><span class="kp">质点假设</span> —— 分子线度远小于分子间距，可视为质点（忽略大小）</li>
+  <li><span class="kp">自由粒子假设</span> —— 除碰撞瞬间外，分子间及分子与器壁间无相互作用</li>
+  <li><span class="kp">弹性碰撞假设</span> —— 碰撞是完全弹性碰撞，动量守恒、动能守恒</li>
+  <li><span class="kp">忽略重力</span> —— 不计重力影响</li>
+</ol>
+<p><span class="exp">概括：理想气体是一群</span><span class="kp">自由无规则运动的弹性小球群</span><span class="exp">。</span></p>
+
+<p><span class="kp">平衡态统计假设：</span></p>
+<ul>
+  <li><span class="kp">均匀分布</span> —— 分子数密度处处相等</li>
+  <li><span class="kp">各向同性</span> —— 分子沿各方向运动的机会均等，速度各分量的各种平均值相等：</li>
+</ul>
+<div class="math">
+  $$\bar{v}_x = \bar{v}_y = \bar{v}_z = 0, \quad \overline{v_x^2} = \overline{v_y^2} = \overline{v_z^2} = \frac{1}{3}\overline{v^2}$$
+</div>
+
+<h3 id="s78193648">压强公式的物理图像 <span class="tag-must">必考</span> <span class="slide-ref"><span class="pg-chip" data-page="18">页18</span><span class="pg-chip" data-page="19">页19</span></span></h3>
+
+<p><span class="kp">压强的微观本质</span><span class="exp">：气体压强是大量分子不断碰撞器壁的宏观表现。单个分子碰撞器壁 → 动量变化 → 给器壁冲量 → 大量分子统计平均 → 单位面积单位时间内的平均冲量 = 压强。</span></p>
+
+<p><span class="exp">推导思路（物理图像）：</span></p>
+<ol>
+  <li>一个分子以速度 v_x 撞向器壁 → 弹性碰撞反弹，速度变为 −v_x → 动量变化 Δp = 2m₀v_x</li>
+  <li>Δt 时间内能撞到面积 A 上的分子数 = nAv_xΔt（只考虑向壁运动的分子）</li>
+  <li>总冲量 → 压强 p = F/A → 对大量分子取统计平均</li>
+  <li>利用各向同性条件 ⟨v_x²⟩ = ⟨v²⟩/3，最终得到：</li>
+</ol>
+<div class="math">
+  $$p = \frac{1}{3} n m_0 \langle v^2 \rangle = \frac{2}{3} n \bar{\varepsilon}_{kt}$$
+</div>
+<p><span class="exp">其中 n 为分子数密度，m₀ 为单个分子质量，⟨v²⟩ 为速率平方的统计平均值。</span></p>
+<p><span class="kp">分子平均平动动能：</span></p>
+<div class="math">
+  $$\bar{\varepsilon}_{kt} = \frac{1}{2} m_0 \langle v^2 \rangle$$
+</div>
+
+<blockquote>易错：压强公式中的因子 1/3 来源于各向同性假设 ⟨v_x²⟩ = ⟨v²⟩/3，不是随意取的。另外，压强 p 是宏观量，但公式右边的 n、m₀、⟨v²⟩ 都是微观量的统计平均 —— 这是连接宏观与微观的桥梁公式。</blockquote>
+
+<div class="checkpoint">为什么说压强是大量分子碰撞器壁的统计结果？单个分子碰撞能产生稳定压强吗？
+<details class="cp-answer"><summary>参考答案</summary>单个分子碰撞器壁产生的冲量是间歇、随机的，不能形成稳定的宏观压强。只有大量分子（~10²³量级）持续碰撞，统计平均后才呈现稳定的压强值。因此压强是统计量，对少量分子无意义。</details></div>
+
+<!-- ====== 四、温度公式与分子动能 ====== -->
+<h2 id="s73610319">温度与分子动能</h2>
+
+<h3 id="s61915374">温度公式：温度是分子平均平动动能的量度 <span class="tag-must">必考</span> <span class="slide-ref"><span class="pg-chip" data-page="20">页20</span><span class="pg-chip" data-page="21">页21</span><span class="pg-chip" data-page="22">页22</span></span></h3>
+
+<p><span class="exp">将状态方程 p = nkT 与压强公式 p = $2/3$nε̄_kt 联立：</span></p>
+<div class="math">
+  $$\bar{\varepsilon}_{kt} = \frac{1}{2} m_0 \langle v^2 \rangle = \frac{3}{2} kT$$
+</div>
+
+<p><span class="kp">这是本章最核心的公式之一。它揭示了温度的微观本质：温度是分子平均平动动能的量度。温度越高，分子热运动越剧烈。</span></p>
+
+<p><span class="exp">由此可得</span><span class="kp">方均根速率</span><span class="exp">（root-mean-square speed）：</span></p>
+<div class="math">
+  $$v_{rms} = \sqrt{\langle v^2 \rangle} = \sqrt{\frac{3kT}{m_0}} = \sqrt{\frac{3RT}{M}} \approx 1.73\sqrt{\frac{RT}{M}}$$
+</div>
+
+<blockquote>易错：$1$ 温度公式 $3/2$kT 是「平均平动动能」，不是总动能。对有转动自由度的多原子分子，总平均动能大于平动动能。$2$ 方均根速率 v_rms = √$3RT/M$ 中的 M 是摩尔质量，单位用 kg/mol 而非 g/mol。</blockquote>
+
+<p><span class="kp">重要结论：</span><span class="exp">温度相同的不同气体，其分子的平均平动动能相同，但方均根速率不同（因分子质量不同）。</span></p>
+
+<div class="checkpoint">两瓶不同气体（如 He 和 N₂），若温度相同：$1$ 平均平动动能是否相同？$2$ 方均根速率是否相同？$3$ 若分子数密度不同，压强是否相同？
+<details class="cp-answer"><summary>参考答案</summary>$1$ 相同——ε̄_kt = $3/2$kT 只取决于温度，与气体种类无关。$2$ 不同——v_rms = √$3RT/M$，M 不同则 v_rms 不同。$3$ 不同——p = nkT，n 不同则 p 不同（即使 T 相同）。</details></div>
+
+<!-- ====== 五、能均分定理与内能 ====== -->
+<h2 id="s14510612">能均分定理与理想气体内能</h2>
+
+<h3 id="s59924315">自由度 <span class="tag-key">重点</span> <span class="slide-ref"><span class="pg-chip" data-page="33">页33</span><span class="pg-chip" data-page="34">页34</span><span class="pg-chip" data-page="35">页35</span></span></h3>
+
+<p><span class="kp">自由度 i</span><span class="exp">：确定物体空间位置所需的独立坐标数。</span></p>
+
+<table>
+  <tr><th>分子类型</th><th>平动自由度 t</th><th>转动自由度 r</th><th>总自由度 i = t+r</th><th>例子</th></tr>
+  <tr><td>单原子分子</td><td>3</td><td>0</td><td><span class="kp">3</span></td><td>He, Ar</td></tr>
+  <tr><td>刚性双原子分子</td><td>3</td><td>2</td><td><span class="kp">5</span></td><td>H₂, O₂, N₂</td></tr>
+  <tr><td>刚性多原子分子</td><td>3</td><td>3</td><td><span class="kp">6</span></td><td>H₂O, CH₄</td></tr>
+</table>
+
+<blockquote>易错：$1$ CO₂ 是线性分子（三原子共线），自由度为 5 而非 6。$2$ 双原子分子转动自由度为 2（不是 3），因为绕两个原子连线轴的转动惯量可忽略不计。$3$ 以上均为「刚性分子」模型——不考虑振动自由度。若温度足够高使得振动自由度被激发，自由度还会增加。</blockquote>
+
+<h3 id="s89120205">能量均分定理 <span class="tag-must">必考</span> <span class="slide-ref"><span class="pg-chip" data-page="36">页36</span><span class="pg-chip" data-page="37">页37</span></span></h3>
+
+<p><span class="kp">能量均分定理</span><span class="exp">：在温度为 T 的平衡态下，物质分子的每一个自由度都具有相同的平均动能，其大小等于</span> <span class="kp">$1/2$kT</span><span class="exp">。</span></p>
+
+<p><span class="exp">推导来源：单原子分子只有 3 个平动自由度，平均平动动能 $3/2$kT，每个自由度分得 $1/2$kT。统计假设保证各自由度平等。</span></p>
+
+<div class="math">
+  $$\text{分子平均总动能 } \bar{\varepsilon}_k = \frac{i}{2}kT$$
+</div>
+
+<table>
+  <tr><th>分子类型</th><th>i</th><th>平均总动能</th><th>平均平动动能</th><th>平均转动动能</th></tr>
+  <tr><td>单原子</td><td>3</td><td>$3/2$kT</td><td>$3/2$kT</td><td>0</td></tr>
+  <tr><td>双原子</td><td>5</td><td>$5/2$kT</td><td>$3/2$kT</td><td>kT</td></tr>
+  <tr><td>多原子</td><td>6</td><td>3kT</td><td>$3/2$kT</td><td>$3/2$kT</td></tr>
+</table>
+
+<blockquote>易错：无论何种分子，平均平动动能恒为 $3/2$kT（因为平动自由度始终 = 3）。能均分定理增加的只是转动（和振动）部分的动能。</blockquote>
+
+<h3 id="s45952686">理想气体的内能 <span class="tag-must">必考</span> <span class="slide-ref"><span class="pg-chip" data-page="38">页38</span><span class="pg-chip" data-page="39">页39</span><span class="pg-chip" data-page="40">页40</span></span></h3>
+
+<p><span class="kp">理想气体内能</span><span class="exp">：模型中分子间无相互作用 → 无相互作用势能；刚性分子 → 无振动自由度。因此</span><span class="kp">内能 = 所有分子平均动能之和</span><span class="exp">。</span></p>
+
+<div class="math">
+  $$E = \frac{i}{2} \nu RT = \frac{i}{2} \frac{m}{M} RT$$
+</div>
+
+<p><span class="kp">关键结论：理想气体的内能只是温度的单值函数，内能变化只与始末状态有关，与过程无关。</span></p>
+
+<table>
+  <tr><th>气体</th><th>i</th><th>1 mol 内能 E_mol</th><th>ν mol 内能 E</th></tr>
+  <tr><td>单原子（He, Ar）</td><td>3</td><td>$3/2$RT</td><td>$3/2$νRT</td></tr>
+  <tr><td>双原子（O₂, N₂）</td><td>5</td><td>$5/2$RT</td><td>$5/2$νRT</td></tr>
+  <tr><td>多原子（H₂O, CH₄）</td><td>6</td><td>3RT</td><td>3νRT</td></tr>
+</table>
+
+<div class="checkpoint">1 mol O₂（刚性双原子，i=5）温度从 300 K 升高到 400 K，内能增加多少？（R = 8.31 J·mol⁻¹·K⁻¹）
+<details class="cp-answer"><summary>参考答案</summary>ΔE = $i/2$RΔT = $5/2$ × 8.31 × $400−300$ = 2.5 × 8.31 × 100 = 2077.5 J ≈ 2.08×10³ J。</details></div>
+
+<div class="checkpoint">为什么理想气体内能只是温度的函数？实际气体也是这样吗？
+<details class="cp-answer"><summary>参考答案</summary>理想气体模型中分子间无相互作用，无势能项，内能 = 所有分子动能之和。能均分定理给出动能 ∝ T，所以内能 ∝ T。实际气体分子间有相互作用势能，内能还与体积（分子间距）有关，不只是温度的函数。</details></div>
+
+<!-- ====== 六、麦克斯韦速率分布 ====== -->
+<h2 id="s17704373">麦克斯韦速率分布</h2>
+
+<h3 id="s29843706">统计规律与速率分布函数 <span class="tag-key">重点</span> <span class="slide-ref"><span class="pg-chip" data-page="24">页24</span><span class="pg-chip" data-page="25">页25</span><span class="pg-chip" data-page="26">页26</span></span></h3>
+
+<p><span class="kp">统计规律</span><span class="exp">：大量偶然事件整体所遵循的规律。单个分子行为是偶然的，大量分子整体表现出必然的统计规律（如伽尔顿板实验）。</span></p>
+
+<p><span class="kp">麦克斯韦速率分布函数 f$v$</span><span class="exp">：平衡态下，速率在 v ∼ v+dv 区间内的分子数占总分子数的比例为 f$v$dv。f$v$ 的物理意义是</span><span class="kp">分子处于速率 v 附近单位速率区间的概率密度</span><span class="exp">。</span></p>
+
+<p><span class="exp">f$v$ 满足归一化条件：</span></p>
+<div class="math">
+  $$\int_0^\infty f$v$\,dv = 1$$
+</div>
+
+<p><span class="kp">分布曲线的特点</span><span class="exp">：从原点出发 → 上升到极大值 → 逐渐下降 → 无限延伸但趋于零。曲线不对称，右侧尾巴较长。温度升高 → 曲线峰值右移且变扁平（高速分子增多）。</span></p>
+
+<h3 id="s89767119">三种特征速率 <span class="tag-must">必考</span> <span class="slide-ref"><span class="pg-chip" data-page="24">页24</span><span class="pg-chip" data-page="25">页25</span><span class="pg-chip" data-page="26">页26</span></span></h3>
+
+<table>
+  <tr><th>速率</th><th>定义</th><th>公式</th><th>数值关系 $以 √(RT/M$ 为单位)</th><th>用途</th></tr>
+  <tr>
+    <td><span class="kp">最概然速率 v_p</span></td>
+    <td>分布函数 f$v$ 取极大值对应的速率</td>
+    <td>$$v_p = \sqrt{\frac{2kT}{m_0}} = \sqrt{\frac{2RT}{M}}$$</td>
+    <td>≈ 1.41</td>
+    <td>讨论速率分布、碰撞截面</td>
+  </tr>
+  <tr>
+    <td><span class="kp">平均速率 ⟨v⟩</span></td>
+    <td>所有分子速率的算术平均值</td>
+    <td>$$\langle v \rangle = \sqrt{\frac{8kT}{\pi m_0}} = \sqrt{\frac{8RT}{\pi M}}$$</td>
+    <td>≈ 1.60</td>
+    <td>计算平均自由程、碰撞频率</td>
+  </tr>
+  <tr>
+    <td><span class="kp">方均根速率 v_rms</span></td>
+    <td>速率平方平均值的平方根</td>
+    <td>$$v_{rms} = \sqrt{\langle v^2 \rangle} = \sqrt{\frac{3kT}{m_0}} = \sqrt{\frac{3RT}{M}}$$</td>
+    <td>≈ 1.73</td>
+    <td>计算平均平动动能</td>
+  </tr>
+</table>
+
+<p style="text-align:center;font-size:1.1rem;margin:16px 0;">
+  <span class="kp">v_p &lt; ⟨v⟩ &lt; v_rms</span>
+  <span class="exp">（方均根速率最大，最概然速率最小）</span>
+</p>
+
+<blockquote>易错：$1$ 三种速率的公式容易混淆 —— v_p 系数为 √2，v_rms 系数为 √3，⟨v⟩ 系数为 √$8/π$。关键记忆：v_rms 来自温度公式（3/2）kT = $1/2$m₀⟨v²⟩，所以 √$3kT/m₀$。$2$ 注意是 v_p &lt; ⟨v⟩ &lt; v_rms 而非其他顺序。$3$ 方均根速率来自 ⟨v²⟩ 开根号，不是先开根号再平均。</blockquote>
+
+<div class="checkpoint">温度升高时，麦克斯韦速率分布曲线如何变化？三种特征速率如何变化？
+<details class="cp-answer"><summary>参考答案</summary>温度升高 → 曲线峰值右移（向高速方向移动），峰值降低，曲线变扁平（高速分子比例增加）。三种特征速率都增大，增大比例均为 √$T₂/T₁$。</details></div>
+
+<!-- ====== 七、平均自由程与碰撞频率 ====== -->
+<h2 id="s77169270">平均自由程与碰撞频率</h2>
+
+<h3 id="s16670092">分子碰撞与平均自由程 <span class="tag-key">重点</span> <span class="slide-ref"><span class="pg-chip" data-page="28">页28</span><span class="pg-chip" data-page="29">页29</span></span></h3>
+
+<p><span class="kp">平均碰撞频率 Z</span><span class="exp">：一个分子在单位时间内与其他分子碰撞的平均次数。数量级约 10⁹ ∼ 10¹⁰ s⁻¹。</span></p>
+
+<p><span class="exp">考虑其他分子也运动时，平均相对速率为 √2⟨v⟩，碰撞截面为 πd²（d 为分子有效直径 ≈ 10⁻¹⁰ m）：</span></p>
+<div class="math">
+  $$Z = \sqrt{2}\pi d^2 \langle v \rangle n$$
+</div>
+
+<p><span class="kp">平均自由程 λ</span><span class="exp">：一个分子在连续两次碰撞之间所通过路程的平均值。</span></p>
+<div class="math">
+  $$\lambda = \frac{\langle v \rangle}{Z} = \frac{1}{\sqrt{2}\pi d^2 n}$$
+</div>
+
+<p><span class="exp">由 p = nkT 得 n = p/$kT$，代入：</span></p>
+<div class="math">
+  $$\lambda = \frac{kT}{\sqrt{2}\pi d^2 p}$$
+</div>
+
+<p><span class="kp">关键结论：</span></p>
+<ul>
+  <li>温度一定时，<span class="kp">λ ∝ 1/p</span>（压强越低，平均自由程越大）</li>
+  <li>压强一定时，<span class="kp">λ ∝ T</span>（温度越高，平均自由程越大，因为 n = p/kT 减小）</li>
+  <li>标准状态下空气分子的 λ ∼ 10⁻⁷ m 量级</li>
+</ul>
+
+<blockquote>易错：λ = ⟨v⟩/Z 中的 ⟨v⟩ 是平均速率（不是方均根速率也不是最概然速率）。Z 表达式中的 √2 因子是因为考虑了分子间的相对运动——用平均相对速率代替平均速率。</blockquote>
+
+<div class="checkpoint">保温瓶（暖壶）夹层抽成真空的物理原理是什么？为什么真空度越高保温效果越好？
+<details class="cp-answer"><summary>参考答案</summary>抽真空 → 分子数密度 n 降低 → 平均自由程 λ ∝ 1/n 增大 → 分子碰撞频率降低 → 热传导减弱。当 λ 大于夹层间距时，分子几乎不发生碰撞直接从一个壁飞到另一个壁，导热大幅降低。真空度越高，保温效果越好。</details></div>
+
+<hr>
+<p style="text-align:center;color:var$--muted$;font-size:0.85rem;">
+  第7章 理想气体动理论 — 复习笔记完 &nbsp;|&nbsp; 宏观 ↔ 微观的桥梁：p = nkT, ε̄_kt = $3/2$kT, E = $i/2$νRT
+</p></div><aside class="kn-rail"><div class="kn-rail-title">📑 原始幻灯片对照</div><div class="slide-card" id="slide-p3" data-page="3"><div class="slide-card-label">第3页</div><img class="slide-img" width="900" height="675" src="slides/ch7_p001.jpg" loading="lazy" alt="第3页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">一、Thermodynamic system热力学系统<br>Outside: The environment outside the system that <br>interacts with the system.<br>For example: heat transfer, mass exchange<br>系<br>统<br>Type of <br>system<br>Open system <br>开放系统<br>Closed system<br>Isolated system<br>孤立系统<br>Thermodynamic systems are referred to as <br>system:<br>  A finite macroscopic material system composed of a <br>large number of microscopic particles.<br>Without energy exchange or mass exchange<br>energy exchange with the outside,without mass<br>exchange</div></details></div>
+<div class="slide-card" id="slide-p4" data-page="4"><div class="slide-card-label">第4页</div><img class="slide-img" width="900" height="675" src="slides/ch7_p002.jpg" loading="lazy" alt="第4页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Equilibrium state： If without external influence, after a long <br>enough time, the state of the macroscopic properties of an isolated system <br>do not change with time.<br>Thermodynamical equilibrium热动平衡： <br>Dynamic equilibrium of random motion of microscopic <br>particles微观粒子任处无规则运动的动态平衡</div></details></div>
+<div class="slide-card" id="slide-p5" data-page="5"><div class="slide-card-label">第5页</div><img class="slide-img" width="900" height="675" src="slides/ch7_p003.jpg" loading="lazy" alt="第5页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">unit：Pa ( 帕斯卡 )  Pa = N·m-2<br>                    1标准大气压=1bar = 1.01325×105Pa     <br>Volum体积 V ：Space for free movement of gas molecules.<br>Unit: m3<br>  Pressure压强 p ：Gas pressure acting vertically on unit area of <br>vessel wall 垂直作用在容器壁单位面积上的气体压力<br>S<br>F<br>p <br>Macroscopic quantity宏观量： the collective macro behavior <br>characteristics of a large number of molecules.<br>Microscopic quantity微观量：Individual molecular behavior.<br>三. State parameter状态参量：<br>Macroscopic quantities are the collective manifestations集体表现 <br>of the motion of a large number of particles, determined by the <br>statistical average of microscopic quantities.</div></details></div>
+<div class="slide-card" id="slide-p7" data-page="7"><div class="slide-card-label">第7页</div><img class="slide-img" width="900" height="675" src="slides/ch7_p004.jpg" loading="lazy" alt="第7页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">At the macroscopic level: <br>temperature is the physical quantity that characterizes the macroscopic <br>properties of a system in a state of thermal equilibrium. Two systems in <br>thermal equilibrium, their temperatures are the same.<br>At the microscopic level: <br>temperature is a measure of the irregular <br>motion of molecules of matter. This <br>microscopic movement cannot be directly <br>observed on a macroscopic level, but the <br>temperature is observed. As the <br>temperature rises, so does the <br>microscopic movement.<br>Temperature T ——  表征物体的温暖程度</div></details></div>
+<div class="slide-card" id="slide-p8" data-page="8"><div class="slide-card-label">第8页</div><img class="slide-img" width="900" height="675" src="slides/ch7_p005.jpg" loading="lazy" alt="第8页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Centigrade scale摄氏温标： t ℃<br>The freezing point of water—— 0 ℃<br>Boiling point of water—— 100℃<br>One percent of the difference between freezing point and boiling <br>point is specified as 1 ℃冰点和沸点之差的百分之一规定为1℃ <br>。 <br>Temperature Scale温标 – A numerical <br>representation of temperature<br>In the standard state, use the thermal expansion and cold <br>contraction characteristics热胀冷缩of mercury or alcohol水<br>银或酒精.</div></details></div>
+<div class="slide-card" id="slide-p9" data-page="9"><div class="slide-card-label">第9页</div><img class="slide-img" width="900" height="675" src="slides/ch7_p006.jpg" loading="lazy" alt="第9页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Thermodynamic <br>temperature scale热力学<br>温标： T    unit：K <br>Absolute zero degree绝对零度：<br>t = - 273.15 ℃<br>T = 0 K<br>15<br>.<br>273<br><br>t<br>T<br>relation：<br>freezing point冰点： 0℃，273.15K</div></details></div>
+<div class="slide-card" id="slide-p10" data-page="10"><div class="slide-card-label">第10页</div><img class="slide-img" width="900" height="675" src="slides/ch7_p007.jpg" loading="lazy" alt="第10页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Ideal gas：Gases that strictly adhere to the "Wave-Horse <br>Law", "Guy-Lui Law" and "Charlie's Law" in all cases。<br>General gases are <br>considered ideal gases:<br>Not too high pressure (compared to <br>atmospheric pressure)<br>Temperature is not too low (compared to <br>room temperature)<br>Wave-Horse law: At quantitative temperature, the volume of <br>an ideal gas is inversely proportional to the pressure of the gas<br>Guy-Lui law: A gas of a certain mass, under constant pressure, <br>its volume is proportional to the thermodynamic temperature<br>Charles's Law: An ideal gas of a certain mass and a certain <br>volume, the pressure is proportional to the thermodynamic <br>temperature</div></details></div>
+<div class="slide-card" id="slide-p14" data-page="14"><div class="slide-card-label">第14页</div><img class="slide-img" width="900" height="675" src="slides/ch7_p008.jpg" loading="lazy" alt="第14页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">nkT<br>P <br>Molecular number density in standard <br>state:标准状态下的分子数密度：<br>——It is called the <br>rochemitter number<br>称为洛喜密脱数<br>)<br>m<br>(<br>10<br>69<br>.2<br>3<br>25<br>0<br><br><br><br>n<br>Standard <br>state：<br>Pa<br>10<br>01325<br>.1<br>p<br>5<br>0<br><br><br>K<br>15<br>.<br>273<br>0 <br>T<br>Ideal gas equation of state<br>理想气体状态方程：</div></details></div>
+<div class="slide-card" id="slide-p15" data-page="15"><div class="slide-card-label">第15页</div><img class="slide-img" width="900" height="675" src="slides/ch7_p009.jpg" loading="lazy" alt="第15页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Example The oxygen cylinder瓶 with volume V1=32L stores oxygen with <br>pressure p1=1.317107Pa . It is specified that when the oxygen pressure <br>drops to p2=1.031 106Pa, it needs to be inflated 充气 to avoid mixing air <br>when the valve阀门 is opened. If the workshop needs  to use p=1.031 <br>105Pa ,V=400L oxygen every day，how many days can it be used?<br>Solution ：<br>RT<br>pV<br>M<br>m <br>T is unchanged，every day use m <br>oxygen,<br>Before using，mass,<br>When needs to be inflated,<br>RT<br>V<br>p<br>M<br>m<br>1<br>1<br>1 <br>RT<br>V<br>p<br>M<br>m<br>1<br>2<br>2 <br>Used days： <br>1<br>2<br>1<br>2<br>1<br>m<br>m<br>(<br>)<br>9.4<br>m<br>p<br>p V<br>N<br>days<br>pV<br><br><br><br><br></div></details></div>
+<div class="slide-card" id="slide-p16" data-page="16"><div class="slide-card-label">第16页</div><img class="slide-img" width="900" height="675" src="slides/ch7_p010.jpg" loading="lazy" alt="第16页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">1. Microscopic model of ideal gas理想气体的微<br>观模型<br>1. The comparison of molecular linearity to molecular <br>spacing is negligible.<br>3. Collisions are fully elastic collisions.<br>——particle<br>——free particle<br>——elastic <br>particle<br>A group of elastic particles that move freely and <br>irregularly自由无规则运动的弹性质点群<br>2. Except for collisions, interactions between <br>molecules and between molecules and vessel walls are <br>ignored.<br>4. Neglect the graviy.<br>动量守恒  动能守恒</div></details></div>
+<div class="slide-card" id="slide-p17" data-page="17"><div class="slide-card-label">第17页</div><img class="slide-img" width="900" height="675" src="slides/ch7_p011.jpg" loading="lazy" alt="第17页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">2. Statistical assumption of equilibrium ideal gas平衡<br>态理想气体的统计假设<br>1. Molecular density is equal everywhere (uniform distribution)<br>2. Molecules have the same chance of moving in all directions<br>The velocities of molecules are equal in the various averages <br>of the components in all directions<br>z<br>y<br>x<br>v<br>v<br>v<br><br><br> The number of molecules moving in all directions at any <br>given time is the same<br>2<br>2<br>2<br>2<br>3<br>1 v<br>v<br>v<br>v<br><br><br><br>z<br>y<br>x<br>2<br>2<br>2<br>z<br>y<br>x<br>v<br>v<br>v<br><br><br>2<br>2<br>2<br>2<br>z<br>y<br>x<br>v<br>v<br>v<br>v<br><br><br><br>i.e.：</div></details></div>
+<div class="slide-card" id="slide-p18" data-page="18"><div class="slide-card-label">第18页</div><img class="slide-img" width="900" height="675" src="slides/ch7_p012.jpg" loading="lazy" alt="第18页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">3. Pressure formula of ideal gas理想气体的压强公式<br>The starting point for deriving the pressure formula：<br>* Gas pressure is the result of a large number of molecules <br>constantly colliding against the container wall<br>* The pressure is equal to the average impulse per unit area <br>of the wall per second<br>* Individual molecules obey the laws of <br>classical mechanics<br>* A large number of molecules as a <br>whole obey statistical laws</div></details></div>
+<div class="slide-card" id="slide-p20" data-page="20"><div class="slide-card-label">第20页</div><img class="slide-img" width="900" height="675" src="slides/ch7_p013.jpg" loading="lazy" alt="第20页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Temperature is the measure of the average translational kinetic <br>energy of molecules, and the intensity of molecular thermal <br>motion.<br>kt<br>0,<br>0,<br>T<br>impossible<br><br><br><br><br>Absolute zero can only be approached, not reached只能逼近，不<br>能达到.<br>kT<br>2<br>3<br>kt <br><br>4. Temperature formula of ideal gas理想气体的温度公式<br>State equation:<br>nkT<br>p <br>Pressure formula:<br>kt<br>n<br>p<br><br>3<br>2<br><br>Temperature formula</div></details></div>
+<div class="slide-card" id="slide-p21" data-page="21"><div class="slide-card-label">第21页</div><img class="slide-img" width="900" height="675" src="slides/ch7_p014.jpg" loading="lazy" alt="第21页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Example: Two bottles of different gases have the same average <br>translational kinetic energy分子平均平动动能, but the <br>molecular density分子密度数is different. Question: do they have <br>the same temperature? Is the pressure压强the same?<br>Solution ：<br>kT<br>2<br>3<br>kt <br><br>2<br>kt<br>1<br>kt<br><br><br><br><br>2<br>1<br>T<br>T <br><br>nkT<br>p <br>2<br>1<br>2<br>1<br>,<br>T<br>T<br>n<br>n<br><br><br><br>2<br>1<br>p<br>p <br></div></details></div>
+<div class="slide-card" id="slide-p22" data-page="22"><div class="slide-card-label">第22页</div><img class="slide-img" width="900" height="675" src="slides/ch7_p015.jpg" loading="lazy" alt="第22页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Example: Find the average translational kinetic energy平均平<br>动动能 and root mean square velocity 方均根速率of nitrogen <br>molecule氮气. (1) when  t = 1000 ℃ ；(2) t = 0 ℃<br>Solution：<br>1<br>kt1<br>2<br>3 kT<br><br><br>J<br>10<br>63<br>.2<br>1273<br>10<br>38<br>.1<br>2<br>3<br>20<br>23<br><br><br><br><br><br><br><br><br>M<br>RT1<br>2<br>1<br>3<br><br>v<br>1<br>3<br>s<br>m<br>1194<br>10<br>28<br>1273<br>31<br>.8<br>3<br><br><br><br><br><br><br><br><br>2<br>kt2<br>2<br>3 kT<br><br><br>J<br>10<br>65<br>.5<br>273<br>10<br>38<br>.1<br>2<br>3<br>21<br>23<br><br><br><br><br><br><br><br><br>M<br>RT2<br>2<br>2<br>3<br><br>v<br>1<br>3<br>s<br>m<br>493<br>10<br>28<br>273<br>31<br>.8<br>3<br><br><br><br><br><br><br><br><br>M<br>RT<br>M<br>RT<br>kT<br>73<br>.1<br>3<br>3<br>2<br><br><br><br><br>v<br>kT<br>2<br>3<br>2<br>1<br>2 <br>v<br></div></details></div>
+<div class="slide-card" id="slide-p24" data-page="24"><div class="slide-card-label">第24页</div><img class="slide-img" width="900" height="675" src="slides/ch7_p016.jpg" loading="lazy" alt="第24页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Example: The density of air in the standard state  <br>=1.29kg/m3, calculate the root mean square velocity of <br>air molecules in the standard state.<br>Solution ：<br>RT<br>M<br>m<br>pV <br>RT<br>pM<br>V<br>m <br><br><br>M<br>RT<br>m<br>kT<br>v<br>3<br>3<br>0<br>2<br><br><br><br>p<br>3<br><br>s<br>m /<br>10<br>85<br>.4<br>29<br>.1<br>10<br>013<br>.1<br>3<br>2<br>5<br><br><br><br><br></div></details></div>
+<div class="slide-card" id="slide-p25" data-page="25"><div class="slide-card-label">第25页</div><img class="slide-img" width="900" height="675" src="slides/ch7_p017.jpg" loading="lazy" alt="第25页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">5.  Real gas 真实气体<br>P<br>V<br>O<br>.<br>CO2Isothermal <br>compression test<br>Isotherm analysis of carbon dioxide gas<br>二氧化碳气体的等温线分析<br>Pressure<br> gauge</div></details></div>
+<div class="slide-card" id="slide-p26" data-page="26"><div class="slide-card-label">第26页</div><img class="slide-img" width="900" height="675" src="slides/ch7_p018.jpg" loading="lazy" alt="第26页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">P<br>V<br>O<br>.<br>CO2 Isothermal <br>compression test<br>Pressure<br> gauge</div></details></div>
+<div class="slide-card" id="slide-p28" data-page="28"><div class="slide-card-label">第28页</div><img class="slide-img" width="900" height="675" src="slides/ch7_p019.jpg" loading="lazy" alt="第28页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">P<br>V<br>O<br>.<br>CO2 Isothermal <br>compression test<br>Pressure<br> gauge</div></details></div>
+<div class="slide-card" id="slide-p29" data-page="29"><div class="slide-card-label">第29页</div><img class="slide-img" width="900" height="675" src="slides/ch7_p020.jpg" loading="lazy" alt="第29页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">P<br>V<br>O<br>.<br>CO2 Isothermal <br>compression test<br>Pressure<br> gauge</div></details></div></aside></div></div><div id="panel-test" class="tab-panel"><h2 style="text-align:center">章节测试</h2>
+<p style="text-align:center;color:var(--ink-light);font-size:0.95em">20 题</p>
+
+<div id="score-box"><div class="score-num" id="score-num">0</div><div class="score-label">总分</div></div>
+<div id="questions-container"></div>
+<div class="grading-bar no-print"><button onclick="gradeAll()" id="grade-btn">提交批改</button></div></div>
+
+<script>
+window.__epaLightbox = function(src){
+  var lb = document.getElementById('epa-lightbox');
+  if(!lb){ lb = document.createElement('div'); lb.id='epa-lightbox';
+    lb.innerHTML='<img>'; document.body.appendChild(lb);
+    lb.addEventListener('click', function(){ lb.style.display='none'; }); }
+  lb.querySelector('img').src = src; lb.style.display='flex';
+};
+document.addEventListener('click', function(e){
+  var chip = e.target.closest('.pg-chip'); if(!chip) return;
+  var pg = chip.getAttribute('data-page');
+  var card = document.getElementById('slide-p'+pg);
+  if(card){ card.scrollIntoView({behavior:'smooth', block:'center'});
+    card.classList.remove('flash'); void card.offsetWidth; card.classList.add('flash'); }
+});
+// Shrink any display formula too wide for its column so it stays fully visible.
+window.__epaFitFormulas = function __epaFitFormulas(){
+  var list = document.querySelectorAll('.kn-main mjx-container[display="true"]');
+  for(var i=0;i<list.length;i++){
+    var m = list[i], parent = m.parentElement; if(!parent) continue;
+    m.style.fontSize=''; // reset to measure natural width
+    var avail = parent.clientWidth, w = m.scrollWidth;
+    if(avail>0 && w>avail){ m.style.fontSize=(avail/w*0.97*100).toFixed(1)+'%'; }
+  }
+}
+function __epaScheduleFit(){
+  if(window.MathJax && MathJax.startup && MathJax.startup.promise){
+    MathJax.startup.promise.then(__epaFitFormulas);
+  } else { setTimeout(__epaFitFormulas, 900); }
+}
+if(document.readyState!=='loading'){ __epaScheduleFit(); }
+else { document.addEventListener('DOMContentLoaded', __epaScheduleFit); }
+var __epaFitT=null;
+window.addEventListener('resize', function(){ clearTimeout(__epaFitT); __epaFitT=setTimeout(__epaFitFormulas,200); });
+</script>
+<script>
+var Q = [{"type": "choice", "difficulty": "basic", "knowledge": "kc7.0", "options": ["平衡态是宏观性质不随时间变化的热动平衡状态", "平衡态下分子停止运动，系统处于静止状态", "平衡态下分子数密度处处为零", "只有孤立系统才能达到平衡态"], "answer": 0, "explanation": "平衡态是热动平衡——宏观性质（p, V, T）不随时间变化，但微观分子仍在做无规则热运动（动态平衡）。分子并非静止。", "question": "关于平衡态，以下说法正确的是", "kc_id": "ch7-q1", "cognitive_level": "understand", "points": 3, "pitfall": ""}, {"type": "choice", "difficulty": "basic", "knowledge": "kc7.0", "options": ["T = t − 273.15", "T = t + 273.15", "T = 273.15 − t", "T = t × 273.15"], "answer": 1, "explanation": "T = t + 273.15。绝对零度 T = 0 K 对应 t = −273.15 ℃。273.15 是两种温标的零点差。", "question": "热力学温标 T 与摄氏温标 t 的正确关系是", "kc_id": "ch7-q2", "cognitive_level": "understand", "points": 3, "pitfall": ""}, {"type": "calc", "difficulty": "medium", "knowledge": "kc7.1", "options": [], "answer": -1, "solution": {"steps": ["T = t + 273.15 = 27 + 273.15 = 300.15 K ≈ 300 K", "由 pV = (m/M)RT，得 m = pVM/(RT)", "m = (2.0×10⁵ Pa) × (20×10⁻³ m³) × (32×10⁻³ kg/mol) / (8.31 × 300)", "m = 4000 × 0.032 / 2493 = 128 / 2493 ≈ 0.0513 kg = 51.3 g"], "final": "约 0.051 kg（或 51 g）", "checkpoints": ["温度单位转换为 K: 27+273=300 K", "体积单位转换为 m³: 20 L = 0.02 m³", "摩尔质量单位转换为 kg/mol: 32 g/mol = 0.032 kg/mol", "代入公式 m = pVM/(RT) 计算"]}, "explanation": "使用理想气体状态方程 pV = (m/M)RT，先统一单位（T 用 K，V 用 m³，M 用 kg/mol），再代入求解 m。", "question": "一容器体积 V = 20 L，内装氧气（视为理想气体），温度 t = 27 ℃，压强 p = 2.0 × 10⁵ Pa。已知氧气摩尔质量 M = 32 g/mol，R = 8.31 J·mol⁻¹·K⁻¹。求容器内氧气的质量。", "kc_id": "ch7-q3", "cognitive_level": "apply", "points": 8, "pitfall": ""}, {"type": "choice", "difficulty": "medium", "knowledge": "kc7.2", "options": ["分子碰撞器壁时只有 1/3 的动能转化为冲量", "平衡态下各向同性导致 ⟨v_x²⟩ = ⟨v²⟩/3", "分子碰撞器壁的动量变化只有入射动量的 1/3", "只有 1/3 的分子在向器壁方向运动"], "answer": 1, "explanation": "由平衡态统计假设（各向同性），⟨v_x²⟩ = ⟨v_y²⟩ = ⟨v_z²⟩ = ⟨v²⟩/3。压强推导中涉及的是速度的 x 分量，用 ⟨v²⟩/3 替代 ⟨v_x²⟩ 即产生因子 1/3。", "question": "理想气体压强公式 p = (1/3)nm₀⟨v²⟩ 中，因子 1/3 的来源是", "kc_id": "ch7-q4", "cognitive_level": "apply", "points": 3, "pitfall": ""}, {"type": "calc", "difficulty": "medium", "knowledge": "kc7.3", "options": [], "answer": -1, "solution": {"steps": ["T = 0 + 273.15 = 273.15 K ≈ 273 K", "v_rms = \\sqrt{3RT/M}", "v_rms = \\sqrt{3 × 8.31 × 273 / (28×10⁻³)}", "= \\sqrt{6805.89 / 0.028} = \\sqrt{243067.5} ≈ 493 m/s"], "final": "约 493 m/s", "checkpoints": ["使用方均根速率公式 v_rms = \\sqrt{3RT/M}", "M 用 kg/mol: 28 g/mol = 0.028 kg/mol", "T = 273 K", "计算无误得 ~493 m/s"]}, "explanation": "方均根速率 v_rms = √(3RT/M)，注意 M 必须用国际单位 kg/mol。493 m/s 约为子弹速度量级，说明室温下分子运动极为剧烈。", "question": "求氮气 N₂ 分子在 0 ℃ 时的方均根速率 v_rms。已知 N₂ 摩尔质量 M = 28×10⁻³ kg/mol，R = 8.31 J·mol⁻¹·K⁻¹。", "kc_id": "ch7-q5", "cognitive_level": "apply", "points": 8, "pitfall": ""}, {"type": "choice", "difficulty": "medium", "knowledge": "kc7.3", "options": ["两瓶气体的压强相同，方均根速率不同", "两瓶气体的压强相同，方均根速率也相同", "两瓶气体的压强不同，方均根速率也不同", "两瓶气体的压强不同，方均根速率相同"], "answer": 0, "explanation": "p = nkT，n 和 T 相同则 p 相同（与气体种类无关）。但 v_rms = √(3RT/M)，M_He ≠ M_N₂，所以 v_rms 不同。", "question": "两瓶不同种类的理想气体（一瓶 He，一瓶 N₂），温度和分子数密度均相同，则", "kc_id": "ch7-q6", "cognitive_level": "apply", "points": 3, "pitfall": ""}, {"type": "calc", "difficulty": "medium", "knowledge": "kc7.3", "options": [], "answer": -1, "solution": {"steps": ["v_rms = \\sqrt{3RT/M} → M = 3RT / v_rms²", "M = 3 × 8.31 × 300 / (400)²", "M = 7479 / 160000 = 0.0467 kg/mol = 46.7 g/mol"], "final": "约 0.047 kg/mol（或 47 g/mol）", "checkpoints": ["公式变形: M = 3RT/v_rms²", "代入数值计算", "结果接近 CO₂ 的摩尔质量 44 g/mol"]}, "explanation": "由方均根速率公式反推摩尔质量：M = 3RT/v_rms²。注意结果单位为 kg/mol。", "question": "已知某理想气体在温度 T = 300 K 时的方均根速率为 400 m/s。求该气体的摩尔质量 M。（R = 8.31 J·mol⁻¹·K⁻¹）", "kc_id": "ch7-q7", "cognitive_level": "apply", "points": 8, "pitfall": ""}, {"type": "tf", "difficulty": "medium", "knowledge": "kc7.3", "options": [], "answer": 1, "explanation": "正确。ε̄_kt = (3/2)kT 只取决于温度，与气体种类无关。温度相同 → 平均平动动能相同。但方均根速率不同（因分子质量不同）。", "question": "温度相同的氧气和氢气，两种气体分子的平均平动动能相等。", "kc_id": "ch7-q8", "cognitive_level": "apply", "points": 2, "pitfall": ""}, {"type": "choice", "difficulty": "medium", "knowledge": "kc7.4", "options": ["3（3 个平动自由度）", "6（3 平动 + 3 转动）", "4（3 平动 + 1 转动）", "5（3 平动 + 2 转动）"], "answer": 3, "explanation": "CO₂ 是线性分子（O=C=O 共线），3 个平动自由度 + 2 个转动自由度 = 5。绕分子轴旋转的转动惯量可忽略不计，因此转动自由度只有 2 个而非 3 个。非线性的三原子分子（如 H₂O）才为 6。", "question": "刚性 CO₂ 分子（线性三原子分子）的自由度 i 为", "kc_id": "ch7-q9", "cognitive_level": "apply", "points": 3, "pitfall": ""}, {"type": "calc", "difficulty": "hard", "knowledge": "kc7.4", "options": [], "answer": -1, "solution": {"steps": ["(1) ΔE = (i/2)νRΔT = (5/2) × 2 × 8.31 × (500−300) = 5 × 8.31 × 200 = 8310 J", "(2) 分子平均动能 ε̄_k = (i/2)kT，Δε̄_k = (i/2)kΔT = (5/2) × 1.38×10⁻²³ × 200 = 6.9×10⁻²¹ J"], "final": "(1) ΔE = 8.31×10³ J；(2) Δε̄_k = 6.9×10⁻²¹ J", "checkpoints": ["内能公式 E = (i/2)νRT，与摩尔数 ν 成正比", "单个分子平均动能 ε̄_k = (i/2)kT，注意单位（10⁻²¹ J 量级）", "双原子分子 i=5", "ΔT = 200 K"]}, "explanation": "内能 E = (i/2)νRT 与摩尔数 ν 成正比，宏观量。单个分子的平均动能 ε̄_k = (i/2)kT，用玻尔兹曼常数 k 而非 R。注意个分子能量的数量级在 10⁻²¹ J。", "question": "容器中有 2 mol 刚性双原子理想气体（i=5），初始温度 T₁ = 300 K。加热后温度升至 T₂ = 500 K。求：(1) 气体内能的增量 ΔE；(2) 分子的平均动能增量 Δε̄_k。（R = 8.31 J·mol⁻¹·K⁻¹，k = 1.38×10⁻²³ J·K⁻¹）", "kc_id": "ch7-q10", "cognitive_level": "analyze", "points": 8, "pitfall": ""}, {"type": "fill", "difficulty": "basic", "knowledge": "kc7.1", "options": [], "answer": -1, "explanation": "R = 8.31 J·mol⁻¹·K⁻¹。R = p₀V_mol/T₀ = (1.01325×10⁵ × 22.4×10⁻³) / 273.15 ≈ 8.31。", "question": "理想气体状态方程 pV = νRT 中，摩尔气体常量 R 的数值约为 ______ J·mol⁻¹·K⁻¹。", "kc_id": "ch7-q11", "cognitive_level": "understand", "points": 3, "pitfall": ""}, {"type": "short", "difficulty": "hard", "knowledge": "kc7.5", "options": [], "answer": -1, "explanation": "v_p = √(2kT/m₀)：分布函数 f(v) 极大值处对应的速率，用于讨论速率分布和碰撞截面问题。⟨v⟩ = √(8kT/πm₀)：所有分子速率的算术平均，用于计算平均自由程 λ 和碰撞频率 Z。v_rms = √(3kT/m₀)：速率平方平均值的平方根，用于计算平均平动动能 ε̄_kt = (1/2)m₀⟨v²⟩。大小关系：v_p &lt; ⟨v⟩ &lt; v_rms（方均根最大）。三者比例约为 1.41 : 1.60 : 1.73（以 √(RT/M) 为单位）。", "question": "简述麦克斯韦速率分布中三种特征速率（最概然速率 v_p、平均速率 ⟨v⟩、方均根速率 v_rms）的定义和大小关系，并说明各适用于什么物理问题的计算。", "kc_id": "ch7-q12", "cognitive_level": "analyze", "points": 5, "pitfall": ""}, {"type": "calc", "difficulty": "hard", "knowledge": "kc7.6", "options": [], "answer": -1, "solution": {"steps": ["n = p/(kT) = 1.013×10⁵ / (1.38×10⁻²³ × 273) ≈ 2.69×10²⁵ m⁻³", "λ = 1/(\\sqrt{2} π d² n)", "λ = 1/(1.414 × 3.14 × (3.7×10⁻¹⁰)² × 2.69×10²⁵)", "= 1/(1.414 × 3.14 × 1.369×10⁻¹⁹ × 2.69×10²⁵)", "= 1/(1.414 × 3.14 × 3.68×10⁶)", "= 1/(1.63×10⁷) ≈ 6.12×10⁻⁸ m"], "final": "约 6.1×10⁻⁸ m", "checkpoints": ["先求分子数密度 n = p/(kT)", "代入公式 λ = 1/(√2 π d² n)", "注意 d 的平方后量级为 10⁻¹⁹ m²", "λ 在 10⁻⁷ m 量级，约为分子直径 d 的数百倍"]}, "explanation": "标准状态下平均自由程 λ ∼ 10⁻⁷ m，约为分子有效直径 d（~10⁻¹⁰ m）的数百倍。这意味着分子平均飞行数百个自身直径的距离才会碰撞一次。", "question": "氮气分子有效直径 d = 3.7×10⁻¹⁰ m。求氮气在标准状态（T = 273 K，p = 1.013×10⁵ Pa）下的平均自由程 λ。已知 k = 1.38×10⁻²³ J·K⁻¹。", "kc_id": "ch7-q13", "cognitive_level": "analyze", "points": 8, "pitfall": ""}, {"type": "choice", "difficulty": "hard", "knowledge": "kc7.6", "options": ["λ 不变，Z 变为 2 倍", "λ 变为 2 倍，Z 变为 1/2", "λ 变为 1/2，Z 不变", "λ 变为 1/2，Z 变为 2 倍"], "answer": 3, "explanation": "温度不变：λ = kT/(√2πd²p) ∝ 1/p → λ 变为 1/2。n = p/kT ∝ p → n 变为 2 倍。Z = √2πd²⟨v⟩n，⟨v⟩ 只取决于 T 不变 → Z ∝ n → Z 变为 2 倍。", "question": "一定量理想气体保持温度不变，当压强增大为原来的 2 倍时，平均自由程 λ 和平均碰撞频率 Z 分别变为原来的", "kc_id": "ch7-q14", "cognitive_level": "analyze", "points": 3, "pitfall": ""}, {"type": "tf", "difficulty": "medium", "knowledge": "kc7.4", "options": [], "answer": 1, "explanation": "正确。理想气体模型无分子间相互作用势能，内能 E = (i/2)νRT 仅是温度的单值函数。这是理想气体与实际气体的重要区别之一。", "question": "理想气体的内能只取决于温度，与体积和压强无关。", "kc_id": "ch7-q15", "cognitive_level": "apply", "points": 2, "pitfall": ""}, {"kc_id": "kc7.1", "cognitive_level": "apply", "difficulty": "medium", "type": "choice", "points": 3, "question": "两个相同的固定容积容器，一个盛氦气(He，单原子)，一个盛氢气(H₂，刚性双原子)，压强和温度都相等。将 5 J 热量传给氢气使其升温 ΔT，若使氦气也升高同样温度 ΔT，需传热：", "options": ["6 J", "5 J", "3 J", "2 J"], "answer": 2, "explanation": "等容过程 Q = nC_VΔT。He 单原子 C_V=3R/2，H₂ 双原子 C_V=5R/2。p、V、T 相同 → n 相同。Q_He / Q_H₂ = (3/2)/(5/2) = 3/5。Q_He = 5×(3/5) = 3 J。\n\n干扰项分析：选 6J——误以为 Q∝1/C_V；选 5J——误以为只要传给 He 也是 5J；选 2J——用错了比值。", "pitfall": ""}, {"kc_id": "kc7.4", "cognitive_level": "apply", "difficulty": "medium", "type": "calc", "points": 8, "question": "1 mol 单原子理想气体从状态 A(p₀,V₀,T₀) 分别经历：(1)等温过程体积加倍；(2)绝热过程体积加倍。求两种过程中气体对外做的功。", "options": [], "answer": -1, "explanation": "(1)等温：W = nRT₀ ln(V₂/V₁) = RT₀ ln2。\n\n(2)绝热：由绝热方程 T₁V₁^(γ-1) = T₂V₂^(γ-1)，单原子 γ=5/3，γ-1=2/3。T₂ = T₀×(1/2)^(2/3) = T₀×2^(-2/3)。W = -ΔU = nC_V(T₀-T₂) = (3R/2)T₀(1-2^(-2/3))。\n\n对比：等温过程吸热全用于对外做功（ΔU=0）；绝热过程对外做功来自内能减少（Q=0→W=-ΔU）。\n\n评分：等温 3 分，绝热 5 分。", "pitfall": "绝热膨胀对外做功，内能减少，温度降低。W=-ΔU（不是 +ΔU），因为系统对外做功→内能减少→ΔU&lt;0→W=-ΔU>0。"}, {"kc_id": "kc7.5", "cognitive_level": "understand", "difficulty": "basic", "type": "choice", "points": 3, "question": "关于麦克斯韦速率分布，以下说法正确的是：", "options": ["最概然速率是分子可能达到的最大速率", "温度升高时，速率分布曲线峰值右移且变得更高更窄", "方均根速率大于平均速率大于最概然速率", "速率分布函数 f(v) 表示速率恰好为 v 的分子数"], "answer": 2, "explanation": "三种特征速率的大小关系：v_rms(方均根) > v_avg(平均) > v_p(最概然)，比值约为 √3:√(8/π):√2 ≈ 1.73:1.60:1.41。\n\nA错：最概然速率是出现概率最大的速率，不是最大速率，分子可以有任意大的速率（概率趋近零）。B错：温升→峰值右移但变得更矮更宽（曲线展平）。D错：f(v)dv 是速率在 [v, v+dv] 区间的概率，不是分子数。", "pitfall": ""}, {"kc_id": "kc7.2", "cognitive_level": "understand", "difficulty": "basic", "type": "tf", "points": 2, "question": "理想气体的压强是大量分子对器壁碰撞的宏观统计效果，单个分子的碰撞不存在「压强」概念。", "options": [], "answer": 0, "explanation": "正确。压强 p 是宏观统计量——它是大量分子在单位时间内对单位面积器壁的平均冲量。如果只有一个分子，「压强」这个概念没有意义（它的碰撞是离散的、随机的事件）。同样，温度也是统计量——单个分子无所谓温度。", "pitfall": ""}, {"kc_id": "kc7.6", "cognitive_level": "understand", "difficulty": "basic", "type": "tf", "points": 2, "question": "分子的平均自由程 λ 与压强 p 无关。", "options": [], "answer": 1, "explanation": "错误。平均自由程 λ = 1/(√2·n·σ)，其中 n 是分子数密度。由理想气体状态方程 p=nkT → n=p/(kT)。所以 λ = kT/(√2·πd²·p)（σ=πd² 是碰撞截面），λ 与 p 成反比。压强越高、分子越密集、碰撞越频繁、自由程越短。", "pitfall": ""}];
+var LABELS = {"page_title": "章节测试", "section": {"choice": "一、选择题", "multi": "二、多选题", "tf": "三、判断题", "fill": "四、填空题", "short": "五、简答题", "calc": "六、计算题", "code": "七、代码题", "essay": "八、问答题", "comprehensive": "九、综合题"}, "section_order": ["choice", "multi", "tf", "fill", "short", "calc", "code", "essay", "comprehensive"], "points_suffix": "分", "true_label": "正确", "false_label": "错误", "placeholder": "在此作答...", "code_placeholder": "在此编写代码...", "pitfall_prefix": "易错提醒：", "correct_label": "正确", "wrong_label": "错误", "partial_label": "部分正确", "answer_prefix": "正确答案：", "reference_label": "参考答案", "graded_label": "已批改", "grade_button": "提交批改", "score_label": "总分", "duration_prefix": "满分 100 分 | 建议 ", "duration_suffix": " 分钟 | 选择答案后点击提交批改"};
+
+// ─── Answer normalization (robust to how the JSON was authored) ──────
+// tf / choice answers may arrive as int index, boolean, letter ("A"),
+// or label string ("正确"/"错误"/"对"/"错"). All are coerced to an
+// option index so grading never silently fails on a type mismatch.
+
+function tfAnswerIndex(ans) {
+  // option 0 = true_label (正确), option 1 = false_label (错误)
+  if (typeof ans === 'boolean') return ans ? 0 : 1;
+  if (typeof ans === 'number') return ans === 0 ? 0 : 1;
+  var s = ('' + ans).trim().toLowerCase();
+  var truthy = ['0', 't', 'true', '正确', '对', '是', 'yes', 'y', '√', '✓'];
+  var falsy  = ['1', 'f', 'false', '错误', '错', '否', 'no', 'n', '×', 'x'];
+  if (truthy.indexOf(s) !== -1) return 0;
+  if (falsy.indexOf(s) !== -1) return 1;
+  return ans ? 0 : 1;
+}
+
+function choiceAnswerIndex(ans, options) {
+  if (typeof ans === 'number') return ans;
+  var s = ('' + ans).trim();
+  if (/^[A-Za-z]$/.test(s)) return s.toUpperCase().charCodeAt(0) - 65;
+  if (/^\d+$/.test(s)) return parseInt(s, 10);
+  if (options) {
+    for (var i = 0; i < options.length; i++) {
+      if (('' + options[i]).trim() === s) return i;
+    }
+  }
+  return parseInt(s, 10);
+}
+
+function multiAnswerSet(ans, options) {
+  var arr = Array.isArray(ans) ? ans : [ans];
+  var set = {};
+  for (var i = 0; i < arr.length; i++) {
+    set[choiceAnswerIndex(arr[i], options)] = true;
+  }
+  return set;
+}
+
+// Normalize free text for fill-in-the-blank comparison: trim, lowercase,
+// drop surrounding whitespace and common punctuation, unify full/half width.
+function normText(s) {
+  s = ('' + s).trim().toLowerCase();
+  s = s.replace(/[\s　]+/g, '');
+  s = s.replace(/[.,;:!?。，、；：！？“”"'（）()【】\[\]<>《》]/g, '');
+  // full-width ASCII -> half-width
+  s = s.replace(/[！-～]/g, function (c) {
+    return String.fromCharCode(c.charCodeAt(0) - 0xfee0);
+  });
+  return s;
+}
+
+// How many blanks does a fill question have? Count underscore / ＿ runs.
+function fillBlankCount(question) {
+  var m = ('' + question).match(/(_{2,}|＿+)/g);
+  return m ? m.length : 0;
+}
+
+// Coerce a fill `answer` into an array (one entry per blank) of accepted
+// answer lists. Handles: string, [synonyms], [[blank1 syns],[blank2 syns]].
+function fillBlankAnswers(ans, nBlanks) {
+  if (nBlanks < 1) nBlanks = 1;
+  if (!Array.isArray(ans)) return padBlanks([[ans]], nBlanks);
+  if (ans.length && Array.isArray(ans[0])) return padBlanks(ans, nBlanks);
+  // flat array of strings
+  if (nBlanks === 1) return [ans];                 // synonyms for one blank
+  if (ans.length === nBlanks) {                    // one answer per blank
+    return ans.map(function (a) { return [a]; });
+  }
+  return padBlanks([ans], nBlanks);                // ambiguous -> all on blank 1
+}
+
+function padBlanks(arr, n) {
+  var out = arr.slice(0, n);
+  while (out.length < n) out.push(['']);
+  return out;
+}
+
+// ─── Build ───────────────────────────────────────────────────────────
+
+function build() {
+  var container = document.getElementById('questions-container');
+  if (!container) { console.error('ExamPass: questions-container not found'); return; }
+
+  // Stable-sort questions by section order so headings group correctly
+  // regardless of input order.
+  var order = LABELS.section_order || [];
+  Q.forEach(function (q, i) { q._i = i; });
+  Q.sort(function (a, b) {
+    var oa = order.indexOf(a.type); if (oa === -1) oa = 99;
+    var ob = order.indexOf(b.type); if (ob === -1) ob = 99;
+    return oa - ob || a._i - b._i;
+  });
+
+  var h = '';
+  var sec = '';
+  var titles = LABELS.section;
+
+  for (var i = 0; i < Q.length; i++) {
+    var q = Q[i];
+    if (q.type !== sec) {
+      sec = q.type;
+      if (titles[q.type]) h += '<h3>' + titles[q.type] + '</h3>';
+    }
+
+    var qid = 'q' + i;
+    h += '<div class="q-card" id="card-' + qid + '">';
+    h += '<div class="q-num">' + (i + 1) + '. (' + q.points + ' ' + LABELS.points_suffix + ')</div>';
+
+    if (q.type === 'fill') {
+      h += '<div class="q-text">' + renderFill(q, qid) + '</div>';
+    } else {
+      h += '<div class="q-text">' + q.question + '</div>';
+    }
+
+    if (q.type === 'choice') {
+      var opts = q.options || [];
+      for (var j = 0; j < opts.length; j++) {
+        h += '<label class="option" id="opt-' + qid + '-' + j + '" onclick="sel(\'' + qid + '\',' + j + ')">';
+        h += '<input type="radio" name="' + qid + '" value="' + j + '">' + String.fromCharCode(65 + j) + '. ' + opts[j] + '</label>';
+      }
+    } else if (q.type === 'multi') {
+      var mopts = q.options || [];
+      for (var k = 0; k < mopts.length; k++) {
+        h += '<label class="option" id="opt-' + qid + '-' + k + '" onclick="toggle(\'' + qid + '\',' + k + ')">';
+        h += '<input type="checkbox" name="' + qid + '" value="' + k + '">' + String.fromCharCode(65 + k) + '. ' + mopts[k] + '</label>';
+      }
+    } else if (q.type === 'tf') {
+      h += '<label class="option" id="opt-' + qid + '-0" onclick="sel(\'' + qid + '\',0)">';
+      h += '<input type="radio" name="' + qid + '" value="0">' + LABELS.true_label + '</label>';
+      h += '<label class="option" id="opt-' + qid + '-1" onclick="sel(\'' + qid + '\',1)">';
+      h += '<input type="radio" name="' + qid + '" value="1">' + LABELS.false_label + '</label>';
+    } else if (q.type === 'fill') {
+      // inputs already rendered inline inside q-text
+    } else if (q.type === 'code') {
+      h += '<textarea class="q-textarea q-code" id="text-' + qid + '" placeholder="' + (LABELS.code_placeholder || LABELS.placeholder) + '" rows="8" spellcheck="false"></textarea>';
+    } else {
+      h += '<textarea class="q-textarea" id="text-' + qid + '" placeholder="' + LABELS.placeholder + '" rows="3"></textarea>';
+    }
+
+    h += '<div class="result" id="result-' + qid + '">';
+    h += '<span class="badge" id="badge-' + qid + '"></span><span id="correct-' + qid + '"></span>';
+    h += '<div class="explanation">' + (q.explanation || '') + '</div>';
+    if (q.pitfall) {
+      h += '<div class="pitfall">' + LABELS.pitfall_prefix + q.pitfall + '</div>';
+    }
+    h += '</div></div>';
+  }
+
+  container.innerHTML = h;
+
+  if (window.MathJax && MathJax.typesetPromise) {
+    MathJax.typesetPromise([container]).catch(function (err) {
+      console.error('MathJax typeset error:', err);
+    });
+  }
+}
+
+// Render fill question text with inline <input> boxes replacing blanks.
+function renderFill(q, qid) {
+  var nBlanks = fillBlankCount(q.question);
+  var k = 0;
+  var html = ('' + q.question).replace(/(_{2,}|＿+)/g, function () {
+    var inp = '<input type="text" class="fill-input" id="fill-' + qid + '-' + k + '" autocomplete="off" spellcheck="false">';
+    k++;
+    return inp;
+  });
+  if (k === 0) {
+    // No markers in text -> append boxes based on answer shape
+    var n = fillBlankAnswers(q.answer, 1).length;
+    var ans = q.answer;
+    if (Array.isArray(ans)) n = Array.isArray(ans[0]) ? ans.length : (ans.length || 1);
+    if (n < 1) n = 1;
+    html += '<div class="fill-row">';
+    for (var b = 0; b < n; b++) {
+      if (n > 1) html += '<span class="fill-tag">' + (b + 1) + '.</span>';
+      html += '<input type="text" class="fill-input" id="fill-' + qid + '-' + b + '" autocomplete="off" spellcheck="false">';
+    }
+    html += '</div>';
+  }
+  return html;
+}
+
+document.addEventListener('DOMContentLoaded', build);
+if (document.readyState === 'interactive' || document.readyState === 'complete') {
+  build();
+}
+
+// ─── Selection handlers ──────────────────────────────────────────────
+
+function sel(qid, idx) {
+  var prefix = 'opt-' + qid + '-';
+  var all = document.querySelectorAll('[id^="' + prefix + '"]');
+  for (var i = 0; i < all.length; i++) all[i].classList.remove('selected');
+  var target = document.getElementById('opt-' + qid + '-' + idx);
+  if (target) target.classList.add('selected');
+  var radio = document.querySelector('input[name="' + qid + '"][value="' + idx + '"]');
+  if (radio) radio.checked = true;
+}
+
+function toggle(qid, idx) {
+  var box = document.querySelector('input[name="' + qid + '"][value="' + idx + '"]');
+  var label = document.getElementById('opt-' + qid + '-' + idx);
+  if (!box) return;
+  box.checked = !box.checked;
+  if (label) label.classList.toggle('selected', box.checked);
+}
+
+// ─── Grading ─────────────────────────────────────────────────────────
+
+function gradeAll() {
+  var score = 0;
+  for (var i = 0; i < Q.length; i++) {
+    var q = Q[i];
+    var qid = 'q' + i;
+    var card = document.getElementById('card-' + qid);
+    var result = document.getElementById('result-' + qid);
+    var badge = document.getElementById('badge-' + qid);
+    var correctEl = document.getElementById('correct-' + qid);
+    if (!card || !result) continue;
+
+    result.style.display = 'block';
+
+    if (q.type === 'choice' || q.type === 'tf') {
+      score += gradeSingle(q, qid, card, badge, correctEl);
+    } else if (q.type === 'multi') {
+      score += gradeMulti(q, qid, card, badge, correctEl);
+    } else if (q.type === 'fill') {
+      score += gradeFill(q, qid, card, badge, correctEl);
+    } else {
+      card.classList.add('correct');
+      badge.className = 'badge badge-ref';
+      badge.textContent = LABELS.reference_label;
+    }
+  }
+
+  var sb = document.getElementById('score-box');
+  if (sb) {
+    sb.style.display = 'block';
+    document.getElementById('score-num').textContent = roundScore(score);
+    sb.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  var opts = document.querySelectorAll('.option');
+  for (var a = 0; a < opts.length; a++) opts[a].style.pointerEvents = 'none';
+  var tas = document.querySelectorAll('.q-textarea');
+  for (var b = 0; b < tas.length; b++) tas[b].disabled = true;
+  var fis = document.querySelectorAll('.fill-input');
+  for (var c = 0; c < fis.length; c++) fis[c].disabled = true;
+
+  var btn = document.getElementById('grade-btn');
+  if (btn) { btn.disabled = true; btn.textContent = LABELS.graded_label; }
+
+  if (window.MathJax && MathJax.typesetPromise) {
+    MathJax.typesetPromise().catch(function (err) {
+      console.error('MathJax typeset error:', err);
+    });
+  }
+}
+
+function roundScore(s) {
+  return Math.round(s * 10) / 10;
+}
+
+function gradeSingle(q, qid, card, badge, correctEl) {
+  var ansIdx = q.type === 'tf' ? tfAnswerIndex(q.answer) : choiceAnswerIndex(q.answer, q.options);
+  var radio = document.querySelector('input[name="' + qid + '"]:checked');
+  if (radio && parseInt(radio.value, 10) === ansIdx) {
+    card.classList.add('correct');
+    badge.className = 'badge badge-ok';
+    badge.textContent = LABELS.correct_label;
+    correctEl.innerHTML = '';
+    var ok = document.getElementById('opt-' + qid + '-' + ansIdx);
+    if (ok) ok.classList.add('correct-answer');
+    return q.points;
+  }
+  card.classList.add('wrong');
+  badge.className = 'badge badge-no';
+  badge.textContent = LABELS.wrong_label;
+  var ansText = q.type === 'choice'
+    ? String.fromCharCode(65 + ansIdx) + '. ' + (q.options ? q.options[ansIdx] : '')
+    : (ansIdx === 0 ? LABELS.true_label : LABELS.false_label);
+  correctEl.innerHTML = LABELS.answer_prefix + ansText;
+  if (radio) {
+    var wrongOpt = document.getElementById('opt-' + qid + '-' + radio.value);
+    if (wrongOpt) wrongOpt.classList.add('wrong-answer');
+  }
+  var corr = document.getElementById('opt-' + qid + '-' + ansIdx);
+  if (corr) corr.classList.add('correct-answer');
+  return 0;
+}
+
+function gradeMulti(q, qid, card, badge, correctEl) {
+  var want = multiAnswerSet(q.answer, q.options);
+  var wantKeys = Object.keys(want).map(Number);
+  var checked = document.querySelectorAll('input[name="' + qid + '"]:checked');
+  var picked = [];
+  for (var i = 0; i < checked.length; i++) picked.push(parseInt(checked[i].value, 10));
+
+  var anyWrong = false, hitCorrect = 0;
+  for (var p = 0; p < picked.length; p++) {
+    if (want[picked[p]]) hitCorrect++;
+    else anyWrong = true;
+  }
+
+  // reveal correct / wrong option markers
+  var mopts = q.options || [];
+  for (var j = 0; j < mopts.length; j++) {
+    var el = document.getElementById('opt-' + qid + '-' + j);
+    if (!el) continue;
+    if (want[j]) el.classList.add('correct-answer');
+    else if (picked.indexOf(j) !== -1) el.classList.add('wrong-answer');
+  }
+
+  var earned;
+  if (!anyWrong && hitCorrect === wantKeys.length && picked.length === wantKeys.length) {
+    earned = q.points;
+    card.classList.add('correct');
+    badge.className = 'badge badge-ok';
+    badge.textContent = LABELS.correct_label;
+    correctEl.innerHTML = '';
+  } else if (!anyWrong && hitCorrect > 0) {
+    // 少选不错选 -> partial credit
+    earned = roundScore(q.points * hitCorrect / wantKeys.length);
+    card.classList.add('partial');
+    badge.className = 'badge badge-partial';
+    badge.textContent = LABELS.partial_label;
+    correctEl.innerHTML = LABELS.answer_prefix + multiAnswerText(wantKeys, mopts);
+  } else {
+    earned = 0;
+    card.classList.add('wrong');
+    badge.className = 'badge badge-no';
+    badge.textContent = LABELS.wrong_label;
+    correctEl.innerHTML = LABELS.answer_prefix + multiAnswerText(wantKeys, mopts);
+  }
+  return earned;
+}
+
+function multiAnswerText(keys, options) {
+  return keys.sort(function (a, b) { return a - b; }).map(function (k) {
+    return String.fromCharCode(65 + k) + '. ' + (options ? options[k] : '');
+  }).join('  ');
+}
+
+function gradeFill(q, qid, card, badge, correctEl) {
+  var nBlanks = fillBlankCount(q.question);
+  var blanks = fillBlankAnswers(q.answer, nBlanks);
+  var n = blanks.length;
+  var hit = 0;
+  var displays = [];
+
+  for (var b = 0; b < n; b++) {
+    var inp = document.getElementById('fill-' + qid + '-' + b);
+    var accepted = blanks[b] || [''];
+    var user = inp ? normText(inp.value) : '';
+    var ok = false;
+    for (var a = 0; a < accepted.length; a++) {
+      if (accepted[a] !== '' && normText(accepted[a]) === user && user !== '') { ok = true; break; }
+    }
+    if (inp) inp.classList.add(ok ? 'fill-ok' : 'fill-no');
+    if (ok) hit++;
+    displays.push((n > 1 ? (b + 1) + '. ' : '') + accepted.filter(function (x) { return x !== ''; }).join(' / '));
+  }
+
+  var earned = roundScore(q.points * hit / n);
+  correctEl.innerHTML = LABELS.answer_prefix + displays.join('   ');
+
+  if (hit === n) {
+    card.classList.add('correct');
+    badge.className = 'badge badge-ok';
+    badge.textContent = LABELS.correct_label;
+  } else if (hit > 0) {
+    card.classList.add('partial');
+    badge.className = 'badge badge-partial';
+    badge.textContent = LABELS.partial_label;
+  } else {
+    card.classList.add('wrong');
+    badge.className = 'badge badge-no';
+    badge.textContent = LABELS.wrong_label;
+  }
+  return earned;
+}
+
+</script>
+<script>
+document.addEventListener('click', function(e){
+  var btn = e.target.closest('#epa-tabs .tab-btn'); if(!btn) return;
+  var tab = btn.getAttribute('data-tab');
+  document.querySelectorAll('#epa-tabs .tab-btn').forEach(function(b){ b.classList.toggle('active', b===btn); });
+  document.querySelectorAll('.tab-panel').forEach(function(p){
+    p.classList.toggle('active', p.id === 'panel-' + tab); });
+  // The test panel is display:none on load, so build()'s MathJax typeset ran
+  // on hidden content (collapsing formula question cards to 0 height). Re-run
+  // build() the first time the panel is visible so it renders + typesets at the
+  // real size. Guarded so user answers aren't wiped on later switches.
+  if(tab === 'test' && !window.__epaTestBuilt){
+    window.__epaTestBuilt = true;
+    if(typeof build === 'function'){ try { build(); } catch(err){} }
+  }
+  if(window.__epaFitFormulas) setTimeout(window.__epaFitFormulas, 50);
+  window.scrollTo(0, 0);
+});
+</script>
+</body>
+</html>

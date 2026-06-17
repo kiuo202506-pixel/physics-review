@@ -1,0 +1,270 @@
+[
+  {
+    "kc_id": "kc1.5",
+    "type": "choice",
+    "points": 3,
+    "cognitive_level": "apply",
+    "difficulty": "medium",
+    "question": "质点沿半径 R=0.5 m 的圆周运动，路程 s=t² (SI)。t=2 s 时质点的法向加速度 a_n 为：",
+    "options": [
+      "8 m/s²",
+      "4 m/s²",
+      "16 m/s²",
+      "32 m/s²"
+    ],
+    "answer": 0,
+    "explanation": "v=ds/dt=2t，t=2s时v=4m/s。a_n=v²/R=16/0.5=32 m/s²。a_t=dv/dt=2 m/s²。",
+    "pitfall": ""
+  },
+  {
+    "kc_id": "kc2.5",
+    "type": "choice",
+    "points": 3,
+    "cognitive_level": "understand",
+    "difficulty": "basic",
+    "question": "一颗子弹水平射入静止在光滑水平面上的木块并嵌入其中。在此过程中：",
+    "options": [
+      "动量守恒，机械能不守恒",
+      "动量不守恒，机械能守恒",
+      "动量不守恒，机械能不守恒",
+      "动量守恒，机械能守恒"
+    ],
+    "answer": 2,
+    "explanation": "水平方向系统合外力为零→动量守恒。完全非弹性碰撞→动能损失（转化为内能）→机械能不守恒。",
+    "pitfall": ""
+  },
+  {
+    "kc_id": "kc3.4",
+    "type": "choice",
+    "points": 3,
+    "cognitive_level": "understand",
+    "difficulty": "medium",
+    "question": "花样滑冰运动员做原地旋转，当双臂从伸展位收回胸前时，旋转角速度增大。以下解释正确的是：",
+    "options": [
+      "转动惯量增大导致角速度增大",
+      "合外力矩为零，角动量守恒，转动惯量减小导致角速度增大",
+      "角动量不守恒但转动动能守恒",
+      "这是外力矩做功导致的结果"
+    ],
+    "answer": 1,
+    "explanation": "系统合外力矩=0→角动量L=Iω守恒。收臂→I减小→ω增大。转动动能Ek=L²/(2I)反而增大→由肌肉做功提供。",
+    "pitfall": ""
+  },
+  {
+    "kc_id": "kc4.3",
+    "type": "choice",
+    "points": 3,
+    "cognitive_level": "understand",
+    "difficulty": "basic",
+    "question": "μ子以 0.998c 高速飞向地面，在实验室系中观测其平均寿命 τ=3.5×10⁻⁵ s。μ子自身参考系中的固有寿命 τ₀ 为：",
+    "options": [
+      "3.5×10⁻⁵ s",
+      "2.2×10⁻⁶ s",
+      "5.5×10⁻⁴ s",
+      "无法确定"
+    ],
+    "answer": 1,
+    "explanation": "τ=γτ₀，γ=1/√(1-0.998²)≈15.8。τ₀=τ/γ=3.5×10⁻⁵/15.8≈2.2×10⁻⁶ s。固有时间总是最短。",
+    "pitfall": ""
+  },
+  {
+    "kc_id": "kc5.0",
+    "type": "choice",
+    "points": 3,
+    "cognitive_level": "understand",
+    "difficulty": "basic",
+    "question": "弹簧振子做简谐振动，位移 x=Acos(ωt+φ)。当物体从平衡位置向正最大位移运动时：",
+    "options": [
+      "x>0, v>0",
+      "x<0, v>0",
+      "x>0, v<0",
+      "x<0, v<0"
+    ],
+    "answer": 0,
+    "explanation": "从平衡位置(x=0)向正位移方向运动→质点在x轴正半区→x>0，且继续远离平衡位置→速度方向与位移同号→v>0。",
+    "pitfall": ""
+  },
+  {
+    "kc_id": "kc6.5",
+    "type": "choice",
+    "points": 3,
+    "cognitive_level": "understand",
+    "difficulty": "medium",
+    "question": "两相干波源 S₁ 和 S₂ 相距 3λ/2，振动相位相同。P 点在 S₁ 外侧（远离 S₂ 一侧）。P 点的干涉情况是：",
+    "options": [
+      "始终加强",
+      "取决于 P 到 S₁ 的距离",
+      "取决于波长",
+      "始终减弱"
+    ],
+    "answer": 3,
+    "explanation": "波程差δ=r₂-r₁=3λ/2（P在S₁外侧）。同相波源，Δφ=2πδ/λ=3π=(2k+1)π，始终为减弱条件。",
+    "pitfall": ""
+  },
+  {
+    "kc_id": "kc7.4",
+    "type": "choice",
+    "points": 3,
+    "cognitive_level": "understand",
+    "difficulty": "basic",
+    "question": "室温下，1 mol He（单原子）与 1 mol H₂（刚性双原子）温度相同。两者内能之比 E_He : E_H₂ 为：",
+    "options": [
+      "1:1",
+      "5:3",
+      "2:3",
+      "3:5"
+    ],
+    "answer": 3,
+    "explanation": "E=(i/2)νRT。He单原子i=3，H₂双原子i=5。ν和T相同→E∝i→E_He:E_H₂=3:5。",
+    "pitfall": ""
+  },
+  {
+    "kc_id": "kc8.3",
+    "type": "choice",
+    "points": 3,
+    "cognitive_level": "understand",
+    "difficulty": "basic",
+    "question": "关于热力学第二定律，以下说法中正确的是：",
+    "options": [
+      "热量不可能从低温物体传到高温物体",
+      "热机的效率可以达到 100%",
+      "不可能从单一热源吸热使之完全转化为功而不引起其他变化",
+      "熵在可逆过程中保持不变"
+    ],
+    "answer": 2,
+    "explanation": "A缺「自发」二字；B违反开尔文表述；C是开尔文-普朗克表述原文；D熵在可逆过程中可变化（如等温膨胀吸热ΔS>0）。",
+    "pitfall": ""
+  },
+  {
+    "kc_id": "kc1.3",
+    "type": "tf",
+    "points": 2,
+    "cognitive_level": "understand",
+    "difficulty": "basic",
+    "question": "质点在某段时间内的平均速度大小等于平均速率。",
+    "options": [],
+    "answer": 1,
+    "explanation": "平均速度大小=|\\u0394r|/\\u0394t，平均速率=\\u0394s/\\u0394t。只有在单向直线运动中二者才相等，曲线运动或折返运动中\\u0394s>|\\u0394r|。",
+    "pitfall": ""
+  },
+  {
+    "kc_id": "kc2.7",
+    "type": "tf",
+    "points": 2,
+    "cognitive_level": "understand",
+    "difficulty": "basic",
+    "question": "只有保守力做功时，系统的机械能守恒。",
+    "options": [],
+    "answer": 0,
+    "explanation": "正确。这是机械能守恒的充要条件。",
+    "pitfall": ""
+  },
+  {
+    "kc_id": "kc4.5",
+    "type": "tf",
+    "points": 2,
+    "cognitive_level": "understand",
+    "difficulty": "medium",
+    "question": "两个相向运动的粒子各自以 0.8c 运动，它们之间的相对速度是 1.6c。",
+    "options": [],
+    "answer": 1,
+    "explanation": "相对论速度叠加：v=(0.8c+0.8c)/(1+0.64)=0.976c。经典速度叠加在高速时严重失效。",
+    "pitfall": ""
+  },
+  {
+    "kc_id": "kc6.1",
+    "type": "tf",
+    "points": 2,
+    "cognitive_level": "understand",
+    "difficulty": "basic",
+    "question": "机械波传播过程中，介质中的质点随波一起向前迁移。",
+    "options": [],
+    "answer": 1,
+    "explanation": "波传播振动状态和能量，介质质点在平衡位置附近振动，不随波迁移。",
+    "pitfall": ""
+  },
+  {
+    "kc_id": "kc8.5",
+    "type": "tf",
+    "points": 2,
+    "cognitive_level": "understand",
+    "difficulty": "medium",
+    "question": "理想气体自由膨胀（绝热真空膨胀）过程中，气体的熵不变。",
+    "options": [],
+    "answer": 1,
+    "explanation": "Q=0但体积增大→无序度增加→熵增加。熵是状态函数，可设计可逆等温过程计算ΔS=nRln(V₂/V₁)>0。",
+    "pitfall": ""
+  },
+  {
+    "kc_id": "kc1.6",
+    "type": "calc",
+    "points": 10,
+    "cognitive_level": "apply",
+    "difficulty": "medium",
+    "question": "以初速 v₀=20 m/s、仰角 θ=30° 从地面斜抛一物体。取 g=10 m/s²。(1)求物体的射程和最大高度；(2)求轨迹最高点处的曲率半径 ρ。",
+    "options": [],
+    "answer": -1,
+    "explanation": "(1)射程 R=v₀²sin2θ/g=400×sin60°/10=400×0.866/10=34.6 m。H=v₀²sin²θ/(2g)=400×0.25/20=5 m。\\n(2)最高点v=v₀cosθ=17.3 m/s，a_n=g=10。ρ=v²/a_n=300/10=30 m。（或ρ=v₀²cos²θ/g=30 m）\\n评分：射程3分、最大高度3分、曲率半径4分。",
+    "pitfall": ""
+  },
+  {
+    "kc_id": "kc2.4",
+    "type": "calc",
+    "points": 12,
+    "cognitive_level": "apply",
+    "difficulty": "hard",
+    "question": "光滑水平面上，质量 m=0.1 kg 子弹以 v₀=10 m/s 射入静止的质量 M=0.4 kg 木块并嵌入。木块连接劲度系数 k=200 N/m 的弹簧（另一端固定）。(1)求碰后瞬间系统速度；(2)求弹簧最大压缩量；(3)求碰撞中的动能损失。",
+    "options": [],
+    "answer": -1,
+    "explanation": "(1)动量守恒：mv₀=(m+M)v→v=0.1×10/0.5=2 m/s。\\n(2)½(m+M)v²=½kx²_max→x_max=v√((m+M)/k)=2×√(0.5/200)=0.1 m=10 cm。\\n(3)碰前动能½mv₀²=5 J，碰后½(m+M)v²=1 J，损失4 J（80%转化为内能）。\\n评分：(1)4分、(2)4分、(3)4分。",
+    "pitfall": ""
+  },
+  {
+    "kc_id": "kc3.4",
+    "type": "calc",
+    "points": 12,
+    "cognitive_level": "apply",
+    "difficulty": "hard",
+    "question": "长L=1 m、质量M=2 kg的均匀细杆可绕一端O的水平轴转动（J=ML²/3）。从水平位置静止下摆。(1)求竖直位置时的角速度ω；(2)求水平位置时的角加速度β；(3)在竖直位置杆端与静止质量m=0.5 kg小球完全非弹性碰撞后，系统角速度?",
+    "options": [],
+    "answer": -1,
+    "explanation": "(1)机械能守恒：Mg·L/2=½Jω²→ω²=3g/L=30→ω=√30≈5.48 rad/s。\\n(2)β=M/J=(MgL/2)/(ML²/3)=3g/(2L)=15 rad/s²。\\n(3)碰瞬间角动量守恒：J_杆ω=(J_杆+mL²)ω′→ω′=(2/3)ω/(2/3+0.5)=3.65/1.167≈3.13 rad/s。\\n评分：(1)4分、(2)3分、(3)5分。",
+    "pitfall": ""
+  },
+  {
+    "kc_id": "kc5.0",
+    "type": "calc",
+    "points": 10,
+    "cognitive_level": "apply",
+    "difficulty": "medium",
+    "question": "弹簧振子m=0.2 kg,k=20 N/m。t=0时x₀=0.05 m,v₀=0.5 m/s（向+x）。(1)求ω,T,A,φ；(2)写振动方程x(t)；(3)求v_max和a_max。",
+    "options": [],
+    "answer": -1,
+    "explanation": "(1)ω=√(k/m)=10 rad/s。T=2π/ω=0.628 s。A=√(x₀²+v₀²/ω²)=√(0.0025+0.0025)=0.0707 m。cosφ=x₀/A=0.707→φ=±π/4。sinφ=-v₀/(ωA)=-0.707&lt;0→φ=-π/4。\\n(2)x=0.0707cos(10t-π/4) m。\\n(3)v_max=ωA=0.707 m/s。a_max=ω²A=7.07 m/s²。\\n评分：(1)6分、(2)2分、(3)2分。",
+    "pitfall": ""
+  },
+  {
+    "kc_id": "kc7.1",
+    "type": "calc",
+    "points": 10,
+    "cognitive_level": "apply",
+    "difficulty": "medium",
+    "question": "容器内储O₂（刚性双原子），p=1.0×10⁵ Pa，T=300 K，V=2.0×10⁻³ m³。R=8.31。(1)求O₂物质的量n；(2)求内能E；(3)求方均根速率。",
+    "options": [],
+    "answer": -1,
+    "explanation": "(1)n=pV/(RT)=10⁵×2×10⁻³/(8.31×300)=200/2493≈0.0802 mol。\\n(2)O₂双原子i=5→E=(5/2)nRT=2.5×200=500 J。\\n(3)v_rms=√(3RT/M)=√(3×8.31×300/0.032)=√233719≈483 m/s。\\n评分：(1)3分、(2)3分、(3)4分。",
+    "pitfall": ""
+  },
+  {
+    "kc_id": "kc8.2",
+    "type": "calc",
+    "points": 12,
+    "cognitive_level": "apply",
+    "difficulty": "hard",
+    "question": "1 mol单原子理想气体初态(p₁=2×10⁵ Pa,V₁=1×10⁻² m³)。(1)经绝热过程膨胀至V₂=2V₁，求p₂,T₂；(2)求绝热过程中对外做功W；(3)若改用等温膨胀至V₂，做功多少？γ=5/3，R=8.31。",
+    "options": [],
+    "answer": -1,
+    "explanation": "(1)p₂=p₁(V₁/V₂)^γ=2×10⁵×(1/2)^(5/3)=6.30×10⁴ Pa。T₁=p₁V₁/nR=2×10⁵×10⁻²/8.31=240.7 K。T₂=T₁(V₁/V₂)^(γ-1)=240.7×(1/2)^(2/3)=151.7 K。\\n(2)W=-ΔU=-nC_V(T₂-T₁)=-(3R/2)(151.7-240.7)=12.47×89.0=1.11×10³ J。\\n(3)等温W=nRT₁ ln(V₂/V₁)=8.31×240.7×ln2=1.39×10³ J。等温做功更大→等温从热源吸热维持温度→维持较高压强。\\n评分：(1)4分、(2)4分、(3)4分。",
+    "pitfall": ""
+  }
+]

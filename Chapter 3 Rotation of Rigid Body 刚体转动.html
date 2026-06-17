@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Chapter 3 Rotation of Rigid Body 刚体转动</title>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\(', '\)']],
+    displayMath: [['$$', '$$'], ['\[', '\]']]
+  }
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"></script>
+<style>
+/* === ExamPass Shared Styles === */
+/* Paper-like warm background, clean typography, responsive */
+
+:root {
+  --paper: #fdf6e3;
+  --paper-dark: #f5ecd7;
+  --ink: #2c2c2c;
+  --ink-light: #555;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --divider: #d6c8a8;
+  --card-bg: #fef9ef;
+  --card-border: #e8dcc8;
+  --correct: #22c55e;
+  --correct-bg: #f0fdf4;
+  --wrong: #ef4444;
+  --wrong-bg: #fef2f2;
+  --tag-bg: #fef3c7;
+  --tag-text: #92400e;
+  --radius: 6px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: "Microsoft YaHei", "Noto Sans SC", "SimSun", sans-serif;
+  font-size: 12pt; line-height: 1.75; color: var(--ink);
+  max-width: 860px; margin: auto; padding: 24px 20px 60px;
+  background: var(--paper);
+}
+
+@media print {
+  body { font-size: 10.5pt; background: #fff; }
+  .no-print { display: none !important; }
+  h1, h2, h3 { page-break-after: avoid; }
+}
+
+/* ── Header ── */
+#exampass-header {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 6px 0; margin-bottom: 0;
+}
+.header-brand { font-size: 1.2em; font-weight: 700; color: #1a1a2e; letter-spacing: 0.3px; }
+.header-url  { font-size: 0.78em; color: #999; }
+.header-divider { border: none; border-top: 2px solid var(--divider); margin: 4px 0 20px 0; }
+
+/* ── Typography ── */
+h1 { font-size: 1.55em; text-align: center; border-bottom: 2px solid var(--divider); padding-bottom: 8px; margin-top: 0; }
+h2 { font-size: 1.25em; border-bottom: 1px solid var(--divider); padding-bottom: 4px; margin-top: 28px; }
+h3 { font-size: 1.08em; margin-top: 20px; color: var(--ink); }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── Tables ── */
+table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 0.95em; }
+td, th { border: 1px solid var(--card-border); padding: 5px 9px; text-align: left; }
+th { background: var(--paper-dark); font-weight: 700; }
+
+/* ── Knowledge point vs explanation ── */
+.kp { font-weight: 700; color: var(--ink); }           /* key point: bold dark */
+.exp { font-weight: 400; color: var(--ink-light); }    /* explanation: lighter */
+.exp em, .exp strong { color: var(--ink); }             /* emphasis inside explanation */
+
+/* ── Block elements ── */
+blockquote {
+  border-left: 3px solid #c0392b; background: #fef9ef;
+  padding: 6px 14px; margin: 10px 0; font-size: 0.95em;
+}
+/* Modern monospace stack — avoids the ugly Courier New fallback on Windows. */
+:root {
+  --mono: "Cascadia Code", "JetBrains Mono", "Fira Code", "Source Code Pro",
+          Consolas, "SF Mono", Menlo, "DejaVu Sans Mono", monospace;
+}
+code {
+  font-family: var(--mono);
+  background: #eee8d8; color: #8a4b1e;
+  padding: 1px 5px; border-radius: 4px; font-size: 0.9em;
+}
+pre {
+  font-family: var(--mono);
+  background: #2d2a26; color: #ece6da;
+  padding: 14px 16px; border-radius: var(--radius);
+  overflow-x: auto; line-height: 1.6; font-size: 0.9em;
+  border: 1px solid #3d3934; tab-size: 2;
+}
+pre code {
+  background: none; color: inherit; padding: 0; font-size: 1em; border-radius: 0;
+}
+
+/* ── Long display formulas: scroll inside their column, never overflow ── */
+mjx-container[display="true"] {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* ── TOC ── */
+div.toc {
+  background: var(--card-bg); padding: 14px 18px;
+  border: 1px solid var(--card-border); border-radius: var(--radius); margin-bottom: 22px;
+}
+div.toc ul { padding-left: 18px; }
+div.toc li { margin: 3px 0; font-size: 0.95em; }
+
+/* ── Priority tags ── */
+.tag-must   { background: #fee2e2; color: #991b1b; padding: 1px 6px; border-radius: 3px; font-size: 0.82em; font-weight: 600; }
+.tag-key    { background: #fef3c7; color: #92400e; padding: 1px 6px; border-radius: 3px; font-size: 0.82em; font-weight: 600; }
+.tag-freq   { background: #dbeafe; color: #1e40af; padding: 1px 6px; border-radius: 3px; font-size: 0.82em; font-weight: 600; }
+.tag-info   { background: #f0fdf4; color: #166534; padding: 1px 6px; border-radius: 3px; font-size: 0.82em; font-weight: 600; }
+
+/* ── Checkpoint self-test ── */
+.checkpoint {
+  background: #eff6ff; border: 1px solid #bfdbfe; border-radius: var(--radius);
+  padding: 10px 16px; margin: 18px 0;
+  font-size: 0.95em;
+}
+.checkpoint::before {
+  content: '🧠 自测：';
+  font-weight: 700; color: #1e40af;
+}
+.checkpoint .cp-answer { margin-top: 10px; border-top: 1px dashed #bfdbfe; padding-top: 8px; }
+.checkpoint .cp-answer summary {
+  cursor: pointer; color: #1e40af; font-weight: 600; user-select: none;
+  list-style: none;
+}
+.checkpoint .cp-answer summary::before { content: '💡 '; }
+.checkpoint .cp-answer summary::-webkit-details-marker { display: none; }
+.checkpoint .cp-answer[open] summary { margin-bottom: 6px; }
+.checkpoint .cp-answer ol, .checkpoint .cp-answer p { font-weight: 400; color: var(--ink); }
+
+/* ── TL;DR summary ── */
+.tldr {
+  background: #fefce8; border-left: 3px solid #eab308;
+  padding: 8px 14px; margin: 10px 0;
+  font-weight: 600; font-size: 0.95em;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  body { max-width: 100%; padding: 12px 10px 40px; font-size: 11pt; }
+  h1 { font-size: 1.3em; }
+  h2 { font-size: 1.12em; }
+  table { font-size: 0.85em; }
+  td, th { padding: 4px 6px; }
+  pre { font-size: 0.85em; padding: 6px; }
+}
+@media (max-width: 400px) {
+  body { padding: 8px 6px 32px; font-size: 10.5pt; }
+}
+
+/* === Interactive Test Styles === */
+
+/* ── Score box ── */
+#score-box {
+  display: none; background: var(--paper-dark); color: var(--ink);
+  padding: 16px 20px; border-radius: var(--radius); margin: 14px 0;
+  text-align: center; border: 1px solid var(--card-border);
+}
+#score-box .score-num { font-size: 2.2em; font-weight: 700; }
+#score-box .score-label { font-size: 0.85em; color: var(--ink-light); }
+
+/* ── Question card ── */
+.q-card {
+  background: var(--card-bg); border: 1px solid var(--card-border);
+  border-radius: var(--radius); padding: 12px 14px; margin: 10px 0;
+  transition: all 0.15s;
+}
+.q-card.correct { border-left: 3px solid var(--correct); background: #f7fdf4; }
+.q-card.wrong   { border-left: 3px solid var(--wrong); background: #fef9f9; }
+
+.q-num  { font-weight: 700; font-size: 0.98em; margin-bottom: 4px; }
+.q-text { margin-bottom: 8px; font-size: 0.98em; }
+
+/* ── Options (compact) ── */
+.option {
+  display: block; padding: 4px 10px; margin: 3px 0;
+  border: 1px solid var(--card-border); border-radius: 4px;
+  cursor: pointer; transition: all 0.12s; font-size: 0.93em;
+  background: #fefcf5;
+}
+.option:hover            { background: #f0ede0; }
+.option input            { margin-right: 6px; }
+.option.selected         { border-color: var(--accent); background: #eff6ff; }
+.option.correct-answer   { border-color: var(--correct); background: var(--correct-bg); }
+.option.wrong-answer     { border-color: var(--wrong); background: var(--wrong-bg); }
+
+/* ── Textareas (compact) ── */
+.q-textarea {
+  width: 100%; min-height: 56px; border: 1px solid var(--card-border);
+  border-radius: 4px; padding: 6px 10px; font-family: inherit;
+  font-size: 0.93em; background: #fefcf5; resize: vertical;
+}
+.q-textarea:focus { outline: none; border-color: var(--accent); }
+.q-code {
+  font-family: "Consolas", "Monaco", "Courier New", monospace;
+  font-size: 0.88em; line-height: 1.5; background: #1e1e2e; color: #e0e0e0;
+  tab-size: 4; white-space: pre;
+}
+.q-code:focus { border-color: var(--accent); }
+
+/* ── Partial-credit badge ── */
+.badge-partial { background: #fef3c7; color: #92400e; }
+.q-card.partial { border-color: #f59e0b; }
+
+/* ── Result after grading ── */
+.result {
+  display: none; margin-top: 8px; padding: 8px 12px;
+  background: #fefcf5; border: 1px solid var(--card-border);
+  border-radius: 4px; font-size: 0.9em; line-height: 1.6;
+}
+.result .badge {
+  display: inline-block; padding: 1px 9px; border-radius: 3px;
+  font-weight: 700; font-size: 0.82em; margin-right: 6px;
+}
+.badge-ok  { background: var(--correct-bg); color: #166534; }
+.badge-no  { background: var(--wrong-bg); color: #991b1b; }
+.badge-ref { background: #dbeafe; color: #1e40af; }
+
+.result .explanation { margin-top: 4px; color: var(--ink); }
+.result .pitfall { color: #b45309; margin-top: 3px; font-size: 0.9em; }
+
+/* ── Grading button ── */
+.grading-bar { text-align: center; margin: 20px 0; }
+.grading-bar button {
+  font-size: 1em; padding: 8px 32px; background: var(--accent);
+  color: #fff; border: none; border-radius: var(--radius);
+  cursor: pointer; font-weight: 600; letter-spacing: 0.3px;
+}
+.grading-bar button:hover     { background: var(--accent-hover); }
+.grading-bar button:disabled  { background: #bbb; cursor: not-allowed; }
+
+
+/* ── Notion-style slide cross-reference layout ── */
+/* Override base.css body max-width (860px); fill the viewport edge-to-edge,
+   capped only on ultra-wide screens for readability. */
+body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
+.kn-layout { display: flex; gap: 36px; align-items: flex-start; width: 100%; margin: 0 auto; }
+.kn-main { flex: 1 1 auto; min-width: 0; overflow-x: clip; }
+.kn-main mjx-container[display="true"] { max-width: 100%; overflow-x: auto; overflow-y: hidden; }
+.kn-rail { flex: 0 0 32%; max-width: 520px; min-width: 300px; position: sticky; top: 12px;
+  align-self: flex-start; max-height: calc(100vh - 30px); overflow-y: auto; padding-right: 4px; }
+.kn-rail-title { font-weight: 700; color: var(--ink-light); font-size: 0.9em; margin-bottom: 10px;
+  padding-bottom: 6px; border-bottom: 1px solid var(--divider); }
+.slide-card { border: 1px solid var(--card-border); border-radius: var(--radius);
+  background: var(--card-bg); padding: 8px; margin-bottom: 14px; }
+.slide-card-label { font-size: 0.78em; color: var(--ink-light); margin-bottom: 6px; }
+.slide-img { width: 100%; height: auto; border-radius: 4px; cursor: zoom-in; display: block;
+  border: 1px solid var(--divider); background: #fff; }
+.slide-text { margin-top: 6px; font-size: 0.85em; }
+.slide-text summary { cursor: pointer; color: var(--accent); user-select: none; }
+.slide-text-body { margin-top: 6px; color: var(--ink-light); line-height: 1.6;
+  max-height: 220px; overflow-y: auto; padding: 6px 8px; background: #fff;
+  border-radius: 4px; border: 1px solid var(--divider); }
+/* heading-side page chips */
+.pg-chip { display: inline-block; font-size: 0.72em; font-weight: 600; color: var(--accent);
+  background: #eff4ff; border: 1px solid #cfe0ff; border-radius: 10px; padding: 0 7px;
+  margin-left: 6px; cursor: pointer; vertical-align: middle; }
+.pg-chip:hover { background: #dbe8ff; }
+.slide-card.flash { animation: slideflash 1.2s ease; }
+@keyframes slideflash { 0%,100%{box-shadow:none;} 30%{box-shadow:0 0 0 3px var(--accent);} }
+/* lightbox */
+#epa-lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.82); display: none;
+  align-items: center; justify-content: center; z-index: 9999; cursor: zoom-out; }
+#epa-lightbox img { max-width: 94vw; max-height: 94vh; border-radius: 6px; }
+/* Tablet / narrow desktop: keep two columns but rebalance + tighten margins */
+@media (max-width: 1280px) {
+  body { width: 98vw; padding-left: 1vw; padding-right: 1vw; }
+  .kn-layout { gap: 24px; }
+  .kn-main { flex: 1 1 54%; }
+  .kn-rail { flex: 1 1 46%; }
+}
+/* Mobile: stack the rail below the notes */
+@media (max-width: 900px) {
+  body { width: 100%; padding-left: 12px; padding-right: 12px; }
+  /* align-items:stretch is critical — in a COLUMN flex, flex-start would size
+     children to max-content (overflowing the viewport). */
+  .kn-layout { flex-direction: column; align-items: stretch; gap: 16px; }
+  .kn-main { flex: none; width: 100%; }
+  .kn-rail { position: static; flex: none; max-width: 100%; width: 100%; min-width: 0; max-height: none; }
+}
+
+
+/* ── Combined page: top tab bar (清单 | 题目) ── */
+#epa-tabs { display: flex; gap: 0; justify-content: center; margin: 6px auto 22px;
+  max-width: 520px; border: 1px solid var(--divider); border-radius: 10px; overflow: hidden; }
+#epa-tabs .tab-btn { flex: 1; padding: 10px 18px; cursor: pointer; border: none;
+  background: var(--paper-dark); color: var(--ink-light); font-size: 1.02em; font-weight: 600;
+  font-family: inherit; transition: background .15s, color .15s; }
+#epa-tabs .tab-btn + .tab-btn { border-left: 1px solid var(--divider); }
+#epa-tabs .tab-btn.active { background: var(--accent); color: #fff; }
+#epa-tabs .tab-btn:not(.active):hover { background: #efe7d3; color: var(--ink); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+/* keep the test readable/centered even though the body is wide for the rail */
+#panel-test { max-width: 980px; margin: 0 auto; }
+@media print { #epa-tabs { display: none; } .tab-panel { display: block !important; } }
+
+</style>
+</head>
+<body>
+
+<header id="exampass-header">
+  <div class="header-left"><span class="header-brand">ExamPass Assistant</span></div>
+  <div class="header-right"><span class="header-url">github.com/WUBING2023/ExamPass-Assistant</span></div>
+</header>
+<hr class="header-divider">
+
+<h1>Chapter 3 Rotation of Rigid Body 刚体转动</h1><div id="epa-tabs" class="no-print"><button class="tab-btn active" data-tab="kn">📖 知识清单</button><button class="tab-btn" data-tab="test">📝 章节测试</button></div><div id="panel-kn" class="tab-panel active"><div class="kn-layout"><div class="kn-main"><h1></h1>
+<div class="toc">
+<h2>目录</h2>
+<ul>
+<li><a href="#s55318173">一、刚体运动的描述 </a></li>
+  <li><a href="#s11455492">1.1 刚体模型与运动分类  必考</a></li>
+  <li><a href="#s56000575">1.2 角位置、角位移、角速度、角加速度  必考</a></li>
+<li><a href="#s66161329">二、转动定律与转动惯量 </a></li>
+  <li><a href="#s73928049">2.1 力矩（Torque） 必考</a></li>
+  <li><a href="#s55245299">2.2 转动定律 $M = J\alpha$  必考</a></li>
+  <li><a href="#s41282641">2.3 转动惯量与平行轴定理  必考</a></li>
+<li><a href="#s83898982">三、角动量与角动量守恒 </a></li>
+  <li><a href="#s72242011">3.1 角动量定理  必考</a></li>
+  <li><a href="#s57913964">3.2 角动量守恒定律  必考</a></li>
+<li><a href="#s36774427">四、转动的功和能 </a></li>
+  <li><a href="#s29681230">4.1 力矩做功与转动动能定理  必考</a></li>
+  <li><a href="#s47482628">4.2 纯滚动  必考</a></li>
+<li><a href="#s12444561">五、全章平动-转动类比对照表 </a></li>
+</ul>
+</div>
+<!-- ch3.html — Chapter 3 Rotation of Rigid Body 刚体的转动 复习笔记 -->
+<!-- 叙事弧：Hook -> TL;DR -> Why -> What -> How；每 H3 配 checkpoint；平动-转动类比贯穿全章 -->
+
+<h2 id="s55318173">一、刚体运动的描述 <span class="pg-chip" data-page="1">页1</span><span class="pg-chip" data-page="2">页2</span><span class="pg-chip" data-page="3">页3</span><span class="pg-chip" data-page="4">页4</span><span class="pg-chip" data-page="5">页5</span><span class="pg-chip" data-page="6">页6</span><span class="pg-chip" data-page="7">页7</span><span class="pg-chip" data-page="8">页8</span><span class="pg-chip" data-page="9">页9</span><span class="pg-chip" data-page="10">页10</span><span class="pg-chip" data-page="11">页11</span></h2>
+
+<p>这是力学从「质点」走向「真实物体」的关键一步。读完本节你应能回答：<span class="exp">刚体是什么模型？它有几种基本运动形式？如何用角量（角度、角速度、角加速度）描述转动？角量与线量如何转换？</span></p>
+
+<h3 id="s11455492">1.1 刚体模型与运动分类 <span class="pg-chip" data-page="1">页1</span><span class="pg-chip" data-page="2">页2</span><span class="pg-chip" data-page="3">页3</span><span class="pg-chip" data-page="4">页4</span><span class="pg-chip" data-page="5">页5</span><span class="pg-chip" data-page="6">页6</span><span class="pg-chip" data-page="7">页7</span> <span class="tag-must">必考</span></h3>
+
+<p>Hook：推门的时候，门上的每一点运动轨迹都不一样——靠近合页的点转得慢，远离合页的点转得快。但我们只需要一套「角量」（角度、角速度、角加速度）就能同时描述所有点的转动。这就是刚体转动学的第一层智慧。</p>
+
+<div class="tldr"><span class="kp">刚体</span>是理想化的力学模型：在任意外力作用下，形状和大小都不变的物体，体内任意两点间距离始终不变。刚体是<span class="kp">特殊的质点系</span>。刚体的基本运动形式有两种：<span class="kp">平动</span>（所有点轨迹完全相同）和<span class="kp">定轴转动</span>（所有点绕同一轴做圆周运动）。更复杂的运动（如滚动）可视作「质心平动 + 绕质心转动」的叠加。</div>
+
+<p><strong>Why：</strong>从第 2 章的质点到本章的刚体，物理模型在逼近真实世界。一个门、一个车轮、一个陀螺都不能简化为质点，但可以视作无数质点的集合——其中每对质点间距不变。这种「刚性约束」使刚体的运动自由度从 3N 降为 6（3 个平动 + 3 个转动），使精确描述成为可能。</p>
+
+<p><strong>What：</strong></p>
+
+<table>
+<tr><th>运动类型</th><th>特征</th><th>举例</th></tr>
+<tr><td>平动 Translation</td><td>体内所有点的位移、速度、加速度完全相同；任意两点连线始终平行于初始位置</td><td>抽屉的推拉、电梯升降</td></tr>
+<tr><td>定轴转动 Fixed-axis Rotation</td><td>所有点绕同一固定轴做圆周运动；各点的角量相同，线量 $v=r\omega$ 不同</td><td>门的开合、飞轮、定滑轮</td></tr>
+<tr><td>平面平行运动</td><td>质心平动 + 绕质心转动（二者叠加）</td><td>纯滚动（车轮）、台球</td></tr>
+</table>
+
+<p><strong>How：</strong><span class="exp">刚体运动的「万能拆解」——任何复杂运动 = 质心的平动 + 绕质心的转动。</span>平动用质心速度描述（第 2 章的工具），转动用角量描述（本章的工具）。这种「分解」是后面转动定律、滚动动能计算的认知基础。</p>
+
+<blockquote>易错：把「刚体定轴转动」和「质点圆周运动」混淆。质点圆周运动的向心力总是 $mv^2/r$；刚体上的质元虽然也在做圆周运动，但其向心力由刚体内力（约束力）自动提供，我们常不直接写它，而是用转动定律 $M=J\alpha$ 绕开内力的海量求解。</blockquote>
+
+<div class="checkpoint">为什么说刚体是「特殊的质点系」？它与随意一堆离散质点（如沙粒）的根本区别是什么？<details class="cp-answer"><summary>参考答案</summary>刚体内任意两点间距不变（刚性约束），自由度为 6；而 N 个离散质点的自由度为 3N。刚性约束大幅降低了问题的数学复杂度，使得用角量统一描述全体质元的运动成为可能。</details></div>
+
+<h3 id="s56000575">1.2 角位置、角位移、角速度、角加速度 <span class="pg-chip" data-page="8">页8</span><span class="pg-chip" data-page="9">页9</span><span class="pg-chip" data-page="10">页10</span><span class="pg-chip" data-page="11">页11</span> <span class="tag-must">必考</span></h3>
+
+<p>Hook：直线运动中用 $x, v, a$ 描述一个点的运动；转动中对应的「角家族」是 $\theta, \omega, \alpha$。这两套语言完全平行——你已会前者，换几个符号就能用后者。</p>
+
+<div class="tldr"><span class="kp">角位置 $\theta$</span> 是刚体相对于参考方向的转角（逆时针为正）；<span class="kp">角速度 $\omega=\frac{d\theta}{dt}$</span> 描述转动快慢，方向由右手法则确定（四指弯曲方向为转动方向，拇指指向为 $\vec{\omega}$ 方向）；<span class="kp">角加速度 $\alpha=\frac{d\omega}{dt}=\frac{d^2\theta}{dt^2}$</span> 描述角速度变化快慢。匀变速转动的三条公式与匀变速直线运动一一对应。</div>
+
+<p><strong>Why：</strong>角量系统是描述「旋转类运动」的专用语言。它存在的根本原因是一个物理事实：<span class="exp">旋转的效果取决于转了多少角（$\theta$），而不是转了多少距离。</span>一台发动机的转速用 rpm（转/分钟）不用 m/s，正是这个道理。</p>
+
+<p><strong>What：</strong></p>
+
+$$\omega = \lim_{\Delta t \to 0}\frac{\Delta\theta}{\Delta t} = \frac{d\theta}{dt}, \qquad \alpha = \frac{d\omega}{dt} = \frac{d^2\theta}{dt^2}$$
+
+<p>其中 <span class="kp">$\omega$</span> 的单位是 rad/s，<span class="kp">$\alpha$</span> 的单位是 rad/s²。方向约定：右手螺旋法则——右手四指沿转动方向弯曲时，拇指指向即为 $\vec{\omega}$ 方向（沿转轴）。</p>
+
+<p><strong>匀变速转动（$\alpha$ = 常数）与匀变速直线运动的类比：</strong></p>
+
+<table>
+<tr><th>物理量</th><th>匀变速直线运动</th><th>匀变速转动</th></tr>
+<tr><td>速度 / 角速度</td><td>$v = v_0 + at$</td><td>$\omega = \omega_0 + \alpha t$</td></tr>
+<tr><td>位移 / 角位移</td><td>$x = x_0 + v_0 t + \frac{1}{2}at^2$</td><td>$\theta = \theta_0 + \omega_0 t + \frac{1}{2}\alpha t^2$</td></tr>
+<tr><td>无 t 公式</td><td>$v^2 = v_0^2 + 2a$x-x_0$$</td><td>$\omega^2 = \omega_0^2 + 2\alpha$\theta-\theta_0$$</td></tr>
+</table>
+
+<p>记忆诀窍：把 $x \to \theta$, $v \to \omega$, $a \to \alpha$，全部照搬！</p>
+
+<p><strong>角量与线量的关系（质元 r 处）：</strong></p>
+
+$$v = r\omega, \quad a_t = r\alpha, \quad a_n = r\omega^2 = \frac{v^2}{r}$$
+
+<p>其中 <span class="kp">$v$</span> 为线速度（切向），<span class="kp">$a_t$</span> 为切向加速度（改变速度大小），<span class="kp">$a_n$</span> 为法向加速度（改变速度方向）。总加速度 $\vec{a} = r\alpha\,\vec{e}_t + r\omega^2\,\vec{e}_n$。</p>
+
+<p><strong>How：</strong>三类典型匀变速转动问题——$1$ 已知 $\omega_0, \alpha, t$ 求 $\theta, N$（转数）；$2$ 已知 $\omega_0, \omega, t$ 求 $\alpha$；最常考：$3$ 飞轮刹车模型 — 已知初始转速和停止时间，求角加速度、转过的圈数、某时刻边缘点的线速度/切向加速度/法向加速度。</p>
+
+<p>关键计算步骤：角速度换算（rpm → rad/s：$1\,\text{r/min} = \frac{2\pi}{60} \approx 0.1047\,\text{rad/s}$）→ 用公式求 $\alpha$ → 用 $N = \theta/$2\pi$$ 换算转数 → 边缘线量用 $v=r\omega$、$a_t=r\alpha$、$a_n=r\omega^2$。</p>
+
+<blockquote>易错：$1$ 停转时 $\omega=0$ 但 $\alpha$ 未必为零（刹车瞬间角加速度仍在）；$2$ 角速度与转速的换算 $1\,\text{rpm}=2\pi/60\,\text{rad/s}$，考试中经常出现单位陷阱；$3$ 转数 $N=\theta/$2\pi$$ 不是 $\theta$——$\theta$ 是弧度，$N$ 是圈数，差 $2\pi$ 倍。</blockquote>
+
+<div class="checkpoint">一飞轮半径 0.3 m，以 600 rpm 匀速旋转。求：$1$ 角速度；$2$ 轮缘上一点的线速度；$3$ 该点的法向加速度。<details class="cp-answer"><summary>参考答案</summary>$1$ $\omega = 600 \times 2\pi/60 = 20\pi \approx 62.8\,\text{rad/s}$；$2$ $v = r\omega = 0.3 \times 20\pi = 6\pi \approx 18.85\,\text{m/s}$；$3$ $a_n = r\omega^2 = 0.3 \times $20\pi$^2 = 120\pi^2 \approx 1184\,\text{m/s}^2$，约为 120g，可见高速旋转的离心效应极大。</details></div>
+
+<div class="checkpoint">一飞轮从 15 rad/s 经 5 s 均匀减速到 10 rad/s，求：$1$ 角加速度；$2$ 这 5 s 内转了多少圈？<details class="cp-answer"><summary>参考答案</summary>$1$ $\alpha = $10-15$/5 = -1\,\text{rad/s}^2$（负号表示减速）；$2$ 用 $\omega^2 - \omega_0^2 = 2\alpha\Delta\theta$：$\Delta\theta = $10^2-15^2$/$2\times(-1$) = 62.5\,\text{rad}$，转数 $N = 62.5/$2\pi$ \approx 10$ 圈。</details></div>
+
+<p>四色标签：<span class="tag-must">必考</span></p>
+
+<h2 id="s66161329">二、转动定律与转动惯量 <span class="pg-chip" data-page="17">页17</span><span class="pg-chip" data-page="18">页18</span><span class="pg-chip" data-page="19">页19</span><span class="pg-chip" data-page="20">页20</span><span class="pg-chip" data-page="21">页21</span><span class="pg-chip" data-page="22">页22</span><span class="pg-chip" data-page="23">页23</span><span class="pg-chip" data-page="24">页24</span><span class="pg-chip" data-page="25">页25</span><span class="pg-chip" data-page="26">页26</span><span class="pg-chip" data-page="27">页27</span><span class="pg-chip" data-page="28">页28</span><span class="pg-chip" data-page="29">页29</span><span class="pg-chip" data-page="30">页30</span><span class="pg-chip" data-page="31">页31</span><span class="pg-chip" data-page="32">页32</span><span class="pg-chip" data-page="33">页33</span></h2>
+
+<p>这是本章的「心脏」——把牛顿第二定律 $F=ma$ 搬到转动世界中，得到 $M=J\alpha$。读完本节你应能回答：<span class="exp">力矩如何定义？转动惯量是什么？转动定律怎么用？平行轴定理何时出手？</span></p>
+
+<h3 id="s73928049">2.1 力矩（Torque）<span class="pg-chip" data-page="17">页17</span><span class="pg-chip" data-page="18">页18</span><span class="pg-chip" data-page="19">页19</span> <span class="tag-must">必考</span></h3>
+
+<p>Hook：开门时，力作用在门轴附近——推不动；同样的力作用在把手处——轻松推开。这说明<span class="exp">转动的效果不仅取决于力的大小，还取决于力的作用点和方向。</span>力矩正是量化「力使物体转动效果」的物理量。</p>
+
+<div class="tldr"><span class="kp">力矩</span>是力对转轴的转动效果的量度。定义式 $\vec{M} = \vec{r} \times \vec{F}$，大小 $M = Fr\sin\theta$（$\theta$ 为 $\vec{r}$ 与 $\vec{F}$ 的夹角）。只有与 $\vec{r}$ 垂直的力分量（$F_\perp = F\sin\theta$）才对转动有贡献。对定轴转动，总外力矩 $M_z = \sum r_i F_{i\perp}\sin\theta_i$。</div>
+
+<p><strong>Why：</strong>力矩是转动中的「力」。在平动中 F 决定加速度 a；在转动中 M 决定角加速度 $\alpha$。力矩将力的大小、方向、作用点三者融合为一个转动效果指标——这是用单一公式 $M=J\alpha$ 描述复杂转动的关键纽带。</p>
+
+<p><strong>What：</strong></p>
+
+$$\vec{M} = \vec{r} \times \vec{F}, \qquad M = Fr\sin\theta$$
+
+<p>其中 <span class="kp">$\vec{r}$</span> 是从转轴（或参考点）到力作用点的位矢，<span class="kp">$\theta$</span> 是 $\vec{r}$ 与 $\vec{F}$ 的夹角。方向由右手螺旋法则判定。力矩的单位是 N·m。</p>
+
+<p>特别注意：<span class="exp">对转轴起作用的，只有力在垂直于 $\vec{r}$ 方向的分量。</span>平行于 $\vec{r}$ 的分力（如沿杆方向的拉力）力矩为零。</p>
+
+<p><strong>How：</strong>定性判断力矩方向——右手四指从 $\vec{r}$ 弯向 $\vec{F}$，拇指即 $\vec{M}$ 方向。定量计算：找力臂 $d = r\sin\theta$（转轴到力作用线的垂直距离），则 $M = Fd$。正负约定：使刚体逆时针转动时 $M>0$，顺时针 $M<0$。</p>
+
+<blockquote>易错：力矩 $M=FL$ 只在力垂直于位矢时才成立。力不垂直时，必须乘 $\sin\theta$ 或用「力 × 力臂」计算。不少同学直接用 $M=Fr$ 而不检查 θ 是否为 90°，这是高频失分点。</blockquote>
+
+<div class="checkpoint">用扳手拧螺母：扳手柄长 0.3 m，施加 50 N 的力，$1$ 力垂直于手柄时力矩多大？$2$ 力与手柄呈 30° 角时力矩多大？<details class="cp-answer"><summary>参考答案</summary>$1$ $M = 0.3 \times 50 = 15\,\text{N·m}$；$2$ $M = 0.3 \times 50 \times \sin 30° = 7.5\,\text{N·m}$。角度偏离 90° 后力矩减半，这就是为什么拧螺丝时要把扳手垂直施力。</details></div>
+
+<h3 id="s55245299">2.2 转动定律 $M = J\alpha$ <span class="pg-chip" data-page="20">页20</span><span class="pg-chip" data-page="21">页21</span><span class="pg-chip" data-page="22">页22</span><span class="pg-chip" data-page="30">页30</span><span class="pg-chip" data-page="31">页31</span><span class="pg-chip" data-page="32">页32</span><span class="pg-chip" data-page="33">页33</span> <span class="tag-must">必考</span></h3>
+
+<p>Hook：$F=ma$ 告诉你：「力引起加速度」。那什么引起角加速度？答案是力矩。但同样的力矩作用在不同物体上效果不同——一个实心铁盘和一辆自行车轮对力矩的「抵抗」截然不同。这个抵抗能力的量度就是转动惯量 $J$。</p>
+
+<div class="tldr"><span class="kp">转动定律 $M = J\alpha$</span>：定轴转动刚体的角加速度 $\alpha$，与所受合外力矩 $M$ 成正比，与转动惯量 $J$ 成反比。这是牛顿第二定律在转动中的精确对应：$F \leftrightarrow M$，$m \leftrightarrow J$，$a \leftrightarrow \alpha$。从 $F=ma$ 推导 $M=J\alpha$ 只需对每个质元写切向分量，再对全刚体求和。</div>
+
+<p><strong>Why：</strong>转动定律是本章最重要的枢纽公式。有了它，我们就可以像用 $F=ma$ 解质点的力-运动问题一样，用 $M=J\alpha$ 解刚体的力矩-角加速度问题。定滑轮 + 重物、刹车盘、斜坡 + 滑轮等经典题型全部基于此。</p>
+
+<p><strong>What：</strong></p>
+
+$$M = J\alpha$$
+
+<p>其中 <span class="kp">$M$</span> 为合外力矩，<span class="kp">$J = \sum \Delta m_i r_i^2$</span> 为转动惯量（单位 kg·m²），<span class="kp">$\alpha$</span> 为角加速度。这个公式的物理图像：<span class="exp">力矩是角加速度的「因」，转动惯量是转动中「惯性的大小」。</span></p>
+
+<p><strong>How：</strong>应用转动定律的标准步骤（五步法）：</p>
+
+<p><span class="exp">$1$ 选定研究对象（刚体 / 物体+滑轮系统）；$2$ 受力分析——画隔离体图，找所有外力对转轴的力矩（注意：转轴处的约束力不产生力矩）；$3$ 列转动方程 $M_{合} = J\alpha$（刚体）+ 牛顿第二定律（质点）；$4$ 补约束方程（绳连接：$a = R\alpha$；纯滚动：$v_c = R\omega$）；$5$ 联立求解。</span></p>
+
+<p>三类经典题型：</p>
+<ul>
+<li><span class="exp">定滑轮 + 悬挂重物：</span>重物列 $mg - T = ma$，滑轮列 $TR = J\alpha = \frac{1}{2}MR^2\alpha$，约束 $a = R\alpha$。联立得 $a = \frac{mg}{m + M/2}$。</li>
+<li><span class="exp">刹车飞轮：</span>已知飞轮 $J=\frac{1}{2}mR^2$，摩擦力 $f$，则 $M = -fR = J\alpha$ → $\alpha = -2f/$mR$$。</li>
+<li><span class="exp">两根绳子拉同轴双盘：</span>总力矩 $M = F_1R_1 - F_2R_2 = $J_1 + J_2$\alpha$（注意方向正负）。</li>
+</ul>
+
+<blockquote>易错：$1$ 系统由刚体和质点共同组成时，不能只写转动定律而不写 $F=ma$，两类方程必须联立；$2$ 绳与滑轮间无滑动的约束 $a=R\alpha$ 是连接两套方程的桥梁，漏掉就列不出完整方程组；$3$ 绳子经过质量不同的滑轮时，两端张力不一定相等——同一条绳上张力处处相等的结论只适用于「轻绳」（$m=0$）。</blockquote>
+
+<div class="checkpoint">质量为 M、半径为 R 的均匀圆盘定滑轮，用轻绳挂一质量为 m 的重物。系统从静止释放，求重物的加速度和绳中张力。<details class="cp-answer"><summary>参考答案</summary>对 m：$mg - T = ma$。对滑轮：$TR = J\alpha$，其中 $J = \frac{1}{2}MR^2$，约束 $a = R\alpha$。代入 $TR = \frac{1}{2}MR^2 \cdot a/R$ → $T = \frac{1}{2}Ma$。联立 $mg - \frac{1}{2}Ma = ma$ → $a = \frac{mg}{m + M/2}$。$T = \frac{Mmg}{2m + M}$。若 M=0（滑轮质量忽略），则 $a=g$、$T=0$（自由落体）。</details></div>
+
+<h3 id="s41282641">2.3 转动惯量与平行轴定理 <span class="pg-chip" data-page="24">页24</span><span class="pg-chip" data-page="25">页25</span><span class="pg-chip" data-page="26">页26</span><span class="pg-chip" data-page="27">页27</span><span class="pg-chip" data-page="28">页28</span><span class="pg-chip" data-page="29">页29</span> <span class="tag-must">必考</span></h3>
+
+<p>Hook：跷跷板上坐一个小孩，与坐一个大人——同样的推力，前者飞快摆动，后者几乎不动。质量分布不同，转动的「顽固度」就不同。转动惯量 $J$ 正是这种「转动惯性」的度量，它就像转动中的「质量」——但不同于质量只取决于「多重」，转动惯量还取决于「质量分布多远」。</p>
+
+<div class="tldr"><span class="kp">转动惯量 $J = \sum m_i r_i^2$（离散）或 $J = \int r^2 dm$（连续）</span>，是刚体对转轴的转动惯性量度。它取决于三个因素：总质量、质量分布（几何形状）、转轴位置。常见形状的转动惯量必须熟记。<span class="kp">平行轴定理 $J = J_C + md^2$</span>：刚体对任意轴的转动惯量 = 对过质心平行轴的转动惯量 + 总质量 × 两轴距离的平方。</div>
+
+<p><strong>Why：</strong>转动惯量 $J$ 在转动中的角色完全等同于质量 $m$ 在平动中的角色——它是惯性的量度。$J$ 越大，同样的力矩产生的角加速度越小。理解 $J$ 是理解「为什么质量分布影响转动难度」的关键。平行轴定理则让你只需要记住过质心的 $J_C$，就能求出任意平行轴的 $J$。</p>
+
+<p><strong>What：</strong></p>
+
+$$J = \sum \Delta m_i r_i^2 \quad $\text{离散}$ \qquad J = \int r^2\,dm \quad $\text{连续}$$
+
+<p>其中 <span class="kp">$r_i$</span> 是质元 $\Delta m_i$ 到转轴的垂直距离。连续质量分布中 $dm = \lambda dl$（线密度）、$dm = \sigma dS$（面密度）、$dm = \rho dV$（体密度）。</p>
+
+<p><strong>必背常见转动惯量（过质心轴）：</strong></p>
+
+<table>
+<tr><th>形状</th><th>转轴位置</th><th>转动惯量 $J$</th></tr>
+<tr><td>均匀细杆（长 L）</td><td>过质心，垂直杆</td><td>$\frac{1}{12}mL^2$</td></tr>
+<tr><td>均匀细杆（长 L）</td><td>过端点，垂直杆</td><td>$\frac{1}{3}mL^2$（平行轴：$\frac{1}{12}mL^2 + m$L/2$^2$）</td></tr>
+<tr><td>均匀圆盘/圆柱（半径 R）</td><td>过质心，垂直盘面</td><td>$\frac{1}{2}mR^2$</td></tr>
+<tr><td>均匀圆环（半径 R）</td><td>过质心，垂直环面</td><td>$mR^2$</td></tr>
+<tr><td>均匀实心球（半径 R）</td><td>过球心</td><td>$\frac{2}{5}mR^2$</td></tr>
+<tr><td>均匀薄球壳（半径 R）</td><td>过球心</td><td>$\frac{2}{3}mR^2$</td></tr>
+</table>
+
+<p><strong>平行轴定理：</strong></p>
+
+$$J = J_C + md^2$$
+
+<p>其中 <span class="kp">$J_C$</span> 为对过质心轴的转动惯量，<span class="kp">$d$</span> 为两平行轴之间的距离。注意：$J$ 永远大于等于 $J_C$（$d^2 \ge 0$），即<span class="exp">过质心的转动惯量最小。</span></p>
+
+<p><strong>How：</strong>计算转动惯量的两种方法：$1$ 积分法——取微元 $dm$，写 $dJ = r^2 dm$，在几何范围内积分；$2$ 平行轴定理——适用于轴从质心平移到任意平行位置。组合体的转动惯量 = 各部分转动惯量之和（各部分的轴必须相同）。</p>
+
+<p>棒 + 盘的组合体（如摆锤）——$J_{总} = J_{棒$端点轴$} + J_{盘$平行轴$} = \frac{1}{3}m_{棒}L^2 + \left1455L55$。考试常考这种「多部件 + 平行轴」的组合计算。</p>
+
+<blockquote>易错：$1$ 转动惯量不是物体的固有属性，它依赖转轴——同一根杆，转轴过中心和过端点，$J$ 差 4 倍；$2$ 平行轴定理必须用「过质心轴的 $J_C$」加 $md^2$，不能用其他任意轴的 $J$ 加 $md^2$；$3$ $J$ 的单位是 kg·m²，不是 kg·m——$r^2$ 不要忘；$4$ 组合体时别忘了平行轴定理——盘装在杆的一端，盘的 $J$ 不只是 $\frac{1}{2}mR^2$，还要加 $m$L+R$^2$。</blockquote>
+
+<div class="checkpoint">一根均匀细杆长 L=1 m，质量 m=2 kg。求 $1$ 转轴过杆中心垂直杆的 $J$；$2$ 转轴过端点垂直杆的 $J$；$3$ 用平行轴定理验证 $2$。<details class="cp-answer"><summary>参考答案</summary>$1$ $J_C = \frac{1}{12}mL^2 = \frac{1}{12}\times 2 \times 1^2 = \frac{1}{6}\,\text{kg·m}^2$；$2$ $J_{端} = \frac{1}{3}mL^2 = \frac{2}{3}\,\text{kg·m}^2$；$3$ $J_{端} = J_C + md^2 = \frac{1}{6} + 2 \times $0.5$^2 = \frac{1}{6} + \frac{1}{2} = \frac{2}{3}\,\text{kg·m}^2$，验证通过。</details></div>
+
+<div class="checkpoint">均匀圆盘质量 3 kg，半径 0.4 m。求转轴在盘边缘、平行于过中心垂直盘面轴的 $J$。<details class="cp-answer"><summary>参考答案</summary>过质心轴（垂直盘面）：$J_C = \frac{1}{2}mR^2 = \frac{1}{2}\times 3\times 0.4^2 = 0.24\,\text{kg·m}^2$。平行轴：$d = R = 0.4$，$J = 0.24 + 3\times 0.4^2 = 0.24 + 0.48 = 0.72\,\text{kg·m}^2$。注意这里的轴仍是垂直盘面，并非平行于盘面——轴方向不变，只是位置平移。</details></div>
+
+<p>四色标签：<span class="tag-must">必考</span></p>
+
+<h2 id="s83898982">三、角动量与角动量守恒 <span class="pg-chip" data-page="34">页34</span><span class="pg-chip" data-page="35">页35</span><span class="pg-chip" data-page="36">页36</span><span class="pg-chip" data-page="37">页37</span><span class="pg-chip" data-page="38">页38</span><span class="pg-chip" data-page="39">页39</span><span class="pg-chip" data-page="40">页40</span><span class="pg-chip" data-page="41">页41</span><span class="pg-chip" data-page="42">页42</span><span class="pg-chip" data-page="43">页43</span><span class="pg-chip" data-page="44">页44</span><span class="pg-chip" data-page="45">页45</span><span class="pg-chip" data-page="46">页46</span><span class="pg-chip" data-page="47">页47</span></h2>
+
+<p>这是转动动力学的高潮。读完本节你应建立起「平动动量守恒 → 角动量守恒」的类比，并能用角动量守恒解释花样滑冰、跳水、陀螺等美妙现象。</p>
+
+<h3 id="s72242011">3.1 角动量定理 <span class="pg-chip" data-page="38">页38</span><span class="pg-chip" data-page="39">页39</span><span class="pg-chip" data-page="40">页40</span><span class="pg-chip" data-page="41">页41</span><span class="pg-chip" data-page="43">页43</span> <span class="tag-must">必考</span></h3>
+
+<p>Hook：平动中，动量定理告诉你「力对时间的积累等于动量的变化」。转动中，「力矩对时间的积累等于角动量的变化」——两个定理的逻辑结构完全相同，你只需做变量替换。</p>
+
+<div class="tldr"><span class="kp">角动量 $\vec{L} = \vec{r} \times m\vec{v}$（质点）或 $L = J\omega$（刚体定轴转动）</span>，是转动中动量概念的对应物。<span class="kp">角动量定理 $\vec{M} = d\vec{L}/dt$</span>：外力矩等于系统角动量的变化率。积分形式 $\int_{t_1}^{t_2} M\,dt = L_2 - L_1$，其中 $\int M\,dt$ 称为冲量矩。</div>
+
+<p><strong>Why：</strong>角动量定理是力矩在时间维度「积累效应」的体现。就像冲量 $\int F\,dt$ 改变动量 $p$，冲量矩 $\int M\,dt$ 改变角动量 $L$。它为角动量守恒定律提供了理论基础，并为碰撞 + 转动问题提供了解题武器。</p>
+
+<p><strong>What：</strong></p>
+
+<p>质点角动量：$\vec{L} = \vec{r} \times \vec{p} = \vec{r} \times m\vec{v}$，大小 $L = rmv\sin\theta$。</p>
+<p>刚体定轴转动角动量：$L_z = J\omega$。</p>
+<p>角动量定理（微分形式）：$M = \frac{dL}{dt}$。</p>
+<p>积分形式：$\int_{t_1}^{t_2} M\,dt = J\omega_2 - J\omega_1$。</p>
+
+<p>对比记忆：</p>
+<table>
+<tr><th></th><th>平动</th><th>转动</th></tr>
+<tr><td>动量</td><td>$\vec{p} = m\vec{v}$</td><td>$L = J\omega$</td></tr>
+<tr><td>定理（微分）</td><td>$\vec{F} = d\vec{p}/dt$</td><td>$M = dL/dt$</td></tr>
+<tr><td>定理（积分）</td><td>$\int \vec{F}dt = \Delta\vec{p}$</td><td>$\int M\,dt = \Delta L$</td></tr>
+</table>
+
+<p><strong>How：</strong>角动量定理在碰撞 + 转动问题中特别有用——当子弹射入木棒、碰撞时间极短时，用角动量定理的积分形式比逐时刻解微分方程方便得多。注意：内力矩之和为零，只有外力矩才能改变系统的总角动量。</p>
+
+<blockquote>易错：角动量和力矩必须是<span class="kp">对同一参考点（或同一轴）</span>定义的。向不同轴求角动量后再相加是无意义的——这与「不同方向的速度不能代数相加」是同一逻辑。</blockquote>
+
+<div class="checkpoint">质点 m=0.5 kg 以速度 v=4 m/s 沿直线运动，该直线距 O 点距离 d=2 m。求质点对 O 点的角动量。<details class="cp-answer"><summary>参考答案</summary>$L = rmv\sin\theta = dmv = 2 \times 0.5 \times 4 = 4\,\text{kg·m}^2/\text{s}$。注意质点虽做直线运动，但由于位矢与速度不平行，仍有角动量。</details></div>
+
+<h3 id="s57913964">3.2 角动量守恒定律 <span class="pg-chip" data-page="42">页42</span><span class="pg-chip" data-page="43">页43</span><span class="pg-chip" data-page="44">页44</span><span class="pg-chip" data-page="45">页45</span><span class="pg-chip" data-page="46">页46</span><span class="pg-chip" data-page="47">页47</span> <span class="tag-must">必考</span></h3>
+
+<p>Hook：花样滑冰运动员收臂后转速暴增——同样的角动量，转动惯量减小，角速度必然增大。这不是「额外的力在推动」，是角动量守恒在起作用。平动中合外力为零 → 动量守恒；转动中合外力矩为零 → 角动量守恒。两个守恒律在逻辑上是一对孪生兄弟。</p>
+
+<div class="tldr"><span class="kp">角动量守恒定律：</span>当系统所受合外力矩为零时，系统的总角动量保持不变。即 $M_{外}=0 \implies L = \text{常数}$。对定轴转动刚体，$J\omega = \text{常数}$——转动惯量增大，角速度减小；转动惯量减小，角速度增大。</div>
+
+<p><strong>Why：</strong>角动量守恒是自然界最深层的守恒律之一（来自空间的旋转对称性）。它的威力在于：<span class="exp">只要合外力矩为零，不管系统内部如何复杂变化（收臂、碰撞、人在转盘上走），总角动量都不变。</span>这为「碰撞 + 转动」综合题提供了最强的解题武器。</p>
+
+<p><strong>What：</strong></p>
+
+$$M_{外} = 0 \implies L_{总} = \text{常矢量}$$
+
+<p>对定轴转动的刚体系统：$J_1\omega_1 + J_2\omega_2 + \cdots = \text{常数}$。</p>
+
+<p>守恒的条件记忆要点：<span class="kp">合外力矩为零</span>，而非合外力为零。一个旋转的陀螺，受重力（合外力不为零），但重力对支撑点的力矩水平方向——铅直方向的角动量分量仍然守恒。</p>
+
+<p><strong>经典实例：</strong></p>
+<ul>
+<li><span class="exp">花样滑冰收臂加速：</span>初始 $\omega_1$ 小，$J_1$ 大（手臂伸展）→ 收臂后 $J_2$ 变小 → $J_1\omega_1 = J_2\omega_2$ → $\omega_2 = \omega_1$J_1/J_2$ > \omega_1$。角加速度 $\alpha > 0$ 但外力矩 $M=0$！不要认为有角加速度就一定要有力矩——$J$ 在变时，$\alpha = d\omega/dt = -$\omega/J$\,dJ/dt$。</li>
+<li><span class="exp">子弹打木棒：</span>子弹射入悬挂棒的下端并嵌在其中——这是完全非弹性碰撞 + 角动量守恒的经典综合题。碰撞瞬间对悬挂点 O 的外力矩为零 → 对 O 轴的角动量守恒：$mv_0 l = J_{总}\omega$，其中 $J_{总} = \frac{1}{3}Ml^2 + ml^2$。</li>
+<li><span class="exp">人在转盘上走：</span>人-盘系统对转轴的合外力矩为零 → $J_{人}\omega_{人} + J_{盘}\omega_{盘} = 0$（初始静止）。人相对盘走一圈，盘反向转过一定角度。解题时 $\omega_{人地} = \omega_{人盘} + \omega_{盘地}$，相对位移条件 $\theta_{人盘} = 2\pi$。</li>
+</ul>
+
+<p><strong>How：</strong>解题流程：$1$ 确认系统、检查外力矩是否为零；$2$ 写角动量守恒方程 $L_{初} = L_{末}$；$3$ 写出初末态各部分的 $J$ 和 $\omega$；$4$ 有碰撞时：碰撞过程角动量守恒，碰撞后若外力矩不为零则用转动定律或能量法。</p>
+
+<blockquote>易错：$1$ 角动量守恒是系统合外力矩为零，不是合外力为零——这两个条件截然不同，混淆是高频失分点；$2$ 「子弹打木棒」不能用动量守恒（悬挂点 O 有约束反力），必须用对 O 点的角动量守恒；$3$ $J$ 变化时角速度会变但角动量守恒——不要误以为角速度守恒。</blockquote>
+
+<div class="checkpoint">花样滑冰运动员双臂平展时角速度为 2 rev/s，转动惯量为 3 kg·m²。收臂后转动惯量变为 1.5 kg·m²。求收臂后的角速度。<details class="cp-answer"><summary>参考答案</summary>$J_1\omega_1 = J_2\omega_2$ → $3 \times 2 = 1.5 \times \omega_2$ → $\omega_2 = 4\,\text{rev/s}$。转速翻倍！角动量的「守恒」通过「此消彼长」实现：$J$ 减半，$\omega$ 翻倍。</details></div>
+
+<div class="checkpoint">质量为 m 的子弹以水平速度 $v_0$ 射入长为 l、质量为 M 的均匀细杆下端并嵌在其中，杆上端悬挂于光滑轴 O。求子弹嵌入后杆-子弹系统开始转动的角速度。<details class="cp-answer"><summary>参考答案</summary>碰撞瞬间对 O 轴合外力矩为零 → 角动量守恒。碰撞前：$L_{初} = mv_0 l$（子弹对 O 的角动量）。碰撞后：$L_{末} = J_{总}\omega$，其中 $J_{总} = J_{杆} + J_{子弹} = \frac{1}{3}Ml^2 + ml^2$。由 $mv_0 l = $\frac{1}{3}Ml^2 + ml^2$\omega$ → $\omega = \frac{3mv_0}{$3m + M$l}$。</details></div>
+
+<p>四色标签：<span class="tag-must">必考</span></p>
+
+<h2 id="s36774427">四、转动的功和能 <span class="pg-chip" data-page="49">页49</span><span class="pg-chip" data-page="50">页50</span><span class="pg-chip" data-page="51">页51</span><span class="pg-chip" data-page="52">页52</span><span class="pg-chip" data-page="53">页53</span><span class="pg-chip" data-page="54">页54</span><span class="pg-chip" data-page="55">页55</span><span class="pg-chip" data-page="56">页56</span><span class="pg-chip" data-page="57">页57</span><span class="pg-chip" data-page="58">页58</span></h2>
+
+<p>这是从能量视角理解转动的最后一块拼图。读完本节你应能回答：<span class="exp">力矩怎样做功？功率怎么算？转动动能长什么样？转动动能定理怎么用？纯滚动的机械能守恒怎么写？</span></p>
+
+<h3 id="s29681230">4.1 力矩做功与转动动能定理 <span class="pg-chip" data-page="50">页50</span><span class="pg-chip" data-page="51">页51</span><span class="pg-chip" data-page="52">页52</span><span class="pg-chip" data-page="53">页53</span><span class="pg-chip" data-page="54">页54</span><span class="pg-chip" data-page="55">页55</span> <span class="tag-must">必考</span></h3>
+
+<p>Hook：平动中力做功 $W = \int F\,dx$，动能是 $\frac{1}{2}mv^2$。转动中只需把 $F \to M$，$x \to \theta$，$m \to J$，$v \to \omega$——力矩做功 $W = \int M\,d\theta$，转动动能 $\frac{1}{2}J\omega^2$。你会平动的，就一定会转动的。</p>
+
+<div class="tldr"><span class="kp">力矩做功 $dA = M\,d\theta$</span>，总功 $A = \int_{\theta_1}^{\theta_2} M\,d\theta$。<span class="kp">力矩功率 $P = M\omega$</span>。<span class="kp">转动动能 $E_k^{旋转} = \frac{1}{2}J\omega^2$</span>。<span class="kp">转动动能定理 $A = \frac{1}{2}J\omega_2^2 - \frac{1}{2}J\omega_1^2$</span>：合外力矩做功等于转动动能的增量。</div>
+
+<p><strong>Why：</strong>能量法是处理复杂转动问题（特别是非匀变速）的最强武器。当力矩随角度变化时，运动学公式失效，但动能定理仍然有效。此外，机械能守恒（转动动能 + 平动动能 + 势能）让「纯滚动 + 斜面」问题迎刃而解。</p>
+
+<p><strong>What：</strong></p>
+
+$$dA = M\,d\theta, \quad A = \int_{\theta_1}^{\theta_2} M\,d\theta$$
+
+$$P = \frac{dA}{dt} = M\omega$$
+
+$$E_k^{旋转} = \frac{1}{2}J\omega^2$$
+
+$$A = \frac{1}{2}J\omega_2^2 - \frac{1}{2}J\omega_1^2 \quad \text{（转动动能定理）}$$
+
+<p>完整平动-转动能量对照表：</p>
+
+<table>
+<tr><th></th><th>平动（质点）</th><th>转动（定轴）</th></tr>
+<tr><td>功</td><td>$A = \int \vec{F} \cdot d\vec{r}$</td><td>$A = \int M\,d\theta$</td></tr>
+<tr><td>动能</td><td>$E_k = \frac{1}{2}mv^2$</td><td>$E_k^{旋转} = \frac{1}{2}J\omega^2$</td></tr>
+<tr><td>动能定理</td><td>$A = \Delta E_k$</td><td>$A = \Delta E_k^{旋转}$</td></tr>
+</table>
+
+<p><strong>How：</strong>使用转动动能定理时需注意：系统既有平动又有转动时，总动能 $E_k = \frac{1}{2}mv_c^2 + \frac{1}{2}J_c\omega^2$（质心平动动能 + 绕质心转动动能）。</p>
+
+<p>刚体重力势能：<span class="exp">$E_p = mgh_c$，其中 $h_c$ 为质心高度。</span>即刚体的重力势能等于全部质量集中在质心时的势能——这与质点系统完全一致。</p>
+
+<p>机械能守恒（含刚体的系统）：若只有保守内力（重力、弹力）做功，则 $\frac{1}{2}mv_c^2 + \frac{1}{2}J_c\omega^2 + mgh_c = \text{常数}$。</p>
+
+<blockquote>易错：$1$ 纯滚动物体的总动能不是 $\frac{1}{2}mv_c^2$——遗漏了转动动能 $\frac{1}{2}J\omega^2$ 是高频失分点；$2$ $\frac{1}{2}J\omega^2$ 和 $\frac{1}{2}mv^2$ 不要混用——转动用 $J,\omega$，平动用 $m,v$；$3$ 刚体重力势能是 $mgh_c$（质心高度），不是随便取某个点的高度。</blockquote>
+
+<div class="checkpoint">均匀圆盘以 $\omega=10\,\text{rad/s}$ 绕中心轴旋转，$m=2\,\text{kg},\,R=0.3\,\text{m}$。求：$1$ 转动动能；$2$ 若要使它在 3 秒内停转，需施加多大的恒定制动力矩？<details class="cp-answer"><summary>参考答案</summary>$1$ $J = \frac{1}{2}mR^2 = \frac{1}{2}\times 2 \times 0.09 = 0.09\,\text{kg·m}^2$，$E_k = \frac{1}{2}J\omega^2 = \frac{1}{2}\times 0.09 \times 100 = 4.5\,\text{J}$。$2$ 由转动动能定理 $A = M\theta = \Delta E_k$，先求 $\alpha = $0-10$/3 = -3.33\,\text{rad/s}^2$，$M = J\alpha = 0.09 \times $-3.33$ = -0.3\,\text{N·m}$。或直接用 $\Delta E_k/$\omega_{平均}t$ = -4.5/$5 \times 3$ = -0.3\,\text{N·m}$。</details></div>
+
+<div class="checkpoint">一均匀细杆长 L、质量 m，一端悬挂于光滑轴 O，从水平位置静止释放。求杆经过竖直位置时的角速度。<details class="cp-answer"><summary>参考答案</summary>机械能守恒。初始（水平位置）：$E_p = mg$L/2$$（质心下降参考零点取在竖直位置质心处），$E_k = 0$。竖直位置：$E_p = 0$，$E_k = \frac{1}{2}J\omega^2$ 其中 $J = \frac{1}{3}mL^2$。$mg\cdot\frac{L}{2} = \frac{1}{2}\times\frac{1}{3}mL^2 \times \omega^2$ → $\omega = \sqrt{\frac{3g}{L}}$。</details></div>
+
+<p>四色标签：<span class="tag-key">重点</span></p>
+
+<h3 id="s47482628">4.2 纯滚动 <span class="pg-chip" data-page="55">页55</span><span class="pg-chip" data-page="56">页56</span><span class="pg-chip" data-page="57">页57</span><span class="pg-chip" data-page="58">页58</span> <span class="tag-must">必考</span></h3>
+
+<p>Hook：一个球在斜面滚下，它既有平动动能又有转动动能——总机械能如何分配？平动和转动各占多少？答案藏在纯滚动条件 $v_c = R\omega$ 中。</p>
+
+<div class="tldr"><span class="kp">纯滚动（无滑滚动）</span>：物体与接触面间无相对滑动。接触点相对于地面的瞬时速度为零。<span class="kp">纯滚动条件 $v_c = R\omega$</span>，其中 $v_c$ 是质心速度。纯滚动物体的总动能：$E_k = \frac{1}{2}mv_c^2 + \frac{1}{2}J_c\omega^2 = \frac{1}{2}\left$m + \frac{J_c}{R^2}\right$v_c^2$。</div>
+
+<p><strong>Why：</strong>纯滚动是平动和转动「协同运动」的典范——质心以一定速度前进，同时刚体绕质心以特定角速度旋转，使得接触点恰好静止。它统一了平动和转动，是综合考察功-能、动力学的最好题型。</p>
+
+<p><strong>What：</strong></p>
+
+<p>纯滚动约束：$v_c = R\omega$，$a_c = R\alpha$。</p>
+<p>总动能：$E_k = \frac{1}{2}mv_c^2 + \frac{1}{2}J_c\omega^2$。</p>
+
+<p>常见刚体纯滚动的有效惯性质量：</p>
+<ul>
+<li>均质圆环/薄圆筒：$J_c = mR^2$ → $E_k = mv_c^2$（平动动能=转动动能，各占一半）</li>
+<li>均质圆盘/圆柱：$J_c = \frac{1}{2}mR^2$ → $E_k = \frac{3}{4}mv_c^2$</li>
+<li>均质实心球：$J_c = \frac{2}{5}mR^2$ → $E_k = \frac{7}{10}mv_c^2$</li>
+</ul>
+
+<p><strong>How：</strong>纯滚动斜面问题——设斜面倾角 $\theta$，物体纯滚动下滑。用机械能守恒（无摩擦损耗时的静摩擦不做功）：$mgh = \frac{1}{2}mv_c^2 + \frac{1}{2}J_c\omega^2$，利用 $v_c = R\omega$ 消去 $\omega$，可直接求末速度。也可用动力学法：对质心列 $mg\sin\theta - f = ma_c$，对质心列转动方程 $fR = J_c\alpha$，加 $a_c = R\alpha$，解得 $a_c = \frac{g\sin\theta}{1 + J_c/$mR^2$}$。</p>
+
+<p>关键结论：转动惯量越大的物体，纯滚动下坡加速度越小——圆环比圆盘滚得慢。这可以在斜面竞赛中直观验证。</p>
+
+<blockquote>易错：$1$ 纯滚动时有静摩擦力，但静摩擦力不做功（接触点瞬时速度为零），因此机械能守恒；$2$ 纯滚动的约束条件 $v_c = R\omega$ 只在无滑动时成立——一旦滑动，摩擦力变为滑动摩擦，$v_c \neq R\omega$，且摩擦力做负功；$3$ $\frac{1}{2}J\omega^2$ 中的 $J$ 必须是对质心轴的转动惯量（绕瞬心轴的转动惯量也可用，但要配瞬心角速度，需谨慎使用）。</blockquote>
+
+<div class="checkpoint">一均质圆盘（m=1 kg, R=0.2 m）从高 h=0.5 m 的斜面顶端从静止纯滚动下滑。求到达底端时的质心速度。<details class="cp-answer"><summary>参考答案</summary>机械能守恒：$mgh = \frac{1}{2}mv_c^2 + \frac{1}{2}J_c\omega^2$。$J_c = \frac{1}{2}mR^2$，$\omega = v_c/R$。代入：$mgh = \frac{1}{2}mv_c^2 + \frac{1}{2}\times\frac{1}{2}mR^2 \times $v_c/R$^2 = \frac{1}{2}mv_c^2 + \frac{1}{4}mv_c^2 = \frac{3}{4}mv_c^2$。$v_c = \sqrt{\frac{4}{3}gh} = \sqrt{\frac{4}{3}\times 9.8 \times 0.5} \approx 2.56\,\text{m/s}$。若是无摩擦滑动（不是滚动），$v = \sqrt{2gh} \approx 3.13\,\text{m/s}$——转动「消耗」了部分能量，部分势能转化为转动动能而非平动动能。</details></div>
+
+<p>四色标签：<span class="tag-key">重点</span></p>
+
+<!-- ===== 章末总表 ===== -->
+<h2 id="s12444561">五、全章平动-转动类比对照表 <span class="pg-chip" data-page="48">页48</span><span class="pg-chip" data-page="49">页49</span><span class="pg-chip" data-page="55">页55</span></h2>
+
+<p>这是本章最重要的总结工具。考试中遇到任何转动问题，先找到对应的平动知识，做变量替换即可。</p>
+
+<table>
+<tr><th>类比项</th><th>平动（质点直线运动）</th><th>转动（刚体定轴转动）</th></tr>
+<tr><td>位置 / 角度</td><td>$x$</td><td>$\theta$</td></tr>
+<tr><td>位移 / 角位移</td><td>$\Delta x = x_2 - x_1$</td><td>$\Delta\theta = \theta_2 - \theta_1$</td></tr>
+<tr><td>速度 / 角速度</td><td>$v = \frac{dx}{dt}$</td><td>$\omega = \frac{d\theta}{dt}$</td></tr>
+<tr><td>加速度 / 角加速度</td><td>$a = \frac{dv}{dt}$</td><td>$\alpha = \frac{d\omega}{dt}$</td></tr>
+<tr><td>惯性量度</td><td>质量 $m$</td><td>转动惯量 $J = \int r^2 dm$</td></tr>
+<tr><td>「力」</td><td>力 $\vec{F}$</td><td>力矩 $\vec{M} = \vec{r} \times \vec{F}$</td></tr>
+<tr><td>运动定律</td><td>$\vec{F} = m\vec{a}$</td><td>$M = J\alpha$</td></tr>
+<tr><td>动量</td><td>$\vec{p} = m\vec{v}$</td><td>$L = J\omega$</td></tr>
+<tr><td>动量定理</td><td>$\int \vec{F}dt = \Delta\vec{p}$</td><td>$\int M\,dt = \Delta L$</td></tr>
+<tr><td>守恒律</td><td>$\vec{F}_{外}=0 \to \vec{p}$ 守恒</td><td>$M_{外}=0 \to L$ 守恒</td></tr>
+<tr><td>动能</td><td>$E_k = \frac{1}{2}mv^2$</td><td>$E_k = \frac{1}{2}J\omega^2$</td></tr>
+<tr><td>功</td><td>$A = \int \vec{F} \cdot d\vec{r}$</td><td>$A = \int M\,d\theta$</td></tr>
+<tr><td>动能定理</td><td>$A = \Delta E_k$</td><td>$A = \Delta E_k^{旋转}$</td></tr>
+</table>
+
+<p>横着记——每行都是一个从平动到转动的「变量替换」：$x \to \theta$，$v \to \omega$，$a \to \alpha$，$m \to J$，$F \to M$，$p \to L$。</p>
+
+<p>希望本章笔记能帮你建立「平动与转动」的统一图像。祝你学有所成！</p></div><aside class="kn-rail"><div class="kn-rail-title">📑 原始幻灯片对照</div><div class="slide-card" id="slide-p1" data-page="1"><div class="slide-card-label">第1页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p001.jpg" loading="lazy" alt="第1页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Chapter 3<br>Rotation of Rigid Body <br>刚体的转动</div></details></div>
+<div class="slide-card" id="slide-p2" data-page="2"><div class="slide-card-label">第2页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p002.jpg" loading="lazy" alt="第2页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Contents<br>3.1 Description of Rotation of Rigid Body 刚体转动的描<br>述<br>3.2  Law of Rotation，Moment of Inertia 转动定律转动<br>惯量<br>3.3 Angular momentum，Conservation Law of angular <br>momentum 角动量角动量守恒定律<br>3.4   Work and Energy in Rotational Motion<br>转动的功和能</div></details></div>
+<div class="slide-card" id="slide-p3" data-page="3"><div class="slide-card-label">第3页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p003.jpg" loading="lazy" alt="第3页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">•particle（质点）——Considering quality, without considering <br>shape and size<br>•rigid body（刚体）——Under the action of external force, the <br>shape and size of the object will not change<br>Note:<br>1) Idealized mechanical model理想化的力学模型<br>2) The distance between any two points in rigid body <br>remains constant<br>3) Rigid body is special particle system 特殊的质点系<br>3.1  Description of Rotation of Rigid <br>Body</div></details></div>
+<div class="slide-card" id="slide-p4" data-page="4"><div class="slide-card-label">第4页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p004.jpg" loading="lazy" alt="第4页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">3.1.1 Motion of Rigid Body 刚体运动<br>Translation (平动)<br>Motion of <br>Rigid Body<br>Rotation<br>(转动)<br>Fixed-axis rotation定轴转动<br>Fixed point rotation<br>定点转动<br>Complex <br>motion<br>plane-parallel motion<br>general motion</div></details></div>
+<div class="slide-card" id="slide-p5" data-page="5"><div class="slide-card-label">第5页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p005.jpg" loading="lazy" alt="第5页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">1 Translation平动<br>The motion trajectories of all points in a rigid body <br>are identical 所有点的运动轨迹完全相同<br>Note：<br>(1) The line between any two points is <br>always parallel with their initial positions<br>(2) the displacement of particles are the <br>same<br>(3) Velocity and acceleration of each <br>particle are the same<br>(4) The movement of any particle in the <br>rigid body can represent the motion of the <br>entire rigid body</div></details></div>
+<div class="slide-card" id="slide-p6" data-page="6"><div class="slide-card-label">第6页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p006.jpg" loading="lazy" alt="第6页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">2 Rotation<br>All points in a rigid body move in a circle around the same <br>axis 刚体中所有的点都绕同一转轴做圆周运动.</div></details></div>
+<div class="slide-card" id="slide-p7" data-page="7"><div class="slide-card-label">第7页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p007.jpg" loading="lazy" alt="第7页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">General motion<br>Translation <br>of centroid  <br>质心的平动<br>Rotation around <br>centroid             <br>绕质心的转动<br>+<br>3 General motion of rigid body</div></details></div>
+<div class="slide-card" id="slide-p8" data-page="8"><div class="slide-card-label">第8页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p008.jpg" loading="lazy" alt="第8页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">3.1.2   Angular description of rigid body rotation<br>1 Angular position<br>θ<br>O<br>v<br>P<br>×<br>ω,α<br>r<br>r<br>axis<br>Rigid<br>body<br>reference<br>θ<br>z<br>&lt; 0<br>θ<br>0<br>&gt;<br>θ<br>Convention:<br>r<br>rotate counterclockwise<br>r<br>rotate clockwise<br>)<br>(<br>)<br>(<br>t<br>t<br>t<br><br><br><br><br><br><br><br><br>2 Angular displacement</div></details></div>
+<div class="slide-card" id="slide-p9" data-page="9"><div class="slide-card-label">第9页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p009.jpg" loading="lazy" alt="第9页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body"><br><br>0<br><br><br>0<br><br><br>z<br>z<br>t<br>t<br>t<br>d<br>d<br>lim<br>0<br><br><br><br><br><br><br><br><br><br>3 Angular velocity<br>direction:  <br>Right-hand with z-axis：positive；<br>Left-hand with z-axis：negative<br><br><br><br>4 Angular acceleration<br>2<br>2<br>d<br>d<br>d<br>t<br>dt<br><br><br><br></div></details></div>
+<div class="slide-card" id="slide-p10" data-page="10"><div class="slide-card-label">第10页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p010.jpg" loading="lazy" alt="第10页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Rotation with Constant Angular <br>Acceleration<br>Straight-line motion  with <br>constant acceleration<br>at<br><br><br>0<br>v<br>v<br>2<br>2<br>1<br>0<br>0<br>at<br>t<br>x<br>x<br><br><br><br>v<br>)<br>(<br>2<br>0<br>2<br>0<br>2<br>x<br>x<br>a<br><br><br>v<br>v<br>t<br><br><br><br><br><br>0<br>)<br>(<br>2<br>0<br>2<br>0<br>2<br><br><br><br><br><br><br><br><br>2<br>2<br>1<br>0<br>0<br>t<br>t<br><br><br><br><br><br><br><br>Angular acceleration is constant. <br>Rotation with Constant Angular Acceleration匀变速转动<br>Vs Straight-line motion  with constant Acceleration匀变<br>速直线运动<br>3.1.3 Rotation with Constant Angular <br>Acceleration</div></details></div>
+<div class="slide-card" id="slide-p11" data-page="11"><div class="slide-card-label">第11页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p011.jpg" loading="lazy" alt="第11页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">te<br>r<br><br><br><br><br>v<br><br>r<br>te<br>v<br>2<br>n<br>t<br><br><br>r<br>a<br>r<br>a<br><br><br>ta<br>na<br>n<br>2<br>t<br>e<br>r<br>e<br>r<br>a<br><br><br><br><br><br><br><br>td<br>d<br><br>t<br>t<br>2<br>2<br>d<br>d<br>d<br>d<br><br><br><br><br><br>a<br>3.1.4 Relationship between angular quantity <br>and linear quantity</div></details></div>
+<div class="slide-card" id="slide-p12" data-page="12"><div class="slide-card-label">第12页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p012.jpg" loading="lazy" alt="第12页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">E1、Due to the friction torque摩擦力矩, a rotating wheel slows down. The<br>angular velocity of decreases from 15rad/s to 10rad/s within 5 seconds. Find:<br>(1) angular acceleration; (2) how many turns does the wheel rotate within 5<br>seconds; (3) How much time does it take for the wheel to stop rotating.<br>Solution: Angular acceleration is constant.<br>(1)<br>2<br>1<br>5<br>15<br>10<br>t<br>0<br>rad/s<br><br><br><br><br><br><br><br><br>－<br>(2)<br>rad<br>5.<br>62<br>)1<br>(<br>2<br>15<br>10<br>2<br>2<br>2<br>2<br>0<br>2<br>0<br><br><br><br><br><br><br><br><br><br><br><br><br><br>Rotation turns in 5s:<br>0<br>62.5<br>10turns<br>2<br>2 3.14<br>N<br><br><br><br><br><br><br><br><br>(3)<br>0<br>10<br>0<br><br><br><br><br>rad/s<br>s<br>  <br>10<br>1<br>10<br>0<br>t<br>0<br><br><br><br><br><br><br><br><br></div></details></div>
+<div class="slide-card" id="slide-p13" data-page="13"><div class="slide-card-label">第13页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p013.jpg" loading="lazy" alt="第13页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">during 30 s , the angle is<br>rad<br>π<br>75<br>)<br>6<br>π<br>(<br>2<br>)<br>π<br>5<br>(<br>2<br>2<br>2<br>0<br>2<br><br><br><br><br><br><br><br><br><br><br><br>2<br>1<br>0<br>s<br>rad<br>6<br>π<br>s<br>rad<br>30<br>π<br>5<br>0<br><br><br><br><br><br><br><br><br><br><br>t<br><br><br><br>E2 A flywheel has a radius of 0.2m and a rotating speed of 150round · min-1 . <br>It will decelerate uniformly 匀减速due to braking刹车and stop rotating after <br>30 seconds. Try to find: (1) angular acceleration and the rotation turns of <br>flywheel in this time; (2) Angular velocity of flywheel at t = 6 s after braking; <br>(3) Linear velocity, tangential acceleration and normal acceleration at a point <br>on the flywheel edge at t = 6 s<br>Solution:<br>（1）<br>,<br>s<br>rad<br>π<br>5<br>1<br>0<br><br><br><br><br>.0<br><br><br>when t = 30 s ，<br>when<br>.<br>0<br>0 <br><br>t = 0 s</div></details></div>
+<div class="slide-card" id="slide-p14" data-page="14"><div class="slide-card-label">第14页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p014.jpg" loading="lazy" alt="第14页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">（2）<br>s<br>6<br><br>t<br>，angular velocity<br>1<br>1<br>0<br>s<br>rad<br>π<br>4<br>s<br>rad<br>)<br>6<br>6<br>π<br>π<br>5<br>(<br><br><br><br><br><br><br><br><br><br><br>t<br><br><br><br>（3）<br>s<br>6<br><br>t<br>，linear velocity at the edge of wheel<br>2<br>2<br>s<br>m<br>5.2<br>s<br>m<br>π<br>4<br>2.0<br><br><br><br><br><br><br><br><br>r<br>v<br>Tangential acceleration and normal acceleration:<br>2<br>2<br>t<br>s<br>m<br>105<br>.0<br>s<br>m<br>)<br>6<br>π<br>(<br>2.0<br><br><br><br><br><br><br><br><br><br><br>r<br>a<br>Turns:<br>r<br>5.<br>37<br>π<br>2<br>π<br>75<br>π<br>2<br><br><br><br>N<br>2<br>2<br>2<br>2<br>0.2 (4 ) m s<br>31.6 m s<br>na<br>r<br><br><br><br><br><br><br><br><br></div></details></div>
+<div class="slide-card" id="slide-p15" data-page="15"><div class="slide-card-label">第15页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p015.jpg" loading="lazy" alt="第15页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">E3 In a high-speed rotating motor, a cylindrical rotor圆柱形转子can rotate <br>around an axis perpendicular to its cross section through the center. At the <br>beginning，angular velocity is 0, its angular velocity reaches 18000r · min-1 after <br>300s . The angular acceleration of the rotor is proportional to time. How many <br>turns did the rotor rotate during this period?<br>Solution:<br>let<br>ct<br><br><br>d<br>= d<br>ct<br>t<br><br><br><br><br><br><br>t<br>t<br>t<br>c<br>0<br>0<br>d<br>d<br><br>thus<br>2<br>2<br>1 ct<br><br><br>When t=300s<br>1<br>1<br>s<br>rad<br>π<br>600<br>min<br>r<br>18000<br><br><br><br><br><br><br><br>So <br>3<br>3<br>2<br>2<br>s<br>rad<br>75<br>π<br>s<br>rad<br>300<br>π<br>600<br>2<br>2<br><br><br><br><br><br><br><br>t<br>c<br></div></details></div>
+<div class="slide-card" id="slide-p16" data-page="16"><div class="slide-card-label">第16页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p016.jpg" loading="lazy" alt="第16页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Angular velocity<br>2<br>2<br>1<br>π<br>2<br>150<br>ct<br>t<br><br><br>2<br>d<br>π<br>d<br>150 t<br>t<br><br><br><br>hence<br>2<br>0<br>0<br>π<br>d<br>d<br>150<br>t t<br>t<br><br><br><br>thus<br>3<br>π<br>450 t<br><br>Rotation turns with 300 s <br>4<br>3<br>10<br>3<br>)<br>300<br>(<br>450<br>π<br>2<br>π<br>π<br>2<br><br><br><br><br><br>N<br>3<br>2<br>s<br>rad<br>)<br>75<br>(π<br>2<br><br><br><br><br>t<br>c<br></div></details></div>
+<div class="slide-card" id="slide-p17" data-page="17"><div class="slide-card-label">第17页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p017.jpg" loading="lazy" alt="第17页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">3.2 Law of Rotation，Moment of Inertia <br>转动定律转动惯量<br>3.2.1 Torque 力矩<br>1、Introduction<br>The rotation effect of force applied to rigid body:   <br>direction, point and magnitude of force<br>Example: open the door<br>2、Torque of force to a point<br>F<br>r<br>M<br><br><br><br><br><br>sin<br>M<br>Fr<br><br>＝</div></details></div>
+<div class="slide-card" id="slide-p18" data-page="18"><div class="slide-card-label">第18页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p018.jpg" loading="lazy" alt="第18页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body"><br><br><br><br><br><br><br><br><br><br><br><br>i<br>i<br>i<br>iz<br>i<br>i<br>iz<br>i<br>oi<br>F<br>r<br>F<br>r<br>F<br>r<br>r<br>F<br>r<br><br><br><br><br><br><br><br><br><br>)<br>(<br>d<br>i<br>O<br>iF<br><br>oi<br>r<br>z<br><br>O<br>izr<br>O<br><br>iF<br><br>iz<br>F<br><br>ir<br><br><br><br><br><br><br><br><br><br><br><br>i<br>oi<br>z<br>i<br>oi<br>i<br>iz<br>oi<br>i<br>oi<br>o<br>F<br>r<br>F<br>r<br>F<br>F<br>r<br>F<br>r<br>M<br><br><br><br><br><br><br><br><br><br><br>)<br>(<br>According to torque of force to a point：<br>对刚体转动起作用的只有力对<br>点的力矩在z轴方向的分量<br><br><br><br>i<br>i<br>iz<br>F<br>r<br>M<br><br><br><br>外力对转轴的力矩<br></div></details></div>
+<div class="slide-card" id="slide-p19" data-page="19"><div class="slide-card-label">第19页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p019.jpg" loading="lazy" alt="第19页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">d<br>i<br>O<br>iF<br><br>oi<br>r<br>z<br><br>O<br>izr<br>O<br><br>iF<br><br>iz<br>F<br><br>ir<br><br><br><br><br>i<br>i<br>iz<br>F<br>r<br>M<br><br><br><br>direction：parallel with the axis<br>Magnitude:<br>θ<br>F<br>r<br>M<br>i<br>i<br>iz<br>sin<br><br><br>iz<br>M<br><br>When there are many forces applied <br>to an axis, the net torque is<br>i<br>i<br>i<br>iz<br>z<br>θ<br>F<br>r<br>M<br>M<br>sin<br><br><br><br><br>＝<br>总<br>Note: +- sign represents the direction with +z axis<br>3、Torque of force to a rotating axis力对转轴的力矩</div></details></div>
+<div class="slide-card" id="slide-p20" data-page="20"><div class="slide-card-label">第20页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p020.jpg" loading="lazy" alt="第20页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">3.2.2 Law of Rotation 转动定律<br>iO<br>iF<br><br>z<br><br>O<br>iF<br><br><br>ir<br>im<br><br>v<br>Assume rigid body is composed <br>with n particles, mass element is <br>i<br>m<br><br>i<br>i<br>i<br>i<br>a<br>m<br>F<br>F<br><br><br><br><br><br><br><br>At tangential direction:<br><br><br><br>i<br>i<br>it<br>i<br>it<br>it<br>r<br>m<br>a<br>m<br>F<br>F<br><br><br><br><br><br>For all particle：<br><br><br><br><br><br><br><br><br>)<br>(<br>2<br>i<br>i<br>i<br>it<br>i<br>ti<br>r<br>m<br>r<br>F<br>r<br>F<br>Torque of <br>external <br>forces<br>Torque of <br>inner forces<br>Only related to <br>rigid body itself</div></details></div>
+<div class="slide-card" id="slide-p21" data-page="21"><div class="slide-card-label">第21页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p021.jpg" loading="lazy" alt="第21页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body"><br><br><br><br><br><br><br><br>)<br>(<br>2<br>i<br>i<br>i<br>it<br>i<br>ti<br>r<br>m<br>r<br>F<br>r<br>F<br>zero<br>Net external <br>torque<br>Moment of inertia<br>转动惯量<br><br><br>i<br>ti r<br>F<br>M<br><br><br>2<br>i<br>ir<br>m<br>J<br><br><br>J<br>M <br>Law of rotation <br>转动定律<br>The angular acceleration of the fixed axis rotation of a rigid <br>body is directly proportional to its external torque and <br>inversely proportional to the moment of  inertia of the rigid <br>body.</div></details></div>
+<div class="slide-card" id="slide-p22" data-page="22"><div class="slide-card-label">第22页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p022.jpg" loading="lazy" alt="第22页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">哲学启示——力矩、转动惯量与人生<br>选择<br>力矩（τ）：外界环境的作用力<br>力矩象征着外界环境对个人或集体的作用力，如机遇、压力、社会需求等，这些因素<br>推动或阻碍着人生的发展方向。<br>例如，经济危机给企业带来巨大压力，但同时也催生了新的商业模式和创新机遇，企<br>业需把握机遇实现转型。<br>转动惯量（I）：内在属性的稳定性<br>转动惯量代表着个人或集体的内在属性，如能力积累、文化底蕴、制度稳定性等，它<br>决定了改变现状的难易程度。<br>例如，一个文化底蕴深厚的企业，其制度和文化具有较高的稳定性，改变方向需要较<br>大的外力和内部共识。<br>角加速度（α）：突破现状的速度<br>角加速度反映了突破现状的速度，即个人或集体的创新力、改革成效等，是衡量发展<br>快慢的重要指标。例如，科技公司通过持续创新，快速适应市场变化，实现业务的快<br>速增长和突破。</div></details></div>
+<div class="slide-card" id="slide-p23" data-page="23"><div class="slide-card-label">第23页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p023.jpg" loading="lazy" alt="第23页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">个人成长与突破<br>青年需保持开放心态<br>“转动惯量”越大，改变方向越难，青年应保持开放心态，避免思维固化，积极接受新<br>事物和新观念。例如，华为“备胎计划”以深厚的技术积累（高“转动惯量”）抵御外<br>部压力，同时保持创新活力，不断突破技术瓶颈。<br>个人能力与社会需求的结合<br>个人应将自身能力积累与社会需求相结合，通过不断学习和提升，增强适应社会变化的<br>能力。例如，许多青年通过参加职业技能培训，提升自己的专业能力，更好地适应社会<br>发展的需求。<br>创新与改革的重要性<br>个人和集体应注重创新与改革，通过提升“角加速度”，实现快速突破和发展，适应时<br>代的变化。例如，一些传统制造业企业通过引入智能制造技术，实现了生产效率和产品<br>质量的大幅提升，增强了市场竞争力。</div></details></div>
+<div class="slide-card" id="slide-p24" data-page="24"><div class="slide-card-label">第24页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p024.jpg" loading="lazy" alt="第24页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">m<br>r<br>J<br>r<br>m<br>J<br>i<br>i<br>d<br>,<br>2<br>2<br><br><br><br><br><br>Moment of inertia  转动惯性的量度.<br>Moment of inertia of a rigid body with discrete mass <br>distribution 质量离散分布<br><br><br><br><br><br><br>2<br>2<br>2<br>2<br>1<br>1<br>2<br>r<br>m<br>r<br>m<br>r<br>m<br>J<br>i<br>i<br>i<br><br>Calculation method of moment of inertia<br>The magnitude of the moment of inertia depends on the density and mass <br>of the rigid body, the geometry (mass distribution) and the position of the <br>rotating axis .<br>3.2.3 Moment of Inertia转动惯量</div></details></div>
+<div class="slide-card" id="slide-p25" data-page="25"><div class="slide-card-label">第25页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p025.jpg" loading="lazy" alt="第25页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">mass line distribution：<br>：line density线密度<br>l<br>m<br>d<br>d<br><br><br><br>mass plane distribution:<br>：areal density面密度<br>S<br>m<br>d<br>d<br><br><br><br>mass volume distribution ：<br>：volume density体密度<br>V<br>m<br>d<br>d<br><br><br><br>：mass element<br>m<br>d<br>Moment of inertia of a rigid body with <br>continuous mass distribution 质量连续分布<br>m<br>r<br>r<br>m<br>J<br>i<br>i<br>i<br>d<br>2<br>2<br><br><br><br><br></div></details></div>
+<div class="slide-card" id="slide-p26" data-page="26"><div class="slide-card-label">第26页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p026.jpg" loading="lazy" alt="第26页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">l<br>O´<br>O<br>Solution：let the line density of rod be<br>，assume a  <br>mass element away from axis OO´with distance <br>r<br>r<br>m<br>d<br>d<br><br><br><br><br>l<br>r<br>r<br>J<br>0<br>2d<br><br>r<br>d<br>3<br>2<br>/<br>0<br>2<br>12<br>1<br>d<br>2<br>l<br>r<br>r<br>J<br>l<br><br><br><br><br><br>2<br>3<br>1ml<br><br>r<br>r<br>r<br>m<br>r<br>J<br>d<br>d<br>d<br>2<br>2<br><br><br><br>E2 A uniform slender rod细棒with mass m and length L, calculate <br>the moment of inertia. 1) the axis passing through the center of the <br>rod and perpendicular to the rod . 2) the axis passing through the <br>end of the rod and perpendicular to the rod<br>r<br>d<br>2<br>l<br>2<br>l<br><br>O´<br>O<br>2<br>12<br>1 ml<br><br>2) Axis pass through the end<br>1) Axis pass through the center</div></details></div>
+<div class="slide-card" id="slide-p27" data-page="27"><div class="slide-card-label">第27页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p027.jpg" loading="lazy" alt="第27页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">O<br>R O<br>R<br>4<br>0<br>3<br>π<br>2<br>d<br>π<br>2<br>R<br>r<br>r<br>J<br>R<br><br><br><br><br>rd<br>r<br>E3 For a uniform disk with mass m and radius r, find the <br>moment of inertia of the axis passing through the center O of the <br>disk and perpendicular to the disk surface<br>Solution: let the areal density of disk <br>is       , set a loop with width of            , <br>radius       on the disk,<br>r<br>r<br>d<br><br>2<br>π R<br>m<br><br><br>since<br>r<br>r<br>m<br>d<br>π<br>2<br>d<br><br><br>Mass of loop<br>2<br>2<br>1 mR<br>J <br>thus<br>r<br>r<br>m<br>r<br>J<br>d<br>π<br>2<br>d<br>d<br>3<br>2<br><br><br><br>Moment of inertia of loop to axis</div></details></div>
+<div class="slide-card" id="slide-p28" data-page="28"><div class="slide-card-label">第28页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p028.jpg" loading="lazy" alt="第28页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">2<br>md<br>J<br>J<br>C<br>O<br><br><br>P<br>a rigid body with mass      ，the <br>moment of inertia at mass center <br>axis is         . Then for any parallel <br>axis with distance       to center axis, <br>the moment of inertia is<br>C<br>J<br>m<br>d<br>d<br>C<br>O<br>m<br>2<br>2<br>2<br>1<br>mR<br>mR<br>J P<br><br><br>Moment of <br>inertia of <br>disk to P axis<br>R<br>m<br>O<br>3.2.4 Parallel axis theorem平行轴定理</div></details></div>
+<div class="slide-card" id="slide-p29" data-page="29"><div class="slide-card-label">第29页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p029.jpg" loading="lazy" alt="第29页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">E: find the moment of inertia, the axis is through <br>the end of rob, and perpendular to rob？(length of <br>rob is L、radius of disk is R）<br>2<br>1<br>3<br>1<br>L<br>m<br>J<br>L<br>L <br>2<br>2<br>1<br>R<br>m<br>J<br>o<br>o <br>2<br>0<br>0<br>2<br>d<br>m<br>J<br>JL<br><br><br>2<br>2<br>2<br>)<br>(<br>2<br>1<br>3<br>1<br>R<br>L<br>m<br>R<br>m<br>L<br>m<br>J<br>o<br>o<br>L<br><br><br><br><br>axis<br>rob<br>disk<br>Solution:</div></details></div>
+<div class="slide-card" id="slide-p30" data-page="30"><div class="slide-card-label">第30页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p030.jpg" loading="lazy" alt="第30页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">3.2.5 Application of Law of Rotation<br>Problem type：<br>1.Known J and M，find α<br>2.Known J and α ，find M<br>3.Known M and α ，find J<br>Step;<br>1.Determine the object<br>2.Analysis the force<br>3.Choose reference frame<br>4.Find the equations<br>5.Solve the equations<br>6.Discuss if neccessary</div></details></div>
+<div class="slide-card" id="slide-p31" data-page="31"><div class="slide-card-label">第31页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p031.jpg" loading="lazy" alt="第31页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">E: A fixed pulley has a mass of M and radius R (regarded as a uniform <br>disk) . The pulley is with a rope wound around it绕有细绳. One end <br>of the rope is fixed on the edge of the pulley, and the other end hangs <br>an object with a mass of m. Ignoring friction at the shaft忽略轴处摩<br>擦. object m fall from rest, when it falls at height h. Find 1) the <br>velocity of m; 2)the angular velocity at this time.<br><br><br><br><br>MR<br>J<br>Solution：<br>(1) moment of inertia of pulley M is<br>T<br>T<br>mg<br>o<br>M<br>m<br>x<br>(2) Force analysis:<br>Pulley：T、Mg、support force of shaft，<br>only T has torque（why?)，move clockwise；<br>Object m：mg and T，move down</div></details></div>
+<div class="slide-card" id="slide-p32" data-page="32"><div class="slide-card-label">第32页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p032.jpg" loading="lazy" alt="第32页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">For object m：<br><br><br>2<br>2<br>1 MR<br>J<br>RT<br><br><br>①<br>ma<br>T<br>mg<br><br><br>②<br>③<br>（3）to pulley：<br>（4）solve the equations, the acceleration is：<br>g<br>M<br>m<br>m<br>a<br>2<br><br><br>M<br>m<br>mgh<br>ah<br>V<br><br><br><br>2<br>4<br>2<br>Angular velocity is <br>M<br>m<br>mgh<br>R<br>R<br>V<br><br><br><br>2<br>4<br>1<br><br>Relationship of pulley and object:<br>𝑎= 𝑅𝛼</div></details></div>
+<div class="slide-card" id="slide-p33" data-page="33"><div class="slide-card-label">第33页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p033.jpg" loading="lazy" alt="第33页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">E2、A uniform disk flywheel with a mass of 69kg and a radius of 0.25m is <br>rotating at a speed of 1000 revolutions per minute. In order to brake the <br>flywheel, it is required to decelerate it within 5.0 seconds and finally stop. What <br>is the friction between the brake pad and the wheel? ？<br>F<br>ω0<br>α<br>ω0<br>N<br>fr<br>Solution：<br>t<br>0<br><br><br><br><br><br>2<br>0<br>rad/s<br>9.<br>20<br>s<br>5<br>   <br>0<br>    <br> <br>rad/s<br>7.<br>104<br>min<br>/<br>r<br>1000<br><br><br><br><br><br><br><br><br><br><br>t<br>Torque of external force is friction torque, the <br>angular acceleration is negative;<br>2<br>1<br>2<br>r<br>M<br>f R<br>J<br>mR<br><br><br><br><br><br>＝<br>1<br>2<br>rf<br>mR<br></div></details></div>
+<div class="slide-card" id="slide-p34" data-page="34"><div class="slide-card-label">第34页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p034.jpg" loading="lazy" alt="第34页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">3.3 Angular momentum角动量,<br>Law of conservation of angular <br>momentum 角动量守恒定律<br>Galaxy</div></details></div>
+<div class="slide-card" id="slide-p35" data-page="35"><div class="slide-card-label">第35页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p035.jpg" loading="lazy" alt="第35页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">3.3.1. Angular Momentum（角动量）<br>m<br>o<br>θ<br>p<br>r<br>Assume：at time t, the position vector of a particle is r<br>Momentum is<br>v<br>m<br>Angular momentum of moving <br>particle relative to reference origin <br>O is defined as: <br>magnitude：<br>sin<br>L<br>rm<br><br><br>v<br>Direction：right-hand screw rule<br>If the particle moves in a circle, <br>the angular momentum of the <br>center of the circle is：<br>v<br>rm<br>L <br>Ԧ𝑣<br>v<br>m<br>r<br>p<br>r<br>L<br><br><br><br><br><br><br><br><br></div></details></div>
+<div class="slide-card" id="slide-p36" data-page="36"><div class="slide-card-label">第36页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p036.jpg" loading="lazy" alt="第36页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Angular Momentum of particle <br>for axle A (质点对轴A的角动量):<br>L<br><br>O<br>A<br>L<br><br>A<br><br><br>cos<br>L<br>LA <br>Angular Momentum of particle <br>system (质点系的角动量):<br>Assume the position vectors of particles are (设<br>各质点对O点的位矢分别为):<br>nr<br>r<br>r<br><br><br><br><br>,<br>,<br>,<br>2<br>1<br>Momentums are<br>(动量分别为):<br>np<br>p<br>p<br><br><br><br><br>,<br>,<br>,<br>2<br>1<br><br><br><br><br><br><br><br>n<br>i<br>n<br>i<br>i<br>i<br>i<br>p<br>r<br>L<br>L<br>1<br>1<br>)<br>(<br><br><br><br><br>Then the Angular <br>Momentum of particle <br>system is(质点系角动量):</div></details></div>
+<div class="slide-card" id="slide-p37" data-page="37"><div class="slide-card-label">第37页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p037.jpg" loading="lazy" alt="第37页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body"><br>2. Angular momentum of a rigid <br>body:<br><br><br><br><br><br>i<br>i<br>i<br>i<br>i<br>i<br>i<br>z<br>r<br>m<br>r<br>m<br>L<br>)<br>(<br>2<br>v<br>O<br>ir<br>i<br>m<br>iv<br><br>J<br>L <br>z<br>1. Angular momentum of a particle:<br>Angular momentum Calculation 角动量计算<br>v<br>m<br>r<br>p<br>r<br>L<br><br><br><br><br><br><br><br><br><br>If v is perpendicular to r,<br>L<br>rmv<br></div></details></div>
+<div class="slide-card" id="slide-p38" data-page="38"><div class="slide-card-label">第38页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p038.jpg" loading="lazy" alt="第38页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">3.3.2. Theorem of angular momentum<br>(角动量定理)<br>t<br>p<br>r<br>p<br>t<br>r<br>p<br>r<br>t<br>t<br>L<br>d<br>d<br>d<br>d<br>)<br>(<br>d<br>d<br>d<br>d<br><br><br><br><br><br><br><br><br><br><br><br><br><br>t<br>p<br>r<br>v<br>m<br>v<br>d<br>d <br><br><br><br><br><br><br><br>0<br><br><br>F<br>For a particle:<br>Let M be the <br>moment of force<br>F<br>r<br>M<br><br><br><br><br><br>M<br>F<br>r<br>t<br>L<br><br><br><br><br><br><br><br>d<br>d<br>Then</div></details></div>
+<div class="slide-card" id="slide-p39" data-page="39"><div class="slide-card-label">第39页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p039.jpg" loading="lazy" alt="第39页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">t<br>L<br>M<br>d<br>d<br><br><br><br>Theorem of angular momentum<br>角动量定理<br>From time t1 to t2 ,<br>Moment of impulse冲量矩<br>The increment of angular momentum is equal to the moment of impulse <br>of the force.<br>Integral form<br>1<br>2<br>2<br>1<br>L<br>L<br>t<br>M<br>t<br>t<br><br><br><br><br><br><br><br>d<br>For a particle<br>Differential form</div></details></div>
+<div class="slide-card" id="slide-p40" data-page="40"><div class="slide-card-label">第40页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p040.jpg" loading="lazy" alt="第40页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">For particle system: <br>Angular momentum     <br><br><br><br><br><br><br><br>n<br>i<br>n<br>i<br>i<br>i<br>i<br>p<br>r<br>L<br>L<br>1<br>1<br>)<br>(<br><br><br><br><br>Take the derivative of both <br>sides：<br><br><br><br><br><br><br><br><br><br><br><br>t<br>p<br>r<br>p<br>t<br>r<br>t<br>L<br>i<br>i<br>i<br>i<br>d<br>d<br>d<br>d<br>d<br>d<br><br><br><br><br><br>0<br>d<br>d<br><br><br>i<br>i<br>p<br>t<br>r<br><br><br>where：<br><br><br>内<br>外<br>i<br>i<br>i<br>i<br>i<br>f<br>F<br>r<br>t<br>p<br>r<br><br><br><br><br><br><br><br><br>d<br>d<br><br><br><br><br><br><br>内<br>外<br>i<br>i<br>i<br>i<br>f<br>r<br>F<br>r<br>t<br>L<br><br><br><br><br><br>d<br>d<br>The sum of internal moments <br>is zero内力矩之和为零</div></details></div>
+<div class="slide-card" id="slide-p41" data-page="41"><div class="slide-card-label">第41页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p041.jpg" loading="lazy" alt="第41页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">t<br>L<br>F<br>r<br>M<br>i<br>i<br>d<br>d<br><br><br><br><br><br><br><br>外<br>外<br>The change rate of the angular momentum of a particle system to a <br>reference point with time is equal to the vector sum of the moments of <br>each external force on the same reference point.<br>Theorem of angular momentum质点系角动量定理：<br>For particle system</div></details></div>
+<div class="slide-card" id="slide-p42" data-page="42"><div class="slide-card-label">第42页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p042.jpg" loading="lazy" alt="第42页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">For particle system to z-axis, <br>Conservation law of angular momentum：<br>constant vector<br>zL<br><br><br>0<br>external z<br>M<br><br>i.e.：When the vector sum of the moment of the external forces on the <br>system to a reference point is always zero, the angular momentum of <br>the particle system to that point remains unchanged.<br>3.3.3. Conservation law of angular momentum角动<br>量守恒定律<br>if<br>0<br>external<br>M<br><br>then<br>constant vector<br>L </div></details></div>
+<div class="slide-card" id="slide-p43" data-page="43"><div class="slide-card-label">第43页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p043.jpg" loading="lazy" alt="第43页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body"><br>1. Angular momentum theorem of rigid body <br>rotating around a fixed axis:<br>1<br>2<br>2<br>1<br>d<br><br><br>J<br>J<br>t<br>M<br>t<br>t<br>z<br><br><br><br>O<br>ir<br>i<br>m<br>iv<br>t<br>J<br>t<br>L<br>M<br>z<br>z<br>z<br>d<br>)<br>(<br>d<br>d<br>d<br><br><br><br>z<br><br>J<br>L <br>L<br>rmv<br><br>2. Conservation law of angular momentum <br>of rigid body rotating around a fixed axis<br>0<br><br>M<br>L<br>J<br><br>cosntant<br>, then<br>if</div></details></div>
+<div class="slide-card" id="slide-p44" data-page="44"><div class="slide-card-label">第44页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p044.jpg" loading="lazy" alt="第44页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Conservation of angular momentum<br>Figure skating花样滑冰<br>m<br>m<br>ω<br>1r<br>2r<br>fancy diving<br>跳水</div></details></div>
+<div class="slide-card" id="slide-p45" data-page="45"><div class="slide-card-label">第45页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p045.jpg" loading="lazy" alt="第45页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">E: A rob hangs at O point and can rorate around o-<br>axis. There is a bullet with a mass of m, hit the <br>lower end of the rod at a horizontal speed of v0, <br>the bullet stays in the rob. <br>Calculate the angular velocity when the rod and <br>the bullet begin to move together?<br>m<br>v0<br>Solution:<br>Consevation law of momentum ?<br>M<br>l<br>O<br>2<br>0<br>1<br>3<br>mlv<br>mlv<br>Ml <br><br><br>v<br>l<br><br>l<br>v<br>M<br>m<br>m<br>0<br>3<br>3<br><br><br><br><br>2<br>2<br>0<br>1<br>3<br>mlv<br>ml<br>Ml<br><br><br><br><br>Consevation law of angular momentum to O<br><br>J<br>L <br>L<br>rmv<br><br>2<br>1<br>3<br>rob<br>J<br>Ml<br></div></details></div>
+<div class="slide-card" id="slide-p46" data-page="46"><div class="slide-card-label">第46页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p046.jpg" loading="lazy" alt="第46页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">E: A disk with mass M and radius R can rotate around a smooth <br>axis O. A man with mass m is on the disk.  They are both initially <br>still relative to the ground. When the man walks along the edge of <br>the disk for a round relative to disk. What is the angle of the disk <br>rotates relative to the ground?<br>Solution:<br>Man and disk system, for o-axis,<br>Momentum of external force is zero.<br>Angular momentum of man-disk is constant<br>d<br>dt<br><br><br>d<br>d<br>Θ<br>Ω<br>t<br><br>2<br>2<br>1<br>'<br>2<br>J<br>mR<br>J<br>MR<br><br></div></details></div>
+<div class="slide-card" id="slide-p47" data-page="47"><div class="slide-card-label">第47页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p047.jpg" loading="lazy" alt="第47页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">2<br>2<br>d<br>1<br>d<br>d<br>2<br>d<br>Θ<br>mR<br>MR<br>t<br>t<br><br>2<br>2<br>0<br>0<br>1<br>d<br>2<br>mR<br>MR d<br><br><br><br><br><br><br><br><br><br>M<br>m<br>2<br>1<br><br>Man moves one round relative to the disk<br>2<br><br><br><br>2<br>2<br>2<br>m<br>m<br>M<br><br><br><br><br>2<br>2<br>1<br>'<br>2<br>J<br>mR<br>J<br>MR<br><br><br>2<br>2<br>1<br>d<br>d<br>2<br>mR<br>MR<br>Θ<br></div></details></div>
+<div class="slide-card" id="slide-p48" data-page="48"><div class="slide-card-label">第48页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p048.jpg" loading="lazy" alt="第48页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Straigh-line motion of particle<br>Rotation around fixed-axis of rigid <br>body<br>Position vector<br>Angular position<br>displacement<br>Angular displacement<br>velocity<br>Angular velocity<br>acceleration<br>Angular acceleration<br>Mass<br>Moment of intertia<br>Force <br>Torque (moment of <br>force)<br>Newton’s second <br>law<br>Rotation law<br>Momentum <br>Angular momentum<br>Impulse<br>Moment of impulse<br>Momentum <br>theorem<br>Theorem of angular <br>momentum<br>Conservation law of <br>momentum<br>Conservation law of <br>angular momentum<br>x<br>1<br>2<br>x<br>x<br>Δx<br><br><br>dt<br>dx<br>v <br>dt<br>dv<br>a <br>F<br><br>m<br>a<br>m<br>F<br><br><br>＝<br>v<br>m<br>P<br><br><br>＝<br><br><br>dt<br>F<br>I<br><br><br>1<br>2<br>P<br>P<br>I<br><br><br><br><br><br>Const<br>P<br>0,<br>F<br><br><br><br><br>θ<br>1<br>2<br>θ<br>θ<br>Δθ<br><br><br>dt<br>dθ<br>ω <br>dt<br>dω<br>α <br><br><br>2<br>i<br>ir<br>Δm<br>J<br>F<br>r<br>M<br><br><br><br><br><br>α<br>J<br>M<br>z<br>z <br>Jω<br>L <br><br>dt<br>M<br><br>1<br>2<br>L<br>L<br>dt<br>M<br><br><br><br><br><br><br>Const<br>L<br>0,<br>M<br><br><br><br></div></details></div>
+<div class="slide-card" id="slide-p49" data-page="49"><div class="slide-card-label">第49页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p049.jpg" loading="lazy" alt="第49页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Straigh-line motion of <br>particle<br>Rotation around fixed-axis <br>of rigid body<br>work<br>Work of torque<br>Kinetic <br>energy<br>Rotation kinetic <br>energy<br>Theorem <br>of kinetic <br>energy<br>Theorem of <br>rotation kinetic <br>energy<br><br><br><br>r<br>d<br>F<br>A<br><br><br>2<br>K<br>mv<br>E<br>2<br>1<br><br>k1<br>2<br>k<br>E<br>E<br>A<br><br></div></details></div>
+<div class="slide-card" id="slide-p50" data-page="50"><div class="slide-card-label">第50页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p050.jpg" loading="lazy" alt="第50页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body"><br>d<br>d<br>d<br>d<br>t<br>t<br>r<br>F<br>s<br>F<br>r<br>F<br>A<br><br><br><br><br><br><br><br>d<br>d<br>M<br>A <br><br><br>2<br>1<br>d<br><br><br><br>M<br>A<br>Work of torque<br>o<br>r<br>v<br>F<br>x<br>v<br>F<br>o<br>x<br>r<br>tF<br>r<br>d<br><br>d<br>3.4.1<br>Work of torque力矩作功<br>3.4 Work and Energy of Rotation<br>转动的功和能</div></details></div>
+<div class="slide-card" id="slide-p51" data-page="51"><div class="slide-card-label">第51页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p051.jpg" loading="lazy" alt="第51页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">3.4.2 Power of torque力矩的功率<br>definition：<br>The work of torque to rigid body per second<br>t<br>A<br>P<br>d<br>d<br><br>Indicates how fast of the torque do work on the rigid body <br>表示力矩对刚体作功的快慢<br>When power of torque is unchanged, if angular velocity <br>is larger, torque is smaller.<br><br><br><br>M<br>t<br>M<br>t<br>M<br>P<br><br><br>d<br>d<br>d<br>d ＝</div></details></div>
+<div class="slide-card" id="slide-p52" data-page="52"><div class="slide-card-label">第52页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p052.jpg" loading="lazy" alt="第52页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">3.4.3 Rotation kinetic energy转动动能<br>Mass element——Δmi<br>Distance to axis—— ri<br>velocity——vi=riω<br>Kinetic energy of particle i:<br>2<br>2<br>2<br>2<br>1<br>2<br>1<br><br>i<br>i<br>i<br>i<br>ki<br>r<br>m<br>v<br>m<br>E<br><br><br><br><br>Kinetic energy of all particles in rigid body<br><br><br>2<br>2<br>2<br>2<br>2<br>1<br>2<br>1<br><br><br><br><br><br><br><br><br>i<br>i<br>i<br>i<br>ki<br>k<br>r<br>m<br>r<br>m<br>E<br>E<br>＝<br>＝<br>Rotation kinetic energy:<br>2<br>2<br>1 <br>J<br>Ek＝</div></details></div>
+<div class="slide-card" id="slide-p53" data-page="53"><div class="slide-card-label">第53页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p053.jpg" loading="lazy" alt="第53页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">3.4.4 Theorem of rotation kinetic energy转动动能定理<br>Net external torque is M, <br>angular displacement is dθ,<br>Work element of net external torque <br>is:<br><br>d<br>d<br>M<br>A <br><br><br><br><br><br><br>d <br>d<br>d<br>d<br>d<br>d<br>d<br>d<br>J<br>t<br>J<br>t<br>J<br>A<br>＝<br>＝<br><br>t<br>J<br>J<br>M<br>d<br>d<br><br><br><br><br><br><br><br><br><br>0<br>d <br>d<br>J<br>A<br>A＝<br>2<br>0<br>2<br>2<br>1<br>2<br>1<br><br><br>J<br>J<br>A<br>－<br>＝<br>Theorem of rotation kinetic <br>energy:</div></details></div>
+<div class="slide-card" id="slide-p54" data-page="54"><div class="slide-card-label">第54页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p054.jpg" loading="lazy" alt="第54页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">h<br>hi<br>hc<br>x<br>O<br>m<br>C<br>A mass element：<br>i<br>i<br>m gh<br><br>i<br>i<br>P<br>i<br>E<br>m gh<br><br><br><br>重<br>(<br>)<br>i<br>i<br>c<br>i<br>g<br>m h<br>mgh<br><br><br><br><br>Rigid body：<br>The gravitational potential energy of a rigid body is equivalent <br>to the potential energy when all its masses are concentrated at <br>the center of mass.<br>3.4.5 Gravitational potential energy刚体的重力势能<br>i<br>m<br></div></details></div>
+<div class="slide-card" id="slide-p55" data-page="55"><div class="slide-card-label">第55页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p055.jpg" loading="lazy" alt="第55页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Straigh-line motion of <br>particle<br>Rotation around fixed-axis of <br>rigid body<br>work<br>Work of torque<br>Kinetic <br>energy<br>Rotation <br>kinetic energy<br>Theorem <br>of kinetic <br>energy<br>Theorem of <br>rotation kinetic <br>energy<br><br><br><br>r<br>d<br>F<br>A<br><br><br>2<br>K<br>mv<br>E<br>2<br>1<br><br>k1<br>2<br>k<br>E<br>E<br>A<br><br><br><br><br><br>dθ<br>M<br>A<br>2<br>K<br>Jω<br>E<br>2<br>1<br><br>k1<br>2<br>k<br>E<br>E<br>A<br><br><br>For a system with a rigid body, if only conservative internal <br>forces do work during motion, the mechanical energy of the <br>system is conserved.<br>3.4.5 Conservation of mechanical energy机械能守恒</div></details></div>
+<div class="slide-card" id="slide-p56" data-page="56"><div class="slide-card-label">第56页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p056.jpg" loading="lazy" alt="第56页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">E1 A rod with length of l and mass of m’ can rotate freely around fulcrum <br>O. A bullet with a mass of m and a velocity of v is fired into the rod at a <br>distance a from the fulcrum, the bullet stays in the rod.  The rod and bullet <br>moves to the highest angle of 30 º.  Assuming the mechanic energy is <br>conservative,  what is the initial velocity v0 of the bullet? <br>Solution: <br>Take the bullet and rod as a system. In the <br>process of a bullet entering the rod, the angular <br>momentum of system is conservative. <br><br>)<br>3<br>1<br>(<br>2<br>2<br>ma<br>l<br>m<br>a<br>m<br><br><br><br>v<br>o<br>a<br>'<br>m<br>v<br><br>30<br>2<br>2<br>3<br>'<br>3<br>ma<br>l<br>m<br>a<br>m<br><br><br>v<br></div></details></div>
+<div class="slide-card" id="slide-p57" data-page="57"><div class="slide-card-label">第57页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p057.jpg" loading="lazy" alt="第57页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">o<br>a<br>'<br>m<br>v<br><br>30<br>ma<br>ma<br>l<br>m<br>ma<br>l<br>m<br>g<br>6<br>)<br>3<br>)(<br>2<br>)(<br>3<br>2<br>(<br>2<br>2 <br><br><br><br><br><br>v<br><br><br><br>2<br>2<br>2<br>)<br>3<br>1<br>(<br>2<br>1<br><br>ma<br>l<br>m<br>)<br>30<br>cos<br>1(<br>2<br><br><br><br><br>l<br>g<br>m<br>)<br>30<br>cos<br>1(<br><br><br>mga<br>The mechanical energy is conservative <br>after the bullet is fired into the rod.<br>2<br>2<br>3<br>'<br>3<br>ma<br>l<br>m<br>a<br>m<br><br><br>v<br></div></details></div>
+<div class="slide-card" id="slide-p58" data-page="58"><div class="slide-card-label">第58页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p058.jpg" loading="lazy" alt="第58页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">E2 A homogeneous rod with length of L and mass of m stands upright on the <br>ground, and its lower end is fixed by a smooth horizontal axis o. The rod falls <br>down with o as the axis.  When the angle between rod and vertical direction <br>is , what is the angular velocity of the rod ?<br>p<br>c<br>E<br>mgh<br><br>The gravitational potential energy of a rigid body <br>is the same as that when its mass is concentrated <br>at the center of mass.<br>(1<br>cos )<br>2<br>c<br>L<br>h<br><br><br><br>2<br>1<br>1<br>(1<br>cos<br>0<br>2<br>2<br>mgL<br>J<br><br><br><br><br><br>）<br>)<br>cos<br>1<br>(<br>3<br><br><br><br><br>L<br>g<br>Solution : <br>Conservation of mechanic energy<br><br>hc{</div></details></div>
+<div class="slide-card" id="slide-p59" data-page="59"><div class="slide-card-label">第59页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p059.jpg" loading="lazy" alt="第59页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Moment of inertia：<br>2<br>i<br>ir<br>m<br>J <br><br><br><br>dm<br>r<br>J<br>2<br>Parallel axis theorem：<br>2<br>md<br>J<br>J<br>c <br><br>Torque of <br>force to axis<br><br><br><br>i<br>i<br>iz<br>F<br>r<br>M<br><br><br><br><br><br>J<br>M <br>Angular<br>acceleration：<br>acceleration：<br>2<br>2<br>d<br>d<br>d<br>t<br>dt<br><br><br><br><br>2<br>n<br>t<br>,<br><br><br>r<br>a<br>r<br>a<br><br><br>angular momentum theorem:<br>1<br>2<br>2<br>1<br>d<br><br><br>J<br>J<br>t<br>M<br>t<br>t<br>z<br><br><br><br>t<br>J<br>t<br>L<br>M<br>z<br>z<br>z<br>d<br>)<br>(<br>d<br>d<br>d<br><br><br><br>Conservation law of angular momentum:<br>0<br><br>M<br>constant<br>L<br>J<br><br><br>，<br>if<br>Work and energy of rotation：<br><br><br>2<br>1<br><br><br><br>Md<br>A<br>2<br>2<br>1 <br>J<br>Ek <br>c<br>p<br>mgh<br>E <br>Theorem of <br>rotation kinetic <br>energy<br>2<br>0<br>2<br>2<br>1<br>2<br>1<br><br><br>J<br>J<br>A<br>－<br>＝</div></details></div>
+<div class="slide-card" id="slide-p60" data-page="60"><div class="slide-card-label">第60页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p060.jpg" loading="lazy" alt="第60页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Note:<br>1)：Two disks are fixed together, treat them as one <br>rigid body, not two.<br>or<br>R<br>1<br>1<br>t<br>r<br>a<br>r<br><br><br><br><br><br>2<br>2<br>t<br>R<br>a<br>R<br><br><br><br><br><br>Same angular quantity, 𝜃, 𝜔, 𝛼<br>Difference linear quantity, 𝑟, 𝑣, 𝑎</div></details></div>
+<div class="slide-card" id="slide-p61" data-page="61"><div class="slide-card-label">第61页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p061.jpg" loading="lazy" alt="第61页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">1o<br>2o<br>1<br>R<br>1<br>M<br>2<br>M<br>2<br>R<br>1<br>m<br>2<br>m<br>A<br>B<br>C<br>D<br><br><br><br><br>t<br>t<br>t<br>t<br>a A<br>a B<br>a C<br>a D<br><br><br><br><br><br><br><br>A<br>B<br>C<br>D<br><br><br><br><br><br><br><br>（2）if the rope cross disks with different mass, the tension is different:<br>A<br>B<br>D<br>T<br>T<br>T<br><br><br>B<br>C<br>T<br>T<br><br>（3）Angular velocity and angular acceleration is different,<br>1<br>2<br><br><br><br>1<br>2<br><br><br><br>1 On the same rope, the velocity and<br>tangential acceleration are the same<br>2) When connecting two or more rigid bodies with a rope<br>1<br><br>2<br></div></details></div>
+<div class="slide-card" id="slide-p62" data-page="62"><div class="slide-card-label">第62页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p062.jpg" loading="lazy" alt="第62页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">1<br>m<br>2<br>m<br>r<br>R<br>E1：Two disks are fixed together, they can rotate around the <br>central axis. The mass of the large disk is m1 and the radius is R, <br>while the mass of the small disk is m2 and the radius is r. Apply <br>external force F to m1 and m2, as shown in figure, find the <br>angular acceleration.<br>F<br>F<br>Solution：m1 and m2 rotates together, <br>they have the same angular velocity，<br>the total torque is:<br>1<br>2<br>(<br>)<br>FR<br>Fr<br>J<br>J <br><br><br><br>The moment of inertia of the disk m1:<br>2<br>1<br>1<br>1<br>2<br>J<br>m R<br></div></details></div>
+<div class="slide-card" id="slide-p63" data-page="63"><div class="slide-card-label">第63页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p063.jpg" loading="lazy" alt="第63页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">2<br>2<br>2<br>2<br>1<br>r<br>m<br>J<br><br>1<br>2<br>FR<br>Fr<br>J<br>J<br><br><br><br><br>2<br>2<br>1<br>2<br>2 (<br>)<br>F R<br>r<br>m R<br>m r<br><br><br><br><br>1<br>m<br>2<br>m<br>r<br>R<br>F<br>F<br>The moment of inertia of the disk m2:<br>the angular velocity is</div></details></div>
+<div class="slide-card" id="slide-p64" data-page="64"><div class="slide-card-label">第64页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p064.jpg" loading="lazy" alt="第64页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">e2：The slope angle of the smooth slope is θ, and the top is <br>fixed with a pulley with a radius of R and a mass of M. The <br>object with a mass m is tied to a light rope, the rope is wrapped<br>缠绕on the fixed pulley along the slope. Find the sliding down <br>acceleration a of the object m.<br><br>R<br>M ,<br>m<br>Solution：<br>Analysis the foreces on object m ,<br>ma<br>T<br>mg<br><br><br><br>sin<br>g<br>m<br>T<br>x<br>Take the slope direction as x-axis, <br>T is the tension of rope,</div></details></div>
+<div class="slide-card" id="slide-p65" data-page="65"><div class="slide-card-label">第65页</div><img class="slide-img" width="900" height="675" src="slides/ch3_p065.jpg" loading="lazy" alt="第65页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Linear acceleration <br>a<br>R<br><br>Solve the equations to find T and a：<br>M<br>m<br>mg<br>a<br><br>2<br>sin<br>2<br><br>2<br>1<br>2<br>J<br>MR<br><br>Take the pulley as a disk, the moment of <br>inertia is<br>TR<br>J<br><br>Torque of rope tension on the pulley:<br><br>R<br>M ,<br>m<br>g<br>m<br>T<br>x<br>a<br>R<br><br>2<br>1<br>2<br>a<br>TR<br>MR R<br><br>Thus<br>ma<br>T<br>mg<br><br><br><br>sin<br>1<br>2<br>T<br>Ma<br></div></details></div></aside></div></div><div id="panel-test" class="tab-panel"><h2 style="text-align:center">章节测试</h2>
+<p style="text-align:center;color:var(--ink-light);font-size:0.95em">20 题</p>
+
+<div id="score-box"><div class="score-num" id="score-num">0</div><div class="score-label">总分</div></div>
+<div id="questions-container"></div>
+<div class="grading-bar no-print"><button onclick="gradeAll()" id="grade-btn">提交批改</button></div></div>
+
+<script>
+window.__epaLightbox = function(src){
+  var lb = document.getElementById('epa-lightbox');
+  if(!lb){ lb = document.createElement('div'); lb.id='epa-lightbox';
+    lb.innerHTML='<img>'; document.body.appendChild(lb);
+    lb.addEventListener('click', function(){ lb.style.display='none'; }); }
+  lb.querySelector('img').src = src; lb.style.display='flex';
+};
+document.addEventListener('click', function(e){
+  var chip = e.target.closest('.pg-chip'); if(!chip) return;
+  var pg = chip.getAttribute('data-page');
+  var card = document.getElementById('slide-p'+pg);
+  if(card){ card.scrollIntoView({behavior:'smooth', block:'center'});
+    card.classList.remove('flash'); void card.offsetWidth; card.classList.add('flash'); }
+});
+// Shrink any display formula too wide for its column so it stays fully visible.
+window.__epaFitFormulas = function __epaFitFormulas(){
+  var list = document.querySelectorAll('.kn-main mjx-container[display="true"]');
+  for(var i=0;i<list.length;i++){
+    var m = list[i], parent = m.parentElement; if(!parent) continue;
+    m.style.fontSize=''; // reset to measure natural width
+    var avail = parent.clientWidth, w = m.scrollWidth;
+    if(avail>0 && w>avail){ m.style.fontSize=(avail/w*0.97*100).toFixed(1)+'%'; }
+  }
+}
+function __epaScheduleFit(){
+  if(window.MathJax && MathJax.startup && MathJax.startup.promise){
+    MathJax.startup.promise.then(__epaFitFormulas);
+  } else { setTimeout(__epaFitFormulas, 900); }
+}
+if(document.readyState!=='loading'){ __epaScheduleFit(); }
+else { document.addEventListener('DOMContentLoaded', __epaScheduleFit); }
+var __epaFitT=null;
+window.addEventListener('resize', function(){ clearTimeout(__epaFitT); __epaFitT=setTimeout(__epaFitFormulas,200); });
+</script>
+<script>
+var Q = [{"kc_id": "kc3.0", "cognitive_level": "A", "difficulty": "basic", "type": "choice", "points": 4, "question": "关于刚体模型，下列说法正确的是：", "options": ["刚体就是质量很大的物体", "刚体在外力作用下形状可以略微改变", "刚体运动时各点速度一定相同", "刚体是理想化模型，体内任意两点间距离保持不变"], "answer": 3, "explanation": "①题型判断：概念辨析题。②刚体定义：理想的力学模型，受力后形状和大小不变，体内任意两点间距恒定。③逐项：第一项正确；刚体与质量大小无关（小物体也可以是刚体）；受力不变形是刚体定义的核心；只有平动时各点速度才相同，转动时不同。④依据：刚体定义。⑤易错点：把刚体误认为「很硬的物体」——硬不等于刚体，刚体是完全无形变的理想模型。", "pitfall": "混淆「刚体」与「质点」：质点无形状大小，刚体有形状大小但不变形。"}, {"kc_id": "kc3.0", "cognitive_level": "A", "difficulty": "basic", "type": "tf", "points": 3, "question": "刚体的平面平行运动可以分解为质心平动和绕质心转动的叠加。", "options": [], "answer": 1, "explanation": "①题型判断：判断题。②任何复杂刚体运动均 = 质心平动 + 绕质心转动。③平面平行运动（如车轮滚动）是这一分解的典型代表。④依据：刚体运动学定理（Chasles 定理）。⑤易错点：混用绕质心转动和绕任意点转动——只有绕质心的转动 + 质心平动才是标准分解。", "pitfall": "质心平动 + 绕质心转动是标准分解，而非绕任意点。"}, {"kc_id": "kc3.1", "cognitive_level": "B", "difficulty": "medium", "type": "calc", "points": 5, "question": "一飞轮以 900 r/min 的转速旋转。制动后均匀减速，经 10 s 停止。求：(1) 角加速度；(2) 制动过程中飞轮转过的圈数。", "answer": -1, "explanation": "①题型判断：匀变速转动计算。②角速度换算 rpm→rad/s 是关键第一步（因子 $2\\pi/60$）。③用无 t 公式 $\\omega^2 - \\omega_0^2 = 2\\alpha\\Delta\\theta$ 求角位移最便捷。④转数 $N = \\Delta\\theta / (2\\pi)$，不是 $\\Delta\\theta$ 本身。⑤易错：忘记转数与弧度的换算；单位不统一。", "pitfall": "rpm换算 rad/s 时因子是 $\\frac{2\\pi}{60} \\approx 0.1047$，不是 $\\frac{\\pi}{60}$；转数 $N = \\theta / (2\\pi)$，差 $2\\pi$ 倍。", "options": []}, {"kc_id": "kc3.2", "cognitive_level": "B", "difficulty": "medium", "type": "calc", "points": 5, "question": "一均匀圆盘（质量 m=5 kg，半径 R=0.3 m）可绕过中心且垂直盘面的轴转动。在盘边缘沿切线方向施加恒力 F=10 N。求：(1) 圆盘的转动惯量；(2) 力矩大小；(3) 角加速度。", "answer": -1, "explanation": "①题型判断：转动定律 $M=J\\alpha$ 直接应用。②圆盘绕中心垂直轴 $J=\\frac{1}{2}mR^2$ 是必背公式。③力沿切线方向时 $\\theta=90°$，$M=FR$。④$\\alpha = M/J$ 与 $a = F/m$ 完全平行——只需变量替换。⑤易错：忘记圆盘的 $J$ 公式是 $\\frac{1}{2}mR^2$ 不是 $mR^2$；混淆力矩方向。", "pitfall": "圆盘 $J=\\frac{1}{2}mR^2$ 而非 $mR^2$（圆环才是 $mR^2$）；力不垂直于位矢时需乘 $\\sin\\theta$。", "options": []}, {"kc_id": "kc3.2", "cognitive_level": "B", "difficulty": "medium", "type": "calc", "points": 6, "question": "一质量为 M=4 kg、半径为 R=0.2 m 的均匀圆盘定滑轮，绕以轻绳，绳一端悬挂质量 m=2 kg 的物体。系统从静止释放，忽略轴摩擦。求：(1) 物体的加速度 a；(2) 绳中张力 T。", "answer": -1, "explanation": "①题型判断：定滑轮+重物经典综合题。②关键步骤：(a) 质点用 $F=ma$；(b) 滑轮用 $M=J\\alpha$；(c) 约束 $a=R\\alpha$ 连接两套方程。③注意有质量的滑轮两端张力不等——$T$ 同时出现在两个方程中，联立消去。④若 M=0（轻滑轮），$a=g$、$T=0$。⑤易错：忘了约束方程 $a=R\\alpha$；把滑轮当质点列 $F=ma$。", "pitfall": "有质量滑轮的绳两端张力不相等；必须写约束方程 $a=R\\alpha$。", "options": []}, {"kc_id": "kc3.2", "cognitive_level": "B", "difficulty": "medium", "type": "calc", "points": 5, "question": "一根长 L=1 m、质量 m=2 kg 的均匀细杆，一端装有一个质量 M=1 kg、半径 R=0.1 m 的均匀圆盘（盘心在杆端处）。求整个系统对过杆另一端且垂直于杆的轴的转动惯量。", "answer": -1, "explanation": "①题型判断：组合体 + 平行轴定理。②杆对端点轴 $J=\\frac{1}{3}mL^2$ 直接使用。③盘对过杆端点的轴需用平行轴定理：$J = J_C + Md^2$，其中 $d$ 是盘心到转轴的距离（此处为杆长 L）。④组合体转动惯量 = 各部分对同一轴的 $J$ 之和。⑤易错：忘记对盘用平行轴定理，直接用 $\\frac{1}{2}MR^2$ 而不加 $Md^2$。", "pitfall": "组合体中远离轴的部件必须用平行轴定理：$J=J_C+Md^2$ 中的 $d$ 是部件质心到转轴的距离。", "options": []}, {"kc_id": "kc3.2", "cognitive_level": "A", "difficulty": "basic", "type": "choice", "points": 4, "question": "关于转动惯量，下列说法正确的是：", "options": ["转动惯量是物体的固有属性，与转轴位置无关", "平行轴定理 $J = J_C + md^2$ 中的 $J_C$ 必须是过质心轴的转动惯量", "质量越大的物体转动惯量一定越大", "转动惯量的单位与力矩相同，都是 N·m"], "answer": 1, "explanation": "①题型判断：概念理解题。②转动惯量取决于质量、质量分布和转轴位置三因素。③平行轴定理必须以质心轴 $J_C$ 为基准；④质量大不一定 $J$ 大（$r^2$ 的权重可能使小质量大半径物体 $J$ 更大）。⑤$J$ 单位 kg·m²，力矩单位 N·m = kg·m²/s² — 量纲不同。逐项：第一项错（依赖转轴）；第二项正确；第三项错（与分布有关）；第四项错（单位不同）。⑥易错：把 $J$ 当成纯质量属性。", "pitfall": "转动惯量单位是 kg·m² 而非 N·m；平行轴定理必须从质心轴出发。"}, {"kc_id": "kc3.3", "cognitive_level": "B", "difficulty": "medium", "type": "calc", "points": 5, "question": "花样滑冰运动员双臂伸展时转动惯量为 $J_1=4.0\\,\\text{kg·m}^2$，角速度 $\\omega_1=3.0\\,\\text{rad/s}$。收臂后转动惯量变为 $J_2=1.5\\,\\text{kg·m}^2$。求：(1) 收臂后的角速度 $\\omega_2$；(2) 收臂前后转动动能的变化量。", "answer": -1, "explanation": "①题型判断：角动量守恒经典题。②$M_{外}=0$ → $J\\omega$ 守恒，不是 $\\omega$ 守恒！③$J$ 减小 → $\\omega$ 增大（反比关系）。④动能反而增加——因为收臂是内力做功（非保守内力），将化学能转化为转动动能。角动量守恒不等于动能守恒。⑤易错：认为角速度守恒；混淆角动量守恒与动能守恒。", "pitfall": "$J\\omega$ 守恒 ≠ $\\omega$ 守恒；角动量守恒时动能可以不守恒（内力做功改变 $J$）。", "options": []}, {"kc_id": "kc3.3", "cognitive_level": "B", "difficulty": "hard", "type": "calc", "points": 6, "question": "一根长 $l=1.0\\,\\text{m}$、质量 $M=3.0\\,\\text{kg}$ 的均匀细杆，上端挂在光滑水平轴 O 上可自由转动。质量为 $m=0.05\\,\\text{kg}$ 的子弹以水平速度 $v_0=200\\,\\text{m/s}$ 射入杆的下端并嵌在其中。求子弹嵌入后杆与子弹一起开始转动的角速度 $\\omega$。", "answer": -1, "explanation": "①题型判断：子弹打木棒——角动量守恒 + 完全非弹性碰撞。②不能用动量守恒！悬挂点 O 的约束反力是外力，动量不守恒。③对 O 轴角动量守恒：合外力矩为零（重力沿铅直方向，力臂在水平方向分量为零）。④碰撞后 $J_{总}$ 包含杆和嵌在其中的子弹。⑤易错：试图用动量守恒；子弹的角动量漏了乘 $l$；遗漏子弹嵌入后也要贡献 $J$。", "pitfall": "「子弹打悬挂棒」不能用动量守恒（有约束反力），必须用对悬挂点的角动量守恒。", "options": []}, {"kc_id": "kc3.3", "cognitive_level": "A", "difficulty": "medium", "type": "choice", "points": 4, "question": "关于角动量守恒定律，下列说法正确的是：", "options": ["系统所受合外力矩为零时，角动量守恒", "系统所受合外力为零时，角动量一定守恒", "角动量守恒意味着角速度也守恒", "内力矩可以改变系统的总角动量"], "answer": 0, "explanation": "①题型判断：守恒条件辨析题。②角动量守恒条件：合外力矩为零（而非合外力为零）。③合外力为零但各力作用线不共点时力矩未必为零；合外力矩为零但各力平行时合外力也未必为零——两个条件独立。④$J\\omega$ 守恒时若 $J$ 变化则 $\\omega$ 也变。⑤内力矩成对出现、之和为零，不能改变总角动量。逐项：第一项错（需外力矩为零）；第二项正确；第三项错（$J$ 可变）；第四项错（内力矩之和为零）。⑥易错：混淆合外力为零与合外力矩为零。", "pitfall": "角动量守恒条件是合外力矩为零，不是合外力为零——两条件相互独立。"}, {"kc_id": "kc3.3", "cognitive_level": "A", "difficulty": "medium", "type": "tf", "points": 3, "question": "一质点做匀速直线运动时，它对空间中任意一点的角动量都为零。", "options": [], "answer": 0, "explanation": "①题型判断：判断题。②质点做匀速直线运动时，对不在其运动直线上的点，$\\vec{r}$ 与 $\\vec{v}$ 不平行 → $L=rmv\\sin\\theta \\neq 0$。③只有质点运动方向恰好通过参考点（$\\vec{r}\\parallel\\vec{v}$）时角动量才为零。④例如：高速公路上直行的汽车对路旁电线杆有角动量。⑤易错：把直线运动等同于角动量为零——匀速直线运动的角动量对大多数参考点都是非零常量。", "pitfall": "直线运动的质点对大多数点都有角动量（$\\vec{r}$ 和 $\\vec{v}$ 一般不平行）。"}, {"kc_id": "kc3.5", "cognitive_level": "B", "difficulty": "hard", "type": "calc", "points": 6, "question": "一均匀实心球（$J_c=\\frac{2}{5}mR^2$）从倾角 $\\theta=30°$ 的斜面顶端由静止纯滚动下滑。求：(1) 球的质心加速度 $a_c$；(2) 若球的质量 m=1 kg，斜面高 h=2 m，到达底端时的质心速度。", "answer": -1, "explanation": "①题型判断：纯滚动综合题（动力学+能量法）。②动力学法：质心方程+转动方程+纯滚动约束，三式联立。③能量法更简洁——纯滚动静摩擦不做功，机械能守恒。④有效惯性因子：对实心球为 $1+J_c/(mR^2)=1+2/5=7/5$，$a_c = g\\sin\\theta/(7/5) = 5g\\sin\\theta/7$。⑤易错：忘了转动动能；用 $v=\\sqrt{2gh}$（仅滑动的公式）。", "pitfall": "纯滚动总动能 = 平动动能 + 转动动能；$a_c \\neq g\\sin\\theta$（转动惯量减小了加速度）。", "options": []}, {"kc_id": "kc3.5", "cognitive_level": "B", "difficulty": "hard", "type": "calc", "points": 6, "question": "一根均匀细杆长 L=1 m、质量 m=2 kg，一端固定于光滑水平轴可自由转动。初始杆水平静止，然后释放。求杆转到竖直位置时的：(1) 角速度 $\\omega$；(2) 质心速度。", "answer": -1, "explanation": "①题型判断：刚体机械能守恒。②刚体重力势能变化 = $mgh_c$（质心高度变化）。③初始水平（$\\omega_0=0$）→ 末态竖直：$mgL/2 = \\frac{1}{2}J\\omega^2$。④$J$ 对端点轴 = $\\frac{1}{3}mL^2$。⑤得 $\\omega = \\sqrt{3g/L}$。⑥易错：势能参考高度取错（应用质心高度而非端点）；用 $J=\\frac{1}{12}mL^2$ 而不检查轴的位置。", "pitfall": "刚体重力势能是 $mgh_c$（质心高度）；端点轴的 $J=\\frac{1}{3}mL^2$，不是 $\\frac{1}{12}mL^2$。", "options": []}, {"kc_id": "kc3.3", "cognitive_level": "C", "difficulty": "hard", "type": "calc", "points": 7, "question": "质量为 M=5 kg、半径为 R=0.3 m 的均匀圆盘可绕光滑竖直轴自由转动。盘上站有一质量为 m=60 kg 的人，初始人-盘系统静止。人沿盘边缘以相对盘的速度 $v=1.0\\,\\text{m/s}$ 匀速行走一圈。求人走完一圈时盘转过的角度。", "answer": -1, "explanation": "①题型判断：人在转盘上走——角动量守恒 + 相对运动。②初始静止 → 总角动量始终为零。③关键难点：地面参考系中角速度与相对角速度的关系 $\\omega_{\\text{人地}} = \\omega_{\\text{人盘}} + \\omega_{\\text{盘地}}$。④人走一圈的条件是 $\\theta_{\\text{人盘}} = 2\\pi$ 而非 $\\theta_{\\text{人地}} = 2\\pi$。⑤更简便的解法：用角度替代角速度积分——$J_{\\text{人}}\\theta_{\\text{人地}} + J_{\\text{盘}}\\theta_{\\text{盘地}} = 0$，且 $\\theta_{\\text{人地}} = \\theta_{\\text{人盘}} + \\theta_{\\text{盘地}} = 2\\pi + \\theta_{\\text{盘地}}$。联立得 $\\theta_{\\text{盘地}} = -\\frac{2m}{2m+M}\\cdot 2\\pi = -\\frac{120}{125}\\times 2\\pi \\approx -6.03\\,\\text{rad}$。", "pitfall": "相对角速度 $\\omega_{\\text{人盘}}$ 不等于地面角速度 $\\omega_{\\text{人地}}$；人相对盘走一圈的距离条件是 $\\theta_{\\text{人盘}}=2\\pi$。", "options": []}, {"kc_id": "kc3.2", "cognitive_level": "A", "difficulty": "basic", "type": "choice", "points": 4, "question": "关于力矩的定义 $\\vec{M} = \\vec{r} \\times \\vec{F}$，以下理解正确的是：", "options": ["力矩的大小总是 $M = Fr$", "力臂是转轴到力作用点的距离", "当力平行于转轴时，力矩一定为零", "力矩的方向总是与力的方向相同"], "answer": 2, "explanation": "①题型判断：概念理解题。②$M = Fr\\sin\\theta$，只在 $\\theta=90°$ 时 $M=Fr$。③力臂是转轴到力作用线的垂直距离（不是到作用点）。④力平行于 $\\vec{r}$ 时 $\\sin\\theta=0$ → $M=0$，而沿 $\\vec{r}$ 方向的分力无转动效果。⑤力矩方向由右手法则确定，垂直于 $\\vec{r}$ 和 $\\vec{F}$ 所在平面。逐项：第一项错（需 $\\theta=90°$）；第二项错（力臂是到力作用线的垂直距离）；第三项正确（若「平行于转轴」理解为力沿 $\\vec{r}$ 方向即力通过轴心，则力矩为零）；第四项错（力矩方向垂直 $\\vec{r}$ 和 $\\vec{F}$ 平面）。⑥易错：力臂是垂距而非连线长。", "pitfall": "力臂是转轴到力作用线的垂直距离，不是到力作用点的距离。"}, {"kc_id": "kc3.5", "cognitive_level": "A", "difficulty": "basic", "type": "tf", "points": 3, "question": "纯滚动中静摩擦力不做功，因此包含纯滚动的系统机械能守恒。", "options": [], "answer": 1, "explanation": "①题型判断：判断题。②纯滚动时接触点瞬时速度为零 → $dA = f_s \\cdot 0 \\cdot dt = 0$，静摩擦力不做功。③若系统只有保守力（重力）做功，则机械能守恒。④注意：前提是只有保守力做功——如果还有手推、刹车等外力，机械能就不守恒。⑤题干在此语境下正确——纯滚动 + 保守力系统机械能守恒。⑥易错：把「有摩擦力」等同于「机械能不守恒」——滑动摩擦做负功导致机械能损失，但纯滚动的静摩擦不做功。", "pitfall": "纯滚动中静摩擦力存在但不做功（作用点瞬时速度为零），与滑动摩擦做负功截然不同。"}, {"kc_id": "kc3.4", "cognitive_level": "apply", "difficulty": "hard", "type": "calc", "points": 10, "question": "长为 L、质量为 M 的均匀细杆可绕过其一端 O 的竖直轴自由转动，转动惯量 J = ML²/3。质量为 m、速率为 v₀ 的子弹水平射入杆的另一端并留在杆内。求：(1) 射入后系统的角速度 ω；(2) 若杆受恒定阻力矩 Mr，杆能转过多少圈？", "options": [], "answer": -1, "explanation": "(1) 子弹射入瞬间，外力矩为零（O 点无力矩，重力对 O 有力矩但在竖直面内不影响水平转动），角动量守恒：mv₀L = (ML²/3 + mL²)ω → ω = mv₀/[(M/3 + m)L]。\n\n(2) 由转动定律：-Mr = (ML²/3 + mL²)β → β = -Mr/[(M/3+m)L²]。由运动学：0 - ω² = 2β·θ → θ = [(M/3+m)L²ω²]/(2Mr)。转过的圈数 n = θ/(2π)。\n\n评分要点：角动量守恒条件判断 3 分，正列方程 3 分，求得 ω 2 分，运动学求解 2 分。", "pitfall": "子弹射入瞬间角动量守恒——因为碰撞时间极短，外力矩的冲量矩可忽略。但碰后杆摆动过程中要用力矩方程。注意 J 的公式：绕端点转动的细杆 J = ML²/3（不要误用 ML²/12——那是绕中点转动的）。"}, {"kc_id": "kc3.4", "cognitive_level": "apply", "difficulty": "medium", "type": "choice", "points": 3, "question": "一人站在可自由旋转的转台上，两手各握重物伸开。当他把双手收回胸前时（忽略摩擦），以下说法正确的是：", "options": ["转动惯量增大，角速度减小，角动量不变", "转动惯量减小，角速度增大，角动量不变", "转动惯量减小，角速度增大，转动动能不变", "转动惯量减小，角速度增大，角动量减小"], "answer": 1, "explanation": "系统合外力矩为零 → 角动量守恒 Jω = 常数。双手收回 → 质量分布靠近转轴 → J 减小 → ω 增大。转动动能 Ek = ½Jω² = L²/(2J)，J 减小意味着 Ek 增大——人的肌肉做了功，将生化能转化为转动动能。", "pitfall": "角动量守恒 ≠ 动能守恒！花样滑冰运动员收臂加速时角动量不变但转动动能增大——增大的动能来自肌肉做功。这是高频概念辨析题。"}, {"kc_id": "kc3.3", "cognitive_level": "apply", "difficulty": "medium", "type": "choice", "points": 3, "question": "A、B 为两个完全相同的定滑轮（半径 R，转动惯量 J）。A 滑轮挂一质量为 M 的物体，B 滑轮受拉力 F = Mg。不计绳重和摩擦，关于两滑轮角加速度的大小关系：", "options": ["β_A = β_B", "β_A > β_B", "β_A &lt; β_B", "无法确定"], "answer": 2, "explanation": "B 滑轮：拉力 F = Mg 直接产生力矩 TR = MgR，所以 MgR = Jβ_B。\n\nA 滑轮：挂的物体有向下的加速度 a，绳中张力 T &lt; Mg（因为 Mg - T = Ma > 0）。由 T·R = Jβ_A 且 a = Rβ_A，联立得 β_A = MgR/(J + MR²)，小于 β_B = MgR/J。\n\n物理直觉：挂物体时，物体的重力一部分用于加速物体自身、一部分通过绳张力传给滑轮；直接拉力 F=Mg 时全部力都给了滑轮。", "pitfall": "千万不要把「挂质量 M 的物体」和「施加力 F=Mg」等效！前者绳张力 T &lt; Mg，后者直接作用力 = Mg。这是一个高频易错概念判断题。"}, {"kc_id": "kc3.4", "cognitive_level": "apply", "difficulty": "hard", "type": "calc", "points": 10, "question": "匀质圆盘（质量 m、半径 R）在水平粗糙桌面上绕中心轴以角速度 ω₀ 旋转。桌面摩擦系数为 μ。（圆盘 J = mR²/2）求圆盘停止前转过的圈数。", "options": [], "answer": -1, "explanation": "面密度 σ = m/(πR²)。取半径 r 处宽 dr 的圆环：质量 dm = σ·2πr·dr，所受摩擦力 df = μ·dm·g = 2πμσg·r·dr，摩擦力矩 dM = r·df = 2πμσg·r²·dr。\n\n总阻力矩 M = ∫₀^R 2πμσg·r²dr = (2/3)πμσgR³ = (2/3)μmgR。\n\nβ = M/J = [(2/3)μmgR]/[mR²/2] = 4μg/(3R)。\n\n0 - ω₀² = 2(-β)·θ → θ = 3Rω₀²/(8μg)，n = θ/(2π) = 3Rω₀²/(16πμg)。", "pitfall": "圆盘摩擦问题摩擦力矩需要积分——因为不同半径处力臂不同。直接写 M = μmgR 是错的（这是力乘半径，但摩擦力非均布于边缘）。正确做法是取微元积分。"}];
+var LABELS = {"page_title": "章节测试", "section": {"choice": "一、选择题", "multi": "二、多选题", "tf": "三、判断题", "fill": "四、填空题", "short": "五、简答题", "calc": "六、计算题", "code": "七、代码题", "essay": "八、问答题", "comprehensive": "九、综合题"}, "section_order": ["choice", "multi", "tf", "fill", "short", "calc", "code", "essay", "comprehensive"], "points_suffix": "分", "true_label": "正确", "false_label": "错误", "placeholder": "在此作答...", "code_placeholder": "在此编写代码...", "pitfall_prefix": "易错提醒：", "correct_label": "正确", "wrong_label": "错误", "partial_label": "部分正确", "answer_prefix": "正确答案：", "reference_label": "参考答案", "graded_label": "已批改", "grade_button": "提交批改", "score_label": "总分", "duration_prefix": "满分 100 分 | 建议 ", "duration_suffix": " 分钟 | 选择答案后点击提交批改"};
+
+// ─── Answer normalization (robust to how the JSON was authored) ──────
+// tf / choice answers may arrive as int index, boolean, letter ("A"),
+// or label string ("正确"/"错误"/"对"/"错"). All are coerced to an
+// option index so grading never silently fails on a type mismatch.
+
+function tfAnswerIndex(ans) {
+  // option 0 = true_label (正确), option 1 = false_label (错误)
+  if (typeof ans === 'boolean') return ans ? 0 : 1;
+  if (typeof ans === 'number') return ans === 0 ? 0 : 1;
+  var s = ('' + ans).trim().toLowerCase();
+  var truthy = ['0', 't', 'true', '正确', '对', '是', 'yes', 'y', '√', '✓'];
+  var falsy  = ['1', 'f', 'false', '错误', '错', '否', 'no', 'n', '×', 'x'];
+  if (truthy.indexOf(s) !== -1) return 0;
+  if (falsy.indexOf(s) !== -1) return 1;
+  return ans ? 0 : 1;
+}
+
+function choiceAnswerIndex(ans, options) {
+  if (typeof ans === 'number') return ans;
+  var s = ('' + ans).trim();
+  if (/^[A-Za-z]$/.test(s)) return s.toUpperCase().charCodeAt(0) - 65;
+  if (/^\d+$/.test(s)) return parseInt(s, 10);
+  if (options) {
+    for (var i = 0; i < options.length; i++) {
+      if (('' + options[i]).trim() === s) return i;
+    }
+  }
+  return parseInt(s, 10);
+}
+
+function multiAnswerSet(ans, options) {
+  var arr = Array.isArray(ans) ? ans : [ans];
+  var set = {};
+  for (var i = 0; i < arr.length; i++) {
+    set[choiceAnswerIndex(arr[i], options)] = true;
+  }
+  return set;
+}
+
+// Normalize free text for fill-in-the-blank comparison: trim, lowercase,
+// drop surrounding whitespace and common punctuation, unify full/half width.
+function normText(s) {
+  s = ('' + s).trim().toLowerCase();
+  s = s.replace(/[\s　]+/g, '');
+  s = s.replace(/[.,;:!?。，、；：！？“”"'（）()【】\[\]<>《》]/g, '');
+  // full-width ASCII -> half-width
+  s = s.replace(/[！-～]/g, function (c) {
+    return String.fromCharCode(c.charCodeAt(0) - 0xfee0);
+  });
+  return s;
+}
+
+// How many blanks does a fill question have? Count underscore / ＿ runs.
+function fillBlankCount(question) {
+  var m = ('' + question).match(/(_{2,}|＿+)/g);
+  return m ? m.length : 0;
+}
+
+// Coerce a fill `answer` into an array (one entry per blank) of accepted
+// answer lists. Handles: string, [synonyms], [[blank1 syns],[blank2 syns]].
+function fillBlankAnswers(ans, nBlanks) {
+  if (nBlanks < 1) nBlanks = 1;
+  if (!Array.isArray(ans)) return padBlanks([[ans]], nBlanks);
+  if (ans.length && Array.isArray(ans[0])) return padBlanks(ans, nBlanks);
+  // flat array of strings
+  if (nBlanks === 1) return [ans];                 // synonyms for one blank
+  if (ans.length === nBlanks) {                    // one answer per blank
+    return ans.map(function (a) { return [a]; });
+  }
+  return padBlanks([ans], nBlanks);                // ambiguous -> all on blank 1
+}
+
+function padBlanks(arr, n) {
+  var out = arr.slice(0, n);
+  while (out.length < n) out.push(['']);
+  return out;
+}
+
+// ─── Build ───────────────────────────────────────────────────────────
+
+function build() {
+  var container = document.getElementById('questions-container');
+  if (!container) { console.error('ExamPass: questions-container not found'); return; }
+
+  // Stable-sort questions by section order so headings group correctly
+  // regardless of input order.
+  var order = LABELS.section_order || [];
+  Q.forEach(function (q, i) { q._i = i; });
+  Q.sort(function (a, b) {
+    var oa = order.indexOf(a.type); if (oa === -1) oa = 99;
+    var ob = order.indexOf(b.type); if (ob === -1) ob = 99;
+    return oa - ob || a._i - b._i;
+  });
+
+  var h = '';
+  var sec = '';
+  var titles = LABELS.section;
+
+  for (var i = 0; i < Q.length; i++) {
+    var q = Q[i];
+    if (q.type !== sec) {
+      sec = q.type;
+      if (titles[q.type]) h += '<h3>' + titles[q.type] + '</h3>';
+    }
+
+    var qid = 'q' + i;
+    h += '<div class="q-card" id="card-' + qid + '">';
+    h += '<div class="q-num">' + (i + 1) + '. (' + q.points + ' ' + LABELS.points_suffix + ')</div>';
+
+    if (q.type === 'fill') {
+      h += '<div class="q-text">' + renderFill(q, qid) + '</div>';
+    } else {
+      h += '<div class="q-text">' + q.question + '</div>';
+    }
+
+    if (q.type === 'choice') {
+      var opts = q.options || [];
+      for (var j = 0; j < opts.length; j++) {
+        h += '<label class="option" id="opt-' + qid + '-' + j + '" onclick="sel(\'' + qid + '\',' + j + ')">';
+        h += '<input type="radio" name="' + qid + '" value="' + j + '">' + String.fromCharCode(65 + j) + '. ' + opts[j] + '</label>';
+      }
+    } else if (q.type === 'multi') {
+      var mopts = q.options || [];
+      for (var k = 0; k < mopts.length; k++) {
+        h += '<label class="option" id="opt-' + qid + '-' + k + '" onclick="toggle(\'' + qid + '\',' + k + ')">';
+        h += '<input type="checkbox" name="' + qid + '" value="' + k + '">' + String.fromCharCode(65 + k) + '. ' + mopts[k] + '</label>';
+      }
+    } else if (q.type === 'tf') {
+      h += '<label class="option" id="opt-' + qid + '-0" onclick="sel(\'' + qid + '\',0)">';
+      h += '<input type="radio" name="' + qid + '" value="0">' + LABELS.true_label + '</label>';
+      h += '<label class="option" id="opt-' + qid + '-1" onclick="sel(\'' + qid + '\',1)">';
+      h += '<input type="radio" name="' + qid + '" value="1">' + LABELS.false_label + '</label>';
+    } else if (q.type === 'fill') {
+      // inputs already rendered inline inside q-text
+    } else if (q.type === 'code') {
+      h += '<textarea class="q-textarea q-code" id="text-' + qid + '" placeholder="' + (LABELS.code_placeholder || LABELS.placeholder) + '" rows="8" spellcheck="false"></textarea>';
+    } else {
+      h += '<textarea class="q-textarea" id="text-' + qid + '" placeholder="' + LABELS.placeholder + '" rows="3"></textarea>';
+    }
+
+    h += '<div class="result" id="result-' + qid + '">';
+    h += '<span class="badge" id="badge-' + qid + '"></span><span id="correct-' + qid + '"></span>';
+    h += '<div class="explanation">' + (q.explanation || '') + '</div>';
+    if (q.pitfall) {
+      h += '<div class="pitfall">' + LABELS.pitfall_prefix + q.pitfall + '</div>';
+    }
+    h += '</div></div>';
+  }
+
+  container.innerHTML = h;
+
+  if (window.MathJax && MathJax.typesetPromise) {
+    MathJax.typesetPromise([container]).catch(function (err) {
+      console.error('MathJax typeset error:', err);
+    });
+  }
+}
+
+// Render fill question text with inline <input> boxes replacing blanks.
+function renderFill(q, qid) {
+  var nBlanks = fillBlankCount(q.question);
+  var k = 0;
+  var html = ('' + q.question).replace(/(_{2,}|＿+)/g, function () {
+    var inp = '<input type="text" class="fill-input" id="fill-' + qid + '-' + k + '" autocomplete="off" spellcheck="false">';
+    k++;
+    return inp;
+  });
+  if (k === 0) {
+    // No markers in text -> append boxes based on answer shape
+    var n = fillBlankAnswers(q.answer, 1).length;
+    var ans = q.answer;
+    if (Array.isArray(ans)) n = Array.isArray(ans[0]) ? ans.length : (ans.length || 1);
+    if (n < 1) n = 1;
+    html += '<div class="fill-row">';
+    for (var b = 0; b < n; b++) {
+      if (n > 1) html += '<span class="fill-tag">' + (b + 1) + '.</span>';
+      html += '<input type="text" class="fill-input" id="fill-' + qid + '-' + b + '" autocomplete="off" spellcheck="false">';
+    }
+    html += '</div>';
+  }
+  return html;
+}
+
+document.addEventListener('DOMContentLoaded', build);
+if (document.readyState === 'interactive' || document.readyState === 'complete') {
+  build();
+}
+
+// ─── Selection handlers ──────────────────────────────────────────────
+
+function sel(qid, idx) {
+  var prefix = 'opt-' + qid + '-';
+  var all = document.querySelectorAll('[id^="' + prefix + '"]');
+  for (var i = 0; i < all.length; i++) all[i].classList.remove('selected');
+  var target = document.getElementById('opt-' + qid + '-' + idx);
+  if (target) target.classList.add('selected');
+  var radio = document.querySelector('input[name="' + qid + '"][value="' + idx + '"]');
+  if (radio) radio.checked = true;
+}
+
+function toggle(qid, idx) {
+  var box = document.querySelector('input[name="' + qid + '"][value="' + idx + '"]');
+  var label = document.getElementById('opt-' + qid + '-' + idx);
+  if (!box) return;
+  box.checked = !box.checked;
+  if (label) label.classList.toggle('selected', box.checked);
+}
+
+// ─── Grading ─────────────────────────────────────────────────────────
+
+function gradeAll() {
+  var score = 0;
+  for (var i = 0; i < Q.length; i++) {
+    var q = Q[i];
+    var qid = 'q' + i;
+    var card = document.getElementById('card-' + qid);
+    var result = document.getElementById('result-' + qid);
+    var badge = document.getElementById('badge-' + qid);
+    var correctEl = document.getElementById('correct-' + qid);
+    if (!card || !result) continue;
+
+    result.style.display = 'block';
+
+    if (q.type === 'choice' || q.type === 'tf') {
+      score += gradeSingle(q, qid, card, badge, correctEl);
+    } else if (q.type === 'multi') {
+      score += gradeMulti(q, qid, card, badge, correctEl);
+    } else if (q.type === 'fill') {
+      score += gradeFill(q, qid, card, badge, correctEl);
+    } else {
+      card.classList.add('correct');
+      badge.className = 'badge badge-ref';
+      badge.textContent = LABELS.reference_label;
+    }
+  }
+
+  var sb = document.getElementById('score-box');
+  if (sb) {
+    sb.style.display = 'block';
+    document.getElementById('score-num').textContent = roundScore(score);
+    sb.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  var opts = document.querySelectorAll('.option');
+  for (var a = 0; a < opts.length; a++) opts[a].style.pointerEvents = 'none';
+  var tas = document.querySelectorAll('.q-textarea');
+  for (var b = 0; b < tas.length; b++) tas[b].disabled = true;
+  var fis = document.querySelectorAll('.fill-input');
+  for (var c = 0; c < fis.length; c++) fis[c].disabled = true;
+
+  var btn = document.getElementById('grade-btn');
+  if (btn) { btn.disabled = true; btn.textContent = LABELS.graded_label; }
+
+  if (window.MathJax && MathJax.typesetPromise) {
+    MathJax.typesetPromise().catch(function (err) {
+      console.error('MathJax typeset error:', err);
+    });
+  }
+}
+
+function roundScore(s) {
+  return Math.round(s * 10) / 10;
+}
+
+function gradeSingle(q, qid, card, badge, correctEl) {
+  var ansIdx = q.type === 'tf' ? tfAnswerIndex(q.answer) : choiceAnswerIndex(q.answer, q.options);
+  var radio = document.querySelector('input[name="' + qid + '"]:checked');
+  if (radio && parseInt(radio.value, 10) === ansIdx) {
+    card.classList.add('correct');
+    badge.className = 'badge badge-ok';
+    badge.textContent = LABELS.correct_label;
+    correctEl.innerHTML = '';
+    var ok = document.getElementById('opt-' + qid + '-' + ansIdx);
+    if (ok) ok.classList.add('correct-answer');
+    return q.points;
+  }
+  card.classList.add('wrong');
+  badge.className = 'badge badge-no';
+  badge.textContent = LABELS.wrong_label;
+  var ansText = q.type === 'choice'
+    ? String.fromCharCode(65 + ansIdx) + '. ' + (q.options ? q.options[ansIdx] : '')
+    : (ansIdx === 0 ? LABELS.true_label : LABELS.false_label);
+  correctEl.innerHTML = LABELS.answer_prefix + ansText;
+  if (radio) {
+    var wrongOpt = document.getElementById('opt-' + qid + '-' + radio.value);
+    if (wrongOpt) wrongOpt.classList.add('wrong-answer');
+  }
+  var corr = document.getElementById('opt-' + qid + '-' + ansIdx);
+  if (corr) corr.classList.add('correct-answer');
+  return 0;
+}
+
+function gradeMulti(q, qid, card, badge, correctEl) {
+  var want = multiAnswerSet(q.answer, q.options);
+  var wantKeys = Object.keys(want).map(Number);
+  var checked = document.querySelectorAll('input[name="' + qid + '"]:checked');
+  var picked = [];
+  for (var i = 0; i < checked.length; i++) picked.push(parseInt(checked[i].value, 10));
+
+  var anyWrong = false, hitCorrect = 0;
+  for (var p = 0; p < picked.length; p++) {
+    if (want[picked[p]]) hitCorrect++;
+    else anyWrong = true;
+  }
+
+  // reveal correct / wrong option markers
+  var mopts = q.options || [];
+  for (var j = 0; j < mopts.length; j++) {
+    var el = document.getElementById('opt-' + qid + '-' + j);
+    if (!el) continue;
+    if (want[j]) el.classList.add('correct-answer');
+    else if (picked.indexOf(j) !== -1) el.classList.add('wrong-answer');
+  }
+
+  var earned;
+  if (!anyWrong && hitCorrect === wantKeys.length && picked.length === wantKeys.length) {
+    earned = q.points;
+    card.classList.add('correct');
+    badge.className = 'badge badge-ok';
+    badge.textContent = LABELS.correct_label;
+    correctEl.innerHTML = '';
+  } else if (!anyWrong && hitCorrect > 0) {
+    // 少选不错选 -> partial credit
+    earned = roundScore(q.points * hitCorrect / wantKeys.length);
+    card.classList.add('partial');
+    badge.className = 'badge badge-partial';
+    badge.textContent = LABELS.partial_label;
+    correctEl.innerHTML = LABELS.answer_prefix + multiAnswerText(wantKeys, mopts);
+  } else {
+    earned = 0;
+    card.classList.add('wrong');
+    badge.className = 'badge badge-no';
+    badge.textContent = LABELS.wrong_label;
+    correctEl.innerHTML = LABELS.answer_prefix + multiAnswerText(wantKeys, mopts);
+  }
+  return earned;
+}
+
+function multiAnswerText(keys, options) {
+  return keys.sort(function (a, b) { return a - b; }).map(function (k) {
+    return String.fromCharCode(65 + k) + '. ' + (options ? options[k] : '');
+  }).join('  ');
+}
+
+function gradeFill(q, qid, card, badge, correctEl) {
+  var nBlanks = fillBlankCount(q.question);
+  var blanks = fillBlankAnswers(q.answer, nBlanks);
+  var n = blanks.length;
+  var hit = 0;
+  var displays = [];
+
+  for (var b = 0; b < n; b++) {
+    var inp = document.getElementById('fill-' + qid + '-' + b);
+    var accepted = blanks[b] || [''];
+    var user = inp ? normText(inp.value) : '';
+    var ok = false;
+    for (var a = 0; a < accepted.length; a++) {
+      if (accepted[a] !== '' && normText(accepted[a]) === user && user !== '') { ok = true; break; }
+    }
+    if (inp) inp.classList.add(ok ? 'fill-ok' : 'fill-no');
+    if (ok) hit++;
+    displays.push((n > 1 ? (b + 1) + '. ' : '') + accepted.filter(function (x) { return x !== ''; }).join(' / '));
+  }
+
+  var earned = roundScore(q.points * hit / n);
+  correctEl.innerHTML = LABELS.answer_prefix + displays.join('   ');
+
+  if (hit === n) {
+    card.classList.add('correct');
+    badge.className = 'badge badge-ok';
+    badge.textContent = LABELS.correct_label;
+  } else if (hit > 0) {
+    card.classList.add('partial');
+    badge.className = 'badge badge-partial';
+    badge.textContent = LABELS.partial_label;
+  } else {
+    card.classList.add('wrong');
+    badge.className = 'badge badge-no';
+    badge.textContent = LABELS.wrong_label;
+  }
+  return earned;
+}
+
+</script>
+<script>
+document.addEventListener('click', function(e){
+  var btn = e.target.closest('#epa-tabs .tab-btn'); if(!btn) return;
+  var tab = btn.getAttribute('data-tab');
+  document.querySelectorAll('#epa-tabs .tab-btn').forEach(function(b){ b.classList.toggle('active', b===btn); });
+  document.querySelectorAll('.tab-panel').forEach(function(p){
+    p.classList.toggle('active', p.id === 'panel-' + tab); });
+  // The test panel is display:none on load, so build()'s MathJax typeset ran
+  // on hidden content (collapsing formula question cards to 0 height). Re-run
+  // build() the first time the panel is visible so it renders + typesets at the
+  // real size. Guarded so user answers aren't wiped on later switches.
+  if(tab === 'test' && !window.__epaTestBuilt){
+    window.__epaTestBuilt = true;
+    if(typeof build === 'function'){ try { build(); } catch(err){} }
+  }
+  if(window.__epaFitFormulas) setTimeout(window.__epaFitFormulas, 50);
+  window.scrollTo(0, 0);
+});
+</script>
+</body>
+</html>

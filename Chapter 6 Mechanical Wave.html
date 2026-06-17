@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Chapter 6 Mechanical Wave</title>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\(', '\)']],
+    displayMath: [['$$', '$$'], ['\[', '\]']]
+  }
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"></script>
+<style>
+/* === ExamPass Shared Styles === */
+/* Paper-like warm background, clean typography, responsive */
+
+:root {
+  --paper: #fdf6e3;
+  --paper-dark: #f5ecd7;
+  --ink: #2c2c2c;
+  --ink-light: #555;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --divider: #d6c8a8;
+  --card-bg: #fef9ef;
+  --card-border: #e8dcc8;
+  --correct: #22c55e;
+  --correct-bg: #f0fdf4;
+  --wrong: #ef4444;
+  --wrong-bg: #fef2f2;
+  --tag-bg: #fef3c7;
+  --tag-text: #92400e;
+  --radius: 6px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: "Microsoft YaHei", "Noto Sans SC", "SimSun", sans-serif;
+  font-size: 12pt; line-height: 1.75; color: var(--ink);
+  max-width: 860px; margin: auto; padding: 24px 20px 60px;
+  background: var(--paper);
+}
+
+@media print {
+  body { font-size: 10.5pt; background: #fff; }
+  .no-print { display: none !important; }
+  h1, h2, h3 { page-break-after: avoid; }
+}
+
+/* ── Header ── */
+#exampass-header {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 6px 0; margin-bottom: 0;
+}
+.header-brand { font-size: 1.2em; font-weight: 700; color: #1a1a2e; letter-spacing: 0.3px; }
+.header-url  { font-size: 0.78em; color: #999; }
+.header-divider { border: none; border-top: 2px solid var(--divider); margin: 4px 0 20px 0; }
+
+/* ── Typography ── */
+h1 { font-size: 1.55em; text-align: center; border-bottom: 2px solid var(--divider); padding-bottom: 8px; margin-top: 0; }
+h2 { font-size: 1.25em; border-bottom: 1px solid var(--divider); padding-bottom: 4px; margin-top: 28px; }
+h3 { font-size: 1.08em; margin-top: 20px; color: var(--ink); }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── Tables ── */
+table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 0.95em; }
+td, th { border: 1px solid var(--card-border); padding: 5px 9px; text-align: left; }
+th { background: var(--paper-dark); font-weight: 700; }
+
+/* ── Knowledge point vs explanation ── */
+.kp { font-weight: 700; color: var(--ink); }           /* key point: bold dark */
+.exp { font-weight: 400; color: var(--ink-light); }    /* explanation: lighter */
+.exp em, .exp strong { color: var(--ink); }             /* emphasis inside explanation */
+
+/* ── Block elements ── */
+blockquote {
+  border-left: 3px solid #c0392b; background: #fef9ef;
+  padding: 6px 14px; margin: 10px 0; font-size: 0.95em;
+}
+/* Modern monospace stack — avoids the ugly Courier New fallback on Windows. */
+:root {
+  --mono: "Cascadia Code", "JetBrains Mono", "Fira Code", "Source Code Pro",
+          Consolas, "SF Mono", Menlo, "DejaVu Sans Mono", monospace;
+}
+code {
+  font-family: var(--mono);
+  background: #eee8d8; color: #8a4b1e;
+  padding: 1px 5px; border-radius: 4px; font-size: 0.9em;
+}
+pre {
+  font-family: var(--mono);
+  background: #2d2a26; color: #ece6da;
+  padding: 14px 16px; border-radius: var(--radius);
+  overflow-x: auto; line-height: 1.6; font-size: 0.9em;
+  border: 1px solid #3d3934; tab-size: 2;
+}
+pre code {
+  background: none; color: inherit; padding: 0; font-size: 1em; border-radius: 0;
+}
+
+/* ── Long display formulas: scroll inside their column, never overflow ── */
+mjx-container[display="true"] {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* ── TOC ── */
+div.toc {
+  background: var(--card-bg); padding: 14px 18px;
+  border: 1px solid var(--card-border); border-radius: var(--radius); margin-bottom: 22px;
+}
+div.toc ul { padding-left: 18px; }
+div.toc li { margin: 3px 0; font-size: 0.95em; }
+
+/* ── Priority tags ── */
+.tag-must   { background: #fee2e2; color: #991b1b; padding: 1px 6px; border-radius: 3px; font-size: 0.82em; font-weight: 600; }
+.tag-key    { background: #fef3c7; color: #92400e; padding: 1px 6px; border-radius: 3px; font-size: 0.82em; font-weight: 600; }
+.tag-freq   { background: #dbeafe; color: #1e40af; padding: 1px 6px; border-radius: 3px; font-size: 0.82em; font-weight: 600; }
+.tag-info   { background: #f0fdf4; color: #166534; padding: 1px 6px; border-radius: 3px; font-size: 0.82em; font-weight: 600; }
+
+/* ── Checkpoint self-test ── */
+.checkpoint {
+  background: #eff6ff; border: 1px solid #bfdbfe; border-radius: var(--radius);
+  padding: 10px 16px; margin: 18px 0;
+  font-size: 0.95em;
+}
+.checkpoint::before {
+  content: '🧠 自测：';
+  font-weight: 700; color: #1e40af;
+}
+.checkpoint .cp-answer { margin-top: 10px; border-top: 1px dashed #bfdbfe; padding-top: 8px; }
+.checkpoint .cp-answer summary {
+  cursor: pointer; color: #1e40af; font-weight: 600; user-select: none;
+  list-style: none;
+}
+.checkpoint .cp-answer summary::before { content: '💡 '; }
+.checkpoint .cp-answer summary::-webkit-details-marker { display: none; }
+.checkpoint .cp-answer[open] summary { margin-bottom: 6px; }
+.checkpoint .cp-answer ol, .checkpoint .cp-answer p { font-weight: 400; color: var(--ink); }
+
+/* ── TL;DR summary ── */
+.tldr {
+  background: #fefce8; border-left: 3px solid #eab308;
+  padding: 8px 14px; margin: 10px 0;
+  font-weight: 600; font-size: 0.95em;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  body { max-width: 100%; padding: 12px 10px 40px; font-size: 11pt; }
+  h1 { font-size: 1.3em; }
+  h2 { font-size: 1.12em; }
+  table { font-size: 0.85em; }
+  td, th { padding: 4px 6px; }
+  pre { font-size: 0.85em; padding: 6px; }
+}
+@media (max-width: 400px) {
+  body { padding: 8px 6px 32px; font-size: 10.5pt; }
+}
+
+/* === Interactive Test Styles === */
+
+/* ── Score box ── */
+#score-box {
+  display: none; background: var(--paper-dark); color: var(--ink);
+  padding: 16px 20px; border-radius: var(--radius); margin: 14px 0;
+  text-align: center; border: 1px solid var(--card-border);
+}
+#score-box .score-num { font-size: 2.2em; font-weight: 700; }
+#score-box .score-label { font-size: 0.85em; color: var(--ink-light); }
+
+/* ── Question card ── */
+.q-card {
+  background: var(--card-bg); border: 1px solid var(--card-border);
+  border-radius: var(--radius); padding: 12px 14px; margin: 10px 0;
+  transition: all 0.15s;
+}
+.q-card.correct { border-left: 3px solid var(--correct); background: #f7fdf4; }
+.q-card.wrong   { border-left: 3px solid var(--wrong); background: #fef9f9; }
+
+.q-num  { font-weight: 700; font-size: 0.98em; margin-bottom: 4px; }
+.q-text { margin-bottom: 8px; font-size: 0.98em; }
+
+/* ── Options (compact) ── */
+.option {
+  display: block; padding: 4px 10px; margin: 3px 0;
+  border: 1px solid var(--card-border); border-radius: 4px;
+  cursor: pointer; transition: all 0.12s; font-size: 0.93em;
+  background: #fefcf5;
+}
+.option:hover            { background: #f0ede0; }
+.option input            { margin-right: 6px; }
+.option.selected         { border-color: var(--accent); background: #eff6ff; }
+.option.correct-answer   { border-color: var(--correct); background: var(--correct-bg); }
+.option.wrong-answer     { border-color: var(--wrong); background: var(--wrong-bg); }
+
+/* ── Textareas (compact) ── */
+.q-textarea {
+  width: 100%; min-height: 56px; border: 1px solid var(--card-border);
+  border-radius: 4px; padding: 6px 10px; font-family: inherit;
+  font-size: 0.93em; background: #fefcf5; resize: vertical;
+}
+.q-textarea:focus { outline: none; border-color: var(--accent); }
+.q-code {
+  font-family: "Consolas", "Monaco", "Courier New", monospace;
+  font-size: 0.88em; line-height: 1.5; background: #1e1e2e; color: #e0e0e0;
+  tab-size: 4; white-space: pre;
+}
+.q-code:focus { border-color: var(--accent); }
+
+/* ── Partial-credit badge ── */
+.badge-partial { background: #fef3c7; color: #92400e; }
+.q-card.partial { border-color: #f59e0b; }
+
+/* ── Result after grading ── */
+.result {
+  display: none; margin-top: 8px; padding: 8px 12px;
+  background: #fefcf5; border: 1px solid var(--card-border);
+  border-radius: 4px; font-size: 0.9em; line-height: 1.6;
+}
+.result .badge {
+  display: inline-block; padding: 1px 9px; border-radius: 3px;
+  font-weight: 700; font-size: 0.82em; margin-right: 6px;
+}
+.badge-ok  { background: var(--correct-bg); color: #166534; }
+.badge-no  { background: var(--wrong-bg); color: #991b1b; }
+.badge-ref { background: #dbeafe; color: #1e40af; }
+
+.result .explanation { margin-top: 4px; color: var(--ink); }
+.result .pitfall { color: #b45309; margin-top: 3px; font-size: 0.9em; }
+
+/* ── Grading button ── */
+.grading-bar { text-align: center; margin: 20px 0; }
+.grading-bar button {
+  font-size: 1em; padding: 8px 32px; background: var(--accent);
+  color: #fff; border: none; border-radius: var(--radius);
+  cursor: pointer; font-weight: 600; letter-spacing: 0.3px;
+}
+.grading-bar button:hover     { background: var(--accent-hover); }
+.grading-bar button:disabled  { background: #bbb; cursor: not-allowed; }
+
+
+/* ── Notion-style slide cross-reference layout ── */
+/* Override base.css body max-width (860px); fill the viewport edge-to-edge,
+   capped only on ultra-wide screens for readability. */
+body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
+.kn-layout { display: flex; gap: 36px; align-items: flex-start; width: 100%; margin: 0 auto; }
+.kn-main { flex: 1 1 auto; min-width: 0; overflow-x: clip; }
+.kn-main mjx-container[display="true"] { max-width: 100%; overflow-x: auto; overflow-y: hidden; }
+.kn-rail { flex: 0 0 32%; max-width: 520px; min-width: 300px; position: sticky; top: 12px;
+  align-self: flex-start; max-height: calc(100vh - 30px); overflow-y: auto; padding-right: 4px; }
+.kn-rail-title { font-weight: 700; color: var(--ink-light); font-size: 0.9em; margin-bottom: 10px;
+  padding-bottom: 6px; border-bottom: 1px solid var(--divider); }
+.slide-card { border: 1px solid var(--card-border); border-radius: var(--radius);
+  background: var(--card-bg); padding: 8px; margin-bottom: 14px; }
+.slide-card-label { font-size: 0.78em; color: var(--ink-light); margin-bottom: 6px; }
+.slide-img { width: 100%; height: auto; border-radius: 4px; cursor: zoom-in; display: block;
+  border: 1px solid var(--divider); background: #fff; }
+.slide-text { margin-top: 6px; font-size: 0.85em; }
+.slide-text summary { cursor: pointer; color: var(--accent); user-select: none; }
+.slide-text-body { margin-top: 6px; color: var(--ink-light); line-height: 1.6;
+  max-height: 220px; overflow-y: auto; padding: 6px 8px; background: #fff;
+  border-radius: 4px; border: 1px solid var(--divider); }
+/* heading-side page chips */
+.pg-chip { display: inline-block; font-size: 0.72em; font-weight: 600; color: var(--accent);
+  background: #eff4ff; border: 1px solid #cfe0ff; border-radius: 10px; padding: 0 7px;
+  margin-left: 6px; cursor: pointer; vertical-align: middle; }
+.pg-chip:hover { background: #dbe8ff; }
+.slide-card.flash { animation: slideflash 1.2s ease; }
+@keyframes slideflash { 0%,100%{box-shadow:none;} 30%{box-shadow:0 0 0 3px var(--accent);} }
+/* lightbox */
+#epa-lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.82); display: none;
+  align-items: center; justify-content: center; z-index: 9999; cursor: zoom-out; }
+#epa-lightbox img { max-width: 94vw; max-height: 94vh; border-radius: 6px; }
+/* Tablet / narrow desktop: keep two columns but rebalance + tighten margins */
+@media (max-width: 1280px) {
+  body { width: 98vw; padding-left: 1vw; padding-right: 1vw; }
+  .kn-layout { gap: 24px; }
+  .kn-main { flex: 1 1 54%; }
+  .kn-rail { flex: 1 1 46%; }
+}
+/* Mobile: stack the rail below the notes */
+@media (max-width: 900px) {
+  body { width: 100%; padding-left: 12px; padding-right: 12px; }
+  /* align-items:stretch is critical — in a COLUMN flex, flex-start would size
+     children to max-content (overflowing the viewport). */
+  .kn-layout { flex-direction: column; align-items: stretch; gap: 16px; }
+  .kn-main { flex: none; width: 100%; }
+  .kn-rail { position: static; flex: none; max-width: 100%; width: 100%; min-width: 0; max-height: none; }
+}
+
+
+/* ── Combined page: top tab bar (清单 | 题目) ── */
+#epa-tabs { display: flex; gap: 0; justify-content: center; margin: 6px auto 22px;
+  max-width: 520px; border: 1px solid var(--divider); border-radius: 10px; overflow: hidden; }
+#epa-tabs .tab-btn { flex: 1; padding: 10px 18px; cursor: pointer; border: none;
+  background: var(--paper-dark); color: var(--ink-light); font-size: 1.02em; font-weight: 600;
+  font-family: inherit; transition: background .15s, color .15s; }
+#epa-tabs .tab-btn + .tab-btn { border-left: 1px solid var(--divider); }
+#epa-tabs .tab-btn.active { background: var(--accent); color: #fff; }
+#epa-tabs .tab-btn:not(.active):hover { background: #efe7d3; color: var(--ink); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+/* keep the test readable/centered even though the body is wide for the rail */
+#panel-test { max-width: 980px; margin: 0 auto; }
+@media print { #epa-tabs { display: none; } .tab-panel { display: block !important; } }
+
+</style>
+</head>
+<body>
+
+<header id="exampass-header">
+  <div class="header-left"><span class="header-brand">ExamPass Assistant</span></div>
+  <div class="header-right"><span class="header-url">github.com/WUBING2023/ExamPass-Assistant</span></div>
+</header>
+<hr class="header-divider">
+
+<h1>Chapter 6 Mechanical Wave</h1><div id="epa-tabs" class="no-print"><button class="tab-btn active" data-tab="kn">📖 知识清单</button><button class="tab-btn" data-tab="test">📝 章节测试</button></div><div id="panel-kn" class="tab-panel active"><div class="kn-layout"><div class="kn-main"><h1></h1>
+<div class="toc">
+<h2>目录</h2>
+<ul>
+<li><a href="#s14217343">一、波的产生：从振动到波动 </a></li>
+  <li><a href="#s97528963">机械波的产生条件与横波纵波  必考</a></li>
+  <li><a href="#s45080784">描述波的基本物理量：$\boldsymbol{u=\lambda f}$  必考</a></li>
+<li><a href="#s75322333">二、平面简谐波的波函数 </a></li>
+  <li><a href="#s91703451">波函数的建立与标准形式  必考</a></li>
+  <li><a href="#s58952393">波函数的物理含义与相位差  必考</a></li>
+<li><a href="#s32404279">三、波的能量与能流密度 </a></li>
+  <li><a href="#s63148379">介质元的能量：动能与势能同步变化  重点</a></li>
+  <li><a href="#s41020803">能量密度、能流密度与波的强度  重点</a></li>
+<li><a href="#s72072770">四、惠更斯原理与波的衍射 </a></li>
+  <li><a href="#s54523954">惠更斯原理  重点</a></li>
+  <li><a href="#s84732088">波的衍射  了解</a></li>
+<li><a href="#s33291374">五、波的干涉 </a></li>
+  <li><a href="#s51048923">波的叠加原理与干涉条件  必考</a></li>
+  <li><a href="#s76026265">干涉的定量分析：相长与相消条件  必考</a></li>
+<li><a href="#s60586157">六、驻波 </a></li>
+  <li><a href="#s49398791">驻波的形成与方程  必考</a></li>
+  <li><a href="#s71293458">驻波与行波的对比  必考</a></li>
+<li><a href="#s70114697">七、多普勒效应 </a></li>
+  <li><a href="#s38843552">多普勒效应的三种情况  必考</a></li>
+</ul>
+</div>
+<h2 id="s14217343">一、波的产生：从振动到波动 <span class="pg-chip" data-page="3">页3</span><span class="pg-chip" data-page="4">页4</span><span class="pg-chip" data-page="5">页5</span><span class="pg-chip" data-page="6">页6</span><span class="pg-chip" data-page="7">页7</span><span class="pg-chip" data-page="8">页8</span><span class="pg-chip" data-page="9">页9</span><span class="pg-chip" data-page="10">页10</span></h2>
+
+<h3 id="s97528963">机械波的产生条件与横波纵波 <span class="pg-chip" data-page="5">页5</span><span class="pg-chip" data-page="6">页6</span><span class="pg-chip" data-page="7">页7</span> <span class="tag-must">必考</span></h3>
+
+<p>Hook：你朝平静的湖面扔一颗石子，涟漪一圈圈向外扩散——但水并没有「流」向外，水面上的树叶只是在原处上下起伏。振动被传出去了，物质却没有。这就是<span class="kp">波的本质：振动的传播，而非物质的迁移</span>。</p>
+
+<div class="tldr"><span class="kp">机械波</span>是机械振动在弹性介质中的传播过程。其产生需要两个条件：<span class="kp">波源</span>（振动的物体）与<span class="kp">弹性介质</span>（传递振动的物质）。按振动方向与传播方向的关系分为<span class="kp">横波</span>（垂直）与<span class="kp">纵波</span>（平行）。波传播的是<span class="kp">相位</span>和<span class="kp">能量</span>，各质点只在平衡位置附近振动，并不随波前进。</div>
+
+<p>Why：振动是一个质点的事，波动是一群质点的事。理解波，必须理解振动如何在介质中从「近」传到「远」——每个质点靠弹性力带动相邻质点，于是振动状态（相位）一步步传递。</p>
+
+<p>What：</p>
+<ul>
+<li><span class="kp">波源</span>：产生机械振动的物体，决定波的频率 $f$ 和周期 $T$。</li>
+<li><span class="kp">弹性介质</span>：能够传递振动的物质（固体、液体、气体）。机械波只能在弹性介质中传播，真空无法传播机械波。介质决定波速 $u$。</li>
+<li><span class="kp">横波（Transverse wave）</span>：振动方向 ⟂ 传播方向。如绳波、电磁波（非机械波）。仅在能产生切应力的介质（固体、液体表面）中存在。</li>
+<li><span class="kp">纵波（Longitudinal wave）</span>：振动方向 ∥ 传播方向。如声波、弹簧波。固液气均可传播。</li>
+</ul>
+
+<p>How（振动曲线 vs 波动曲线——这个对比被无数学生搞混过）：</p>
+
+<table>
+<thead><tr><th>对比项</th><th>振动曲线 $y$-$t$</th><th>波动曲线 $y$-$x$</th></tr></thead>
+<tbody>
+<tr><td>自变量</td><td>时间 $t$（固定一个质点）</td><td>位置 $x$（固定一个时刻）</td></tr>
+<tr><td>曲线含义</td><td>一个质点位移随时间变化</td><td>所有质点在某一时刻的位移分布</td></tr>
+<tr><td>重复性</td><td>时间周期性：周期 $T$</td><td>空间周期性：波长 $\lambda$</td></tr>
+<tr><td>典型形状</td><td>正弦/余弦曲线</td><td>正弦/余弦曲线（与振动曲线相似，但自变量不同）</td></tr>
+<tr><td>斜率含义</td><td>振动速度 $v=\partial y/\partial t$</td><td>波形斜率 $\partial y/\partial x$</td></tr>
+<tr><td>经典混错</td><td colspan="2">把 $y$-$x$ 图当成 $y$-$t$ 图分析，或反之——自变量不同，结论全盘翻车</td></tr>
+</tbody>
+</table>
+
+<blockquote>易错：①振动曲线和波动曲线看上去都是正弦形，但横轴一个代表「时间」一个代表「空间」，两者不能互换。判断方法：看曲线标签——横轴是 $t$ 就是振动曲线，是 $x$ 就是波动曲线。②质点只在自己的平衡位置附近振动，「不随波前进」——这是最常见的概念性误解：波跑了，质点没跑。</blockquote>
+
+<div class="checkpoint">机械波产生的两个必要条件是什么？真空能传播机械波吗？<details class="cp-answer"><summary>参考答案</summary>①<strong>波源</strong>（振动物体）与<strong>弹性介质</strong>（传递振动的物质）。②<strong>不能</strong>——机械波依赖介质中质点的弹性相互作用，真空中没有介质，无法传播。</details></div>
+
+<div class="checkpoint">怎样区分横波与纵波？声波是横波还是纵波？<details class="cp-answer"><summary>参考答案</summary>看<strong>振动方向</strong>与<strong>传播方向</strong>的关系：垂直是横波，平行是纵波。声波是<strong>纵波</strong>（空气分子疏密振动沿传播方向）。</details></div>
+
+
+<h3 id="s45080784">描述波的基本物理量：$\boldsymbol{u=\lambda f}$ <span class="pg-chip" data-page="9">页9</span><span class="pg-chip" data-page="10">页10</span> <span class="tag-must">必考</span></h3>
+
+<p>Hook：波跑多快？两个相邻波峰之间多远？多久来一个完整的波？这三个量不是独立的——任意两个定了，第三个就锁死了。</p>
+
+<div class="tldr"><span class="kp">波长 $\lambda$</span>（空间周期）、<span class="kp">周期 $T$</span>（时间周期）、<span class="kp">频率 $f$</span>（每秒完整波数）、<span class="kp">波速 $u$</span>（相位传播速度）通过核心关系 <span class="kp">$u = \lambda f = \lambda/T$</span> 互相关联。$f$ 和 $T$ 由波源决定，与介质无关；$u$ 由介质性质决定，与波源频率无关。</div>
+
+<p>Why：波长 $\lambda$ 描述了波在空间上的重复性（一个周期内波传播的距离），周期 $T$ 描述了波在时间上的重复性——两者通过波速 $u$ 架起桥梁。这个关系式虽然简单，却是全章几乎所有计算的起点。</p>
+
+<p>What：</p>
+
+$$u = \lambda f = \frac{\lambda}{T}$$
+
+<p>其中 $\lambda$ 是<span class="exp">波长（m）——相邻两个同相位点（如波峰-波峰）之间的距离，即一个周期内波传播的距离</span>；$f = 1/T$ 是<span class="exp">频率（Hz）——每秒通过某点的完整波数</span>；$T$ 是<span class="exp">周期（s）——完成一次完整振动所需时间</span>；$u$ 是<span class="exp">波速（m/s）——振动状态（相位）在介质中的传播速度，也叫相速</span>。</p>
+
+<p>How：频率由波源决定，换介质频率不变；波速由介质的弹性和密度决定，不同介质波速不同——由此可推出换介质时 $\lambda$ 会变（$f$ 不变，$u$ 变，$\lambda = u/f$ 随之变）。</p>
+
+<blockquote>易错：$u = \lambda f$ 中的 $u$ 是「相位传播速度」，不是质点振动速度。质点振动速度 $v = \partial y/\partial t$ 是另一回事，最大值为 $A\omega$，通常远小于 $u$。两者物理意义完全不同。</blockquote>
+
+<div class="checkpoint">波的频率由什么决定？波速由什么决定？换介质时哪个不变，哪个会变？<details class="cp-answer"><summary>参考答案</summary>频率由<strong>波源</strong>决定，与介质无关；波速由<strong>介质的性质</strong>（弹性和密度）决定，与波源频率无关。换介质时<strong>频率 $f$ 不变</strong>，波速 $u$ 和波长 $\lambda = u/f$ 都会变。</details></div>
+
+
+<h2 id="s75322333">二、平面简谐波的波函数 <span class="pg-chip" data-page="11">页11</span><span class="pg-chip" data-page="12">页12</span><span class="pg-chip" data-page="13">页13</span><span class="pg-chip" data-page="14">页14</span><span class="pg-chip" data-page="15">页15</span><span class="pg-chip" data-page="16">页16</span><span class="pg-chip" data-page="17">页17</span><span class="pg-chip" data-page="18">页18</span><span class="pg-chip" data-page="19">页19</span><span class="pg-chip" data-page="20">页20</span><span class="pg-chip" data-page="21">页21</span><span class="pg-chip" data-page="22">页22</span><span class="pg-chip" data-page="23">页23</span></h2>
+
+<h3 id="s91703451">波函数的建立与标准形式 <span class="pg-chip" data-page="11">页11</span><span class="pg-chip" data-page="12">页12</span><span class="pg-chip" data-page="13">页13</span><span class="pg-chip" data-page="14">页14</span> <span class="tag-must">必考</span></h3>
+
+<p>Hook：你离舞台 30 米远，台上的鼓手敲了一镲。你听到的时间比前排晚了约 0.09 秒——因为声波从鼓手传到你的耳朵需要时间。同理，在波函数里，$x$ 处质点的振动就是 $t$ 时刻减去传播时间 $x/u$ 的那个振动状态。</p>
+
+<div class="tldr"><span class="kp">平面简谐波的波函数</span>（沿 $+x$ 方向传播）的标准形式：
+$$y$x,t$ = A\cos\left1455L55$$
+等价形式：$y = A\cos1455L55 = A\cos1455L55 = A\cos1455L55$。
+其中 <span class="kp">负号「$-$」代表沿正方向传播</span>，正号「$+$」代表沿负方向传播——这是整个波函数最关键的符号判断。</div>
+
+<p>Why：波函数是整个波动学的核心枢纽。一旦掌握 $y$x,t$$，就能回答关于波的几乎所有问题——某质点的振动方程（固定 $x$）、某时刻的波形（固定 $t$）、相位差、振动速度与加速度。</p>
+
+<p>What：波函数的建立过程——</p>
+<ol>
+<li>设波源（$x=0$ 处）的振动方程为 $y_O = A\cos$\omega t + \varphi$$。</li>
+<li>振动从 O 传到 $x$ 处需时间 $x/u$，即 P 点 $t$ 时刻的状态等于 O 点 $t-x/u$ 时刻的状态：
+$$y_P$t$ = y_O\!\left$t - \frac{x}{u}\right$ = A\cos\left1455L55$$</li>
+<li><span class="kp">若波沿 $-x$ 方向传播</span>，$x$ 处质点比波源更早振动（相位超前），传播时间变为 $+x/u$：
+$$y$x,t$ = A\cos\left1455L55$$</li>
+</ol>
+
+<p>四种等价表达（全部等价，选最方便的用）：</p>
+
+$$\begin{aligned}
+y &= A\cos\left1455L55 \\
+y &= A\cos\left1455L55 \\
+y &= A\cos\left1455L55 \\
+y &= A\cos\left1455L55
+\end{aligned}$$
+
+<p>其中 $A$ 振幅（m），$\omega$ 角频率（rad/s），$u$ 波速（m/s），$\lambda$ 波长（m），$\varphi$ 初相（rad），$t-x/u$ 是<span class="exp">相位中的时间轴部分——自变量的整体 $1455L55$ 叫作相位</span>。</p>
+
+<blockquote>易错：沿 $+x$ 传播时波函数里是「$t - x/u$」（负号），沿 $-x$ 传播是「$t + x/u$」（正号）。不要记反！记忆口诀：<strong>「正方向减，负方向加」</strong>——正向传播意味着远处相位落后（减去传播时间），反向传播意味着远处相位超前（加上传播时间）。另外注意波的传播速度 $u$ 和质点振动速度 $v=\partial y/\partial t$ 是两个完全不同的物理量。</blockquote>
+
+<div class="checkpoint">已知波沿 $+x$ 方向传播，波源 $x=0$ 处的振动方程为 $y=A\cos$\omega t$$。写出 $x=5\,\mathrm{m}$ 处质点的振动方程。此处的相位比波源超前还是落后？<details class="cp-answer"><summary>参考答案</summary>振动方程：$y|_{x=5} = A\cos1455L55 = A\cos$\omega t - 5\omega/u$$。<br>相位比波源<strong>落后</strong> $5\omega/u$ ——因为振动从波源传过来需要时间 $5/u$，远处的质点等波到了才跟着振动，所以「落后」。</details></div>
+
+<div class="checkpoint">写出沿 $-x$ 方向传播、波源振动为 $y=A\cos$\omega t + \pi/3$$ 的波函数。<details class="cp-answer"><summary>参考答案</summary>$y$x,t$ = A\cos1455L55$ ——注意沿 $-x$ 传播用<strong>正号</strong>「$+$」。</details></div>
+
+
+<h3 id="s58952393">波函数的物理含义与相位差 <span class="pg-chip" data-page="17">页17</span><span class="pg-chip" data-page="18">页18</span><span class="pg-chip" data-page="19">页19</span><span class="pg-chip" data-page="20">页20</span><span class="pg-chip" data-page="21">页21</span> <span class="tag-must">必考</span></h3>
+
+<p>Hook：波函数里有两个自变量 $x$ 和 $t$。分别冻结其中一个，就能看到完全不同的物理图像——这比机械地背公式有意思得多。</p>
+
+<div class="tldr">波函数 $y$x,t$$ 有三种理解方式：①<span class="kp">固定 $x$</span>（如 $x=x_0$）$\longrightarrow$ 该处质点的振动方程 $y$t$$，做简谐运动，时间周期 $T$，初相变为 $\varphi - \omega x_0/u$。②<span class="kp">固定 $t$</span>（如 $t=t_0$）$\longrightarrow$ 该时刻的波形 $y$x$$，空间周期 $\lambda$。③<span class="kp">$x$ 和 $t$ 都变化</span> $\longrightarrow$ 波形沿传播方向平移，平移速度为 $u$。两点间的<span class="kp">空间相位差</span> $\Delta\varphi = \frac{2\pi}{\lambda}\Delta x$（最核心公式之一）。</div>
+
+<p>What（三种视角的数学表达）：</p>
+
+<p>① 固定 $x = x_0$（看一个质点的振动）：</p>
+$$y$t$\big|_{x=x_0} = A\cos\left1455L55$$
+
+<p>这仍然是简谐振动，振幅 $A$、角频率 $\omega$ 不变，但初相变了——$x_0$ 越远，初相减去越多，对应「落后」。</p>
+
+<p>② 固定 $t = t_0$（看某一瞬间的全貌）：</p>
+$$y$x$\big|_{t=t_0} = A\cos\left1455L55$$
+
+<p>这是 $t_0$ 时刻的波形曲线，每隔 $\lambda$ 重复一次（空间周期性）。</p>
+
+<p>③ 两点间的相位差（考试高频考点）：</p>
+
+$$\Delta\varphi = \frac{2\pi}{\lambda}$x_2 - x_1$ = \frac{2\pi}{\lambda}\Delta x$$
+
+<p>这是<span class="kp">空间相位差公式</span>，其中 $\Delta x$ 是<span class="exp">两点沿传播方向的距离（波程差）</span>。<br>
+推论：$\Delta x = \lambda \longrightarrow \Delta\varphi = 2\pi$（一个波长差对应 $2\pi$ 相位差）；$\Delta x = \lambda/2 \longrightarrow \Delta\varphi = \pi$（半波长对应反相）。</p>
+
+<p>时间维度的相位差：</p>
+$$\Delta\varphi = \omega\,\Delta t = \frac{2\pi}{T}\Delta t$$
+
+<p>④ 波形随时间的平移：经过 $\Delta t$，波形整体沿波速方向平移 $u\Delta t$ 距离。</p>
+
+<blockquote>易错：空间相位差 $\Delta\varphi = \frac{2\pi}{\lambda}\Delta x$ 和时间相位差 $\Delta\varphi = \omega\Delta t$ 是对同一问题从不同角度描述。判断是空间差还是时间差——两件事「在同一时刻不同位置发生」用空间相位差公式；「同一位置不同时刻发生」用时间相位差公式。不要背混。</blockquote>
+
+<div class="checkpoint">沿 $+x$ 传播的波，$x_1=2\,\mathrm{m}$ 和 $x_2=5\,\mathrm{m}$ 两点的相位差是多少（用 $\lambda$ 表示）？$x_2$ 的相位比 $x_1$ 超前还是落后？<details class="cp-answer"><summary>参考答案</summary>$\Delta\varphi = \frac{2\pi}{\lambda}$5-2$ = \frac{6\pi}{\lambda} = \frac{2\pi}{\lambda}\times 3\,\mathrm{m}$。<br>$x_2$ 更远（沿 $+x$ 方向），所以 $x_2$<strong>落后</strong>于 $x_1$（波是先到 $x_1$ 再到 $x_2$）。</details></div>
+
+
+<h2 id="s32404279">三、波的能量与能流密度 <span class="pg-chip" data-page="24">页24</span><span class="pg-chip" data-page="25">页25</span><span class="pg-chip" data-page="26">页26</span><span class="pg-chip" data-page="27">页27</span><span class="pg-chip" data-page="28">页28</span><span class="pg-chip" data-page="29">页29</span></h2>
+
+<h3 id="s63148379">介质元的能量：动能与势能同步变化 <span class="pg-chip" data-page="24">页24</span><span class="pg-chip" data-page="25">页25</span><span class="pg-chip" data-page="26">页26</span> <span class="tag-key">重点</span></h3>
+
+<p>Hook：弹簧振子里，动能最大时势能最小——总量守恒，一消一涨。但波里完全不是这样！波介质元（一个微小体积元）的动能和势能<span class="kp">同步增大、同步减小</span>，因为它们不是孤立系统——能量在流动。</p>
+
+<div class="tldr">平面简谐波中，体积元 $\mathrm{d}V$ 的动能 $\mathrm{d}W_k$ 和弹性势能 $\mathrm{d}W_p$ <span class="kp">始终相等</span>且<span class="kp">同步变化</span>：
+$$\mathrm{d}W_k = \mathrm{d}W_p = \frac{1}{2}\rho A^2\omega^2\sin^2\!\left1455L55\mathrm{d}V$$
+总能量 $\mathrm{d}W = \mathrm{d}W_k + \mathrm{d}W_p = \rho A^2\omega^2\sin^21455L55\mathrm{d}V$。<span class="kp">能量不守恒——最大位移处能量为零，平衡位置能量最大。</span></div>
+
+<p>Why：波介质元不是孤立系统——它与前后相邻的介质元有能量交换。在最大位移处，虽然位移最大（振幅处），但斜率为零，介质无形变，弹性势能为零；同时振动速度为零，动能也为零——位置最「高」时反而最「穷」。平衡位置则恰恰相反：速度最大（动能最大），形变最大（势能最大），总能量达到峰值。</p>
+
+<p>What（三组能量的完整表达）：</p>
+
+$$\begin{aligned}
+\mathrm{d}W_k &= \frac{1}{2}\rho A^2\omega^2\sin^2\!\left1455L55\mathrm{d}V \\
+\mathrm{d}W_p &= \frac{1}{2}\rho A^2\omega^2\sin^2\!\left1455L55\mathrm{d}V = \mathrm{d}W_k \\
+\mathrm{d}W &= \rho A^2\omega^2\sin^2\!\left1455L55\mathrm{d}V
+\end{aligned}$$
+
+<p>其中 $\rho$ 是<span class="exp">介质的线密度或体密度（kg/m³）</span>，$A$ 是振幅，$\omega$ 是角频率，$\mathrm{d}V$ 是体积元。</p>
+
+<p>How（对比表——波的能量 vs 简谐振动的能量）：</p>
+
+<table>
+<thead><tr><th>对比项</th><th>弹簧振子（孤立振动）</th><th>波介质元（非孤立）</th></tr></thead>
+<tbody>
+<tr><td>$\mathrm{d}W_k$ 与 $\mathrm{d}W_p$ 关系</td><td>一增一减，交替变化</td><td><strong>同步增同步减</strong>，始终相等</td></tr>
+<tr><td>总能量</td><td>守恒（常量）</td><td><strong>不守恒</strong>（周期性变化）</td></tr>
+<tr><td>最大位移处</td><td>$E_k=0$，$E_p$ 最大</td><td>$E_k=0$，$E_p=0$，<strong>总能量为零</strong></td></tr>
+<tr><td>平衡位置</td><td>$E_k$ 最大，$E_p=0$</td><td>$E_k$ 最大，$E_p$ 最大，<strong>总能量最大</strong></td></tr>
+<tr><td>根源</td><td>机械能守恒（孤立系统）</td><td>能量在介质中传播（开放系统）</td></tr>
+</tbody>
+</table>
+
+<blockquote>易错：把弹簧振子的能量结论照搬到波里——「最大位移处势能最大」在波中恰恰是错的，因为波的势能来自介质形变（与斜率 $\partial y/\partial x$ 有关），而不是位移 $y$ 本身。最大位移处斜率为零，无形变，势能为零。</blockquote>
+
+<div class="checkpoint">波中某质元振动到平衡位置时，它的动能和弹性势能分别是多少？最大位移处呢？<details class="cp-answer"><summary>参考答案</summary>平衡位置：动能<strong>最大</strong>，势能也<strong>最大</strong>，总能量最大。<br>最大位移处（$y=\pm A$）：速度和形变都为零，动能和势能都<strong>为零</strong>，总能量为零。</details></div>
+
+
+<h3 id="s41020803">能量密度、能流密度与波的强度 <span class="pg-chip" data-page="27">页27</span><span class="pg-chip" data-page="28">页28</span> <span class="tag-key">重点</span></h3>
+
+<div class="tldr"><span class="kp">能量密度</span> $w = \mathrm{d}W/\mathrm{d}V$（单位体积能量）；<span class="kp">平均能量密度</span> $\bar{w} = \frac{1}{2}\rho A^2\omega^2$；<span class="kp">平均能流</span> $\bar{P} = \bar{w}uS$（单位时间通过某面积的能量）；<span class="kp">能流密度（波强）</span> $I = \bar{w}u = \frac{1}{2}\rho u A^2\omega^2$（单位时间垂直通过单位面积的平均能量），单位 $\mathrm{W/m^2}$。</div>
+
+<p>What：</p>
+
+$$\begin{aligned}
+w &= \rho A^2\omega^2\sin^2\!\left1455L55 \\
+\bar{w} &= \frac{1}{T}\int_0^T w\,\mathrm{d}t = \frac{1}{2}\rho A^2\omega^2 \\
+I &= \bar{w}u = \frac{1}{2}\rho u A^2\omega^2
+\end{aligned}$$
+
+<p>关键结论：<span class="kp">波的能量（强度）正比于振幅的平方、频率的平方</span>，即 $I \propto A^2 \omega^2$。<br>
+若介质有吸收，振幅和强度随距离指数衰减：$A = A_0 e^{-\alpha x}$，$I = I_0 e^{-2\alpha x}$，其中 $\alpha$ 为吸收系数。</p>
+
+<div class="checkpoint">波强 $I$ 与振幅 $A$ 是什么关系？如果振幅增大到原来的 3 倍，波强如何变化？（介质和频率不变）<details class="cp-answer"><summary>参考答案</summary>$I \propto A^2$（强度与振幅的<strong>平方</strong>成正比）。振幅变为 3 倍，波强变为 $3^2 = 9$ 倍。</details></div>
+
+
+<h2 id="s72072770">四、惠更斯原理与波的衍射 <span class="pg-chip" data-page="30">页30</span><span class="pg-chip" data-page="31">页31</span></h2>
+
+<h3 id="s54523954">惠更斯原理 <span class="pg-chip" data-page="30">页30</span> <span class="tag-key">重点</span></h3>
+
+<p>Hook：波为什么能绕过墙角让你听见隔壁的声音？惠更斯给了一个天才的解释：把波前面上的每一个点都当成新的小波源，这些小波源发出的球面波（子波）的「外壳」就是新的波前——波就这样一步步「自己画」出了自己。</p>
+
+<div class="tldr"><span class="kp">惠更斯原理</span>：介质中波传播到的各点，都可以看作发射子波的波源；任意时刻，这些子波的包络面就是该时刻的新波前。这一定性原理可以解释波的直线传播、反射、折射和衍射。</div>
+
+<p>What：</p>
+<ul>
+<li><span class="kp">子波（wavelet）</span>：波前面上各点发出的球面次级波。</li>
+<li><span class="kp">包络面（envelope）</span>：所有子波的外包围面，即新波前。</li>
+<li><span class="kp">波前（wavefront）</span>：波动传播中最前方的波面。</li>
+<li><span class="kp">波线（wave ray）</span>：沿波传播方向的射线，在各向同性均匀介质中与波面垂直。</li>
+</ul>
+
+<p>How：惠更斯原理是一个<span class="exp">几何作图法</span>——它不是严格的波动方程推导，不能解释波的强度分布（菲涅耳后来补充了子波干涉的概念=惠更斯-菲涅耳原理），但足够定性解释衍射现象的「绕弯」机制。</p>
+
+<h3 id="s84732088">波的衍射 <span class="pg-chip" data-page="31">页31</span> <span class="tag-info">了解</span></h3>
+
+<p><span class="kp">衍射</span>：波在传播过程中能绕过障碍物边缘或小孔继续传播的现象。衍射现象的显著程度与波长和障碍物/孔径的相对大小有关——波长越大（或孔径越小），衍射越明显。</p>
+
+<blockquote>易错：衍射与干涉是两种不同的波动现象，不要混淆。衍射是「一个波遇到障碍物/孔缝后绕弯传播」；干涉是「两个或多个波在空间叠加」。但惠更斯-菲涅耳原理说明衍射本质上也是无穷多子波干涉的结果——两种现象根源一致。</blockquote>
+
+<div class="checkpoint">惠更斯原理的核心思想是什么？它能用来解释什么现象？<details class="cp-answer"><summary>参考答案</summary>核心：波前上的每一点都可看作新的子波波源，子波的<strong>包络面</strong>就是新的波前。可用来定性解释波的<strong>直线传播、反射、折射和衍射</strong>。</details></div>
+
+
+<h2 id="s33291374">五、波的干涉 <span class="pg-chip" data-page="32">页32</span><span class="pg-chip" data-page="33">页33</span><span class="pg-chip" data-page="34">页34</span><span class="pg-chip" data-page="35">页35</span><span class="pg-chip" data-page="36">页36</span><span class="pg-chip" data-page="37">页37</span><span class="pg-chip" data-page="38">页38</span><span class="pg-chip" data-page="39">页39</span></h2>
+
+<h3 id="s51048923">波的叠加原理与干涉条件 <span class="pg-chip" data-page="32">页32</span><span class="pg-chip" data-page="33">页33</span> <span class="tag-must">必考</span></h3>
+
+<p>Hook：两组水波在湖面相遇，有的地方浪特别大，有的地方却出奇平静——这就是干涉。它不是两个波「打架」互相抵消了能量，而是振动效果在空间中重新分配了。</p>
+
+<div class="tldr">波的干涉是三条件的产物：<span class="kp">频率相同</span>、<span class="kp">振动方向相同</span>、<span class="kp">相位差恒定</span>（相干条件）。满足这三条的波叫<span class="kp">相干波</span>，其波源叫<span class="kp">相干波源</span>。干涉结果是：空间某些点振动始终加强（干涉相长），某些点始终减弱或完全消失（干涉相消）。</div>
+
+<p>Why（两个独立原理的铺垫）：</p>
+<ul>
+<li><span class="kp">波传播的独立性原理</span>：几列波相遇后，各自保持原有特性（频率、波长、振幅、振动方向）继续传播，互不干扰。</li>
+<li><span class="kp">波的叠加原理</span>：在波相遇区域，任一点的振动是各列波单独引起的振动的矢量和。</li>
+</ul>
+
+<p>有了上述两个原理，再配上相干条件，干涉的数学表达就水到渠成了。</p>
+
+
+<h3 id="s76026265">干涉的定量分析：相长与相消条件 <span class="pg-chip" data-page="34">页34</span><span class="pg-chip" data-page="35">页35</span><span class="pg-chip" data-page="36">页36</span> <span class="tag-must">必考</span></h3>
+
+<p>Hook：两个相干波源同时发出简谐波，空间某点 P 的振动是加强还是减弱？答案全藏在一个量里——<span class="kp">相位差 $\Delta\varphi$</span>。</p>
+
+<div class="tldr">设两相干波源 $S_1$、$S_2$ 的振动为 $y_1=A_1\cos$\omega t+\varphi_1$$，$y_2=A_2\cos$\omega t+\varphi_2$$。P 点到两波源的距离为 $r_1$、$r_2$。P 点的<span class="kp">合振幅</span> $A^2 = A_1^2 + A_2^2 + 2A_1A_2\cos\Delta\varphi$，其中
+$$\Delta\varphi = $\varphi_2 - \varphi_1$ - \frac{2\pi}{\lambda}$r_2 - r_1$$
+干涉结果全部由 $\Delta\varphi$ 决定。</div>
+
+<p>What（干涉增强与减弱条件——考试必背表）：</p>
+
+<table>
+<thead><tr><th></th><th>干涉相长（增强）</th><th>干涉相消（减弱）</th></tr></thead>
+<tbody>
+<tr><td>相位差</td><td>$\Delta\varphi = \pm 2k\pi,\ k=0,1,2,\ldots$</td><td>$\Delta\varphi = \pm$2k+1$\pi,\ k=0,1,2,\ldots$</td></tr>
+<tr><td>波程差（$\varphi_1=\varphi_2$ 时）</td><td>$\delta = r_2 - r_1 = \pm k\lambda$</td><td>$\delta = r_2 - r_1 = \pm$2k+1$\frac{\lambda}{2}$</td></tr>
+<tr><td>合振幅</td><td>$A_{\max}=A_1+A_2$</td><td>$A_{\min}=|A_1-A_2|$</td></tr>
+<tr><td>若 $A_1=A_2$</td><td>$A_{\max}=2A_1$（振幅翻倍）</td><td>$A_{\min}=0$（完全静止）</td></tr>
+<tr><td>波的强度</td><td>$I_{\max}=I_1+I_2+2\sqrt{I_1I_2}$</td><td>$I_{\min}=I_1+I_2-2\sqrt{I_1I_2}$</td></tr>
+<tr><td>若 $A_1=A_2$ 的强度</td><td>$I_{\max}=4I_0$</td><td>$I_{\min}=0$</td></tr>
+</tbody>
+</table>
+
+<p>其中 $\delta = r_2 - r_1$ 是<span class="exp">波程差（两列波到达 P 点的路程差）</span>。$\Delta\varphi$ 公式中 $$\varphi_2-\varphi_1$$ 是<span class="exp">波源初相差</span>，$-\frac{2\pi}{\lambda}$r_2-r_1$$ 是<span class="exp">波程差贡献的相位差</span>。</p>
+
+<p>How（从 $\Delta\varphi$ 判断干涉结果的完整分析流程）：</p>
+<ol>
+<li>写出两波源的初相 $\varphi_1$、$\varphi_2$。</li>
+<li>计算 P 点到两波源的距离 $r_1$、$r_2$。</li>
+<li>代入 $\Delta\varphi = $\varphi_2-\varphi_1$ - \frac{2\pi}{\lambda}$r_2-r_1$$。</li>
+<li>判断 $\Delta\varphi$ 是 $2k\pi$（相长）还是 $$2k+1$\pi$（相消）。</li>
+<li>用 $A=\sqrt{A_1^2+A_2^2+2A_1A_2\cos\Delta\varphi}$ 或直接结论得出合振幅。</li>
+</ol>
+
+<blockquote>易错：①「波程差 = kλ」和「波程差 = $2k+1$λ/2」只在两波源 <strong>初相相同</strong>（$\varphi_1 = \varphi_2$）时成立！若 $\varphi_1 \neq \varphi_2$，必须用含相位差的完整判据。②$k$ 从 0 开始取——$k=0$ 时波程差为 0（增强）或 $\lambda/2$（减弱），不要漏掉。③干涉是 <strong>稳定的空间分布</strong>——加强点永远加强、减弱点永远减弱，不是一会儿强一会儿弱。</blockquote>
+
+<div class="checkpoint">两相干波源同相（$\varphi_1=\varphi_2$），波长 $\lambda=4\,\mathrm{m}$。P 点到 $S_1$ 距离 $10\,\mathrm{m}$，到 $S_2$ 距离 $18\,\mathrm{m}$。P 点是干涉增强还是减弱？<details class="cp-answer"><summary>参考答案</summary>波程差 $\delta = 18 - 10 = 8\,\mathrm{m} = 2\lambda$。<br>$\Delta\varphi = 0 - \frac{2\pi}{4}\times 8 = -4\pi = \pm 2k\pi$（$k=2$）。<br>相位差为 $2\pi$ 的整数倍 $\longrightarrow$ <strong>干涉增强</strong>，$A_{\max}=A_1+A_2$。</details></div>
+
+<div class="checkpoint">上题若 S₁ 和 S₂ 初相恰好相反（$\varphi_1=0$，$\varphi_2=\pi$），P 点结果又如何？<details class="cp-answer"><summary>参考答案</summary>$\Delta\varphi = $\pi - 0$ - \frac{2\pi}{4}\times 8 = \pi - 4\pi = -3\pi = \pm$2k+1$\pi$（$k=1$）。<br>相位差为 $\pi$ 的奇数倍 $\longrightarrow$ <strong>干涉相消</strong>，$A_{\min}=|A_1-A_2|$。可见初相差改变了整个干涉图样！</details></div>
+
+
+<h2 id="s60586157">六、驻波 <span class="pg-chip" data-page="40">页40</span><span class="pg-chip" data-page="41">页41</span><span class="pg-chip" data-page="42">页42</span><span class="pg-chip" data-page="43">页43</span><span class="pg-chip" data-page="44">页44</span><span class="pg-chip" data-page="45">页45</span></h2>
+
+<h3 id="s49398791">驻波的形成与方程 <span class="pg-chip" data-page="40">页40</span><span class="pg-chip" data-page="41">页41</span><span class="pg-chip" data-page="42">页42</span> <span class="tag-must">必考</span></h3>
+
+<p>Hook：你把一根弦的一端固定，另一端用力上下抖——发出来的声音是弦上形成了「站着不动」的波。波峰不再前进，弦上有些点几乎不振动（波节），有些点剧烈振动（波腹）——波看起来像被冻住了一样。</p>
+
+<div class="tldr"><span class="kp">驻波</span>是两列振幅相同、传播方向相反的相干波叠加形成的干涉现象。设两列波为 $y_1 = A\cos$\omega t - 2\pi x/\lambda$$ 和 $y_2 = A\cos$\omega t + 2\pi x/\lambda$$（初相均为零，分别沿 $\pm x$ 传播），合成后：
+<span class="kp">$$y = 2A\cos\!\left$\frac{2\pi x}{\lambda}\right$\cos$\omega t$$</span>
+<span class="kp">波节</span>在 $x = $2k+1$\frac{\lambda}{4}$（$k=0,\pm1,\pm2,\ldots$），相邻波节间距 $\lambda/2$。
+<span class="kp">波腹</span>在 $x = k\frac{\lambda}{2}$（$k=0,\pm1,\pm2,\ldots$），相邻波腹间距 $\lambda/2$。</div>
+
+<p>What（驻波方程的分析）：</p>
+
+$$y = \underbrace{2A\cos\!\left$\frac{2\pi x}{\lambda}\right$}_{\text{振幅因子 }A'$x$}\ \cos$\omega t$$
+
+<p>关键解读：</p>
+<ul>
+<li><span class="kp">$A'$x$ = 2A\cos$2\pi x/\lambda$$</span>：各质点的振幅取决于位置 $x$，不再都是 $A$。</li>
+<li>$\cos$\omega t$$：所有质点（除波节外）以同一频率 $\omega$ 振动，<span class="kp">相位要么相同要么相反</span>——相邻两段（波节之间）相位相反。</li>
+<li>振幅沿 $x$ 按余弦分布：波腹处 $|A'$x$| = 2A$（最大值），波节处 $A'$x$ = 0$（静止）。</li>
+<li><span class="kp">没有相位传播</span>：相位中不含 $x$ 坐标，因此「波形不沿 $x$ 轴移动」——这正是「驻」字的含义。</li>
+</ul>
+
+<p>波节满足 $|\cos$2\pi x/\lambda$| = 0$，即 $2\pi x/\lambda = $2k+1$\pi/2$，解出：</p>
+$$x_{\text{node}} = $2k+1$\frac{\lambda}{4},\quad k=0,\pm1,\pm2,\ldots$$
+
+<p>波腹满足 $|\cos$2\pi x/\lambda$| = 1$，即 $2\pi x/\lambda = k\pi$，解出：</p>
+$$x_{\text{antinode}} = k\frac{\lambda}{2},\quad k=0,\pm1,\pm2,\ldots$$
+
+<blockquote>易错：波节和波腹的公式不要背反——波节是 $$2k+1$\lambda/4$（奇数倍 $\lambda/4$），波腹是 $k\lambda/2$（整数倍 $\lambda/2$）。记忆技巧：在 $x=0$ 处，$\cos 0 = 1$，$A'$0$ = 2A$ 最大，所以 $x=0$ 是波腹；往两边走 $\lambda/4$ 到达波节，走 $\lambda/2$ 到达下一个波腹，如此交替。</blockquote>
+
+
+<h3 id="s71293458">驻波与行波的对比 <span class="pg-chip" data-page="45">页45</span> <span class="tag-must">必考</span></h3>
+
+<table>
+<thead><tr><th>对比项</th><th>行波（Traveling Wave）</th><th>驻波（Standing Wave）</th></tr></thead>
+<tbody>
+<tr><td>形成方式</td><td>一列波沿单一方向传播</td><td>两列同振幅反向传播的相干波叠加</td></tr>
+<tr><td>波函数结构</td><td>$y=A\cos1455L55$</td><td>$y=1455L55\cos$\omega t$$</td></tr>
+<tr><td>相位</td><td>含 $x$，相位在空间传播</td><td>不含 $x$（在 $\cos\omega t$ 中），无相位传播</td></tr>
+<tr><td>各质点振幅</td><td>相同（都是 $A$）</td><td><strong>不同</strong>——按 $\cos$2\pi x/\lambda$$ 分布</td></tr>
+<tr><td>波节</td><td>无</td><td>有（振幅永远为零的点）</td></tr>
+<tr><td>波腹</td><td>无</td><td>有（振幅为 $2A$ 的点）</td></tr>
+<tr><td>能量传播</td><td>能量沿波速方向传播</td><td>能量<strong>不</strong>沿 $x$ 轴传播（只在波腹与波节间来回转换）</td></tr>
+<tr><td>相邻同相点间距</td><td>$\lambda$</td><td>$2\lambda$（两段为一周期）</td></tr>
+<tr><td>相邻波节/波腹间距</td><td>—</td><td>$\lambda/2$</td></tr>
+</tbody>
+</table>
+
+<blockquote>易错：驻波中相邻两段（以波节为界）的质点相位相反——频率 $\omega$ 相同，但一个段整体向上振动时，相邻段整体向下振动（差 $\pi$ 相位）。同一段内的所有质点相位相同。</blockquote>
+
+<div class="checkpoint">一根两端固定的弦长为 $L$，形成驻波时两端必须是波节。求弦上可能存在的驻波波长（用 $L$ 表示）。<details class="cp-answer"><summary>参考答案</summary>两端为波节，波节间距为 $\lambda/2$，所以 $L = n\cdot\lambda/2$（$n=1,2,3,\ldots$），即 $\lambda_n = 2L/n$。这是弦乐器定音高的物理原理——$n=1$ 给出基频，$n=2,3,\ldots$ 给出泛音。</details></div>
+
+<div class="checkpoint">两列波 $y_1 = A\cos$\omega t - 2\pi x/\lambda$$ 和 $y_2 = A\cos$\omega t + 2\pi x/\lambda + \pi$$ 叠加后 $x=0$ 处是波节还是波腹？<details class="cp-answer"><summary>参考答案</summary>$y = y_1 + y_2 = 2A\cos$2\pi x/\lambda + \pi/2$\cos$\omega t + \pi/2$$。在 $x=0$ 处，振幅因子 $\cos$\pi/2$ = 0$，故 $x=0$ 是<strong>波节</strong>（振幅为零）。注意两列波如果初相不对称，波腹/波节的位置会发生平移。</details></div>
+
+
+<h2 id="s70114697">七、多普勒效应 <span class="pg-chip" data-page="46">页46</span><span class="pg-chip" data-page="47">页47</span><span class="pg-chip" data-page="48">页48</span><span class="pg-chip" data-page="49">页49</span><span class="pg-chip" data-page="50">页50</span><span class="pg-chip" data-page="51">页51</span></h2>
+
+<h3 id="s38843552">多普勒效应的三种情况 <span class="pg-chip" data-page="47">页47</span><span class="pg-chip" data-page="48">页48</span><span class="pg-chip" data-page="49">页49</span><span class="pg-chip" data-page="50">页50</span> <span class="tag-must">必考</span></h3>
+
+<p>Hook：救护车从你身边呼啸而过——接近时警笛声尖厉刺耳（频率变高），远离时低沉呜咽（频率变低）。这就是多普勒效应：<span class="kp">运动改变了感知到的频率</span>。</p>
+
+<div class="tldr"><span class="kp">多普勒效应</span>：当波源和观察者相对介质运动时，观察者接收到的频率 $f_R$ 不等于波源的真实频率 $f_S$。统一公式（取接近为正）：
+<span class="kp">$$f_R = \frac{u + u_R}{u - u_S}\,f_S$$</span>
+其中 $u$ 为波在介质中的速度，$u_R$ 为观察者相对介质的速度（靠近波源取正），$u_S$ 为波源相对介质的速度（靠近观察者取正）。</div>
+
+<p>Why：频率变化有两种机制——①观察者运动：迎着波走，单位时间「撞」上更多的波面（有效波速变为 $u+u_R$）；②波源运动：波源追着自己发出的波走，把波面「挤」在一起（有效波长变为 $\lambda' = \lambda - u_S T_S$）。</p>
+
+<p>What（三种情况的详细分析）：</p>
+
+<p><strong>情况一：波源静止，观察者运动</strong></p>
+$$f_R = \frac{u \pm u_R}{u}\,f_S = \frac{u \pm u_R}{\lambda}$$
+
+<p>靠近取「$+$」——频率变高；远离取「$-$」——频率变低。注意此时介质中的波长 $\lambda$ 不变。</p>
+
+<p><strong>情况二：观察者静止，波源运动</strong></p>
+$$f_R = \frac{u}{u \mp u_S}\,f_S$$
+
+<p>靠近取「$-$」（分母变小，频率变高）；远离取「$+$」（分母变大，频率变低）。此时介质中的波长变为 $\lambda' = \lambda \mp u_S T_S$（靠近时变短，远离时变长）。</p>
+
+<p><strong>情况三：两者同时运动</strong></p>
+$$f_R = \frac{u + u_R}{u - u_S}\,f_S$$
+
+<p><span class="exp">取正方向规则：波源 $\to$ 观察者为正方向。$u_R$ 沿正方向取正；$u_S$ 沿正方向取正。</span></p>
+
+<p>How（统一判断流程）：</p>
+<ol>
+<li>明确波源和观察者谁在动、朝哪个方向动。</li>
+<li>用「接近时频率变高，远离时频率变低」做定性判断——最终 $f_R > f_S$ 还是 $f_R < f_S$？</li>
+<li>代入公式：$f_R = f_S\cdot\frac{u+u_R}{u-u_S}$，其中靠近取 $+u_R$、$-u_S$；远离取 $-u_R$、$+u_S$。</li>
+<li>检查：分子变大/分母变小 $\to$ $f_R$ 变大（接近）；分子变小/分母变大 $\to$ $f_R$ 变小（远离）。</li>
+</ol>
+
+<blockquote>易错：①观察者运动和波源运动的公式不同，不要混用。观察者运动改变分子上的有效波速 $u \pm u_R$；波源运动改变分母上的有效波速 $u \mp u_S$。②符号规则：「接近取正」是指观察者靠近波源时 $u_R > 0$，波源靠近观察者时 $u_S > 0$。③多普勒效应中，<strong>波在介质中的真实速度 $u$ 不变</strong>（由介质决定），变的是观察者感知到的频率和（波源运动时的）介质中的有效波长。</blockquote>
+
+<div class="checkpoint">一辆警车以 $30\,\mathrm{m/s}$ 的速度朝你驶来，警笛的真实频率为 $800\,\mathrm{Hz}$，声速取 $340\,\mathrm{m/s}$。求：$1$ 你静止时听到的频率；$2$ 若警车驶过你后远离，你听到的频率。<details class="cp-answer"><summary>参考答案</summary>$1$ 观察者静止 $u_R=0$，波源靠近 $u_S=30$：$f_R = \frac{340}{340-30}\times 800 = \frac{340}{310}\times 800 \approx 877\,\mathrm{Hz}$（频率变高）。<br>$2$ 波源远离 $u_S=-30$：$f_R = \frac{340}{340+30}\times 800 = \frac{340}{370}\times 800 \approx 735\,\mathrm{Hz}$（频率变低）。</details></div>
+
+<div class="checkpoint">若上题是你在以 $20\,\mathrm{m/s}$ 的速度朝静止的警车跑，听到的频率又是多少？<details class="cp-answer"><summary>参考答案</summary>观察者靠近 $u_R=20$，波源静止 $u_S=0$：$f_R = \frac{340+20}{340}\times 800 = \frac{360}{340}\times 800 \approx 847\,\mathrm{Hz}$。<br>注意：虽然你也在动，但「你跑向车」和「车开向你」对频率的影响不同（一个改分子，一个改分母），结果也不相同。</details></div></div><aside class="kn-rail"><div class="kn-rail-title">📑 原始幻灯片对照</div><div class="slide-card" id="slide-p2" data-page="2"><div class="slide-card-label">第2页</div><img class="slide-img" width="900" height="675" src="slides/ch6_p001.jpg" loading="lazy" alt="第2页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Contents<br>6.1 Mechanical Waves 机械波的产生、传播和描述<br>6.2  Wave function of plane simple harmonic wave<br>平面简谐波的波函数<br>6.3   Energy of wave波的能量<br>6.4   Huygens principle, diffraction, reflection, refraction <br>惠更斯原理波的衍射、反射和折射<br>6.5   Interference 波的干涉<br>6.6   Standing Wave 驻波<br>6.7   Doppler effect 多普勒效应</div></details></div>
+<div class="slide-card" id="slide-p3" data-page="3"><div class="slide-card-label">第3页</div><img class="slide-img" width="900" height="675" src="slides/ch6_p002.jpg" loading="lazy" alt="第3页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">vibration振动:<br>Vibration, without moving with <br>the waves<br>wave波动:<br>Mechanic wave：The propagation process of mechanical vibration in <br>elastic media.<br>Electromagnetic wave：The propagation process of alternating <br>electromagnetic fields in space<br>Material wave物质波: The motion of microscopic particles, which itself <br>possesses wave particle duality波粒二象性. <br>Type of wave : <br>The propagation process <br>of vibration</div></details></div>
+<div class="slide-card" id="slide-p4" data-page="4"><div class="slide-card-label">第4页</div><img class="slide-img" width="900" height="675" src="slides/ch6_p003.jpg" loading="lazy" alt="第4页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">2024/5/17<br>Common characteristic of <br>wave波动的共同特征：<br>It has a certain propagation传播<br>speed and propagation energy. It has <br>reflection, refraction, interference, <br>and diffraction 反射、折射、干涉和衍<br>射.<br>水波<br>声波<br>天<br>线<br>发<br>射<br>出<br>电<br>磁<br>波</div></details></div>
+<div class="slide-card" id="slide-p5" data-page="5"><div class="slide-card-label">第5页</div><img class="slide-img" width="900" height="675" src="slides/ch6_p004.jpg" loading="lazy" alt="第5页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">6.1  Mechanical Wave  Introduction<br>机械波<br>6.1.1 Generation of mechanical waves机械波<br>的产生<br>condition<br>Wave source：Objects that vibrate <br>mechanically.<br>｛<br>Mechanical waves机械波:<br>Mechanical vibration moves from near to far in elastic <br>medium弹性介质at a certain speed. <br>Elastic medium弹性介质: a substance that <br>propagating vibration 传递振动.<br>Mechanical vibration can only propagate<br>in elastic media<br>Note：</div></details></div>
+<div class="slide-card" id="slide-p6" data-page="6"><div class="slide-card-label">第6页</div><img class="slide-img" width="900" height="675" src="slides/ch6_p005.jpg" loading="lazy" alt="第6页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">6.1.2 Transverse wave and Longitudinal wave横<br>波与纵波<br>Transverse wave：The vibration direction is <br>perpendicular to the propagation direction of the wave.<br>Longitudinal wave：The vibration direction is parallel to <br>the propagation direction of the wave.</div></details></div>
+<div class="slide-card" id="slide-p8" data-page="8"><div class="slide-card-label">第8页</div><img class="slide-img" width="900" height="675" src="slides/ch6_p006.jpg" loading="lazy" alt="第8页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">6.1.3 Geometric description of waves波的几何描述<br>In the process of wave propagation, points with <br>the same vibration phase form a curved surface<br>A directional line drawn along the <br>direction of wave propagation<br>Wave <br>surface波面:<br>Wave line波线:<br>Wavefront<br>波前:<br>The front wave surface of propagation wave.<br>Note:<br>In<br>an<br>isotropic<br>homogeneous<br>medium,<br>the<br>wave<br>line<br>is<br>perpendicular to the wave surface.</div></details></div>
+<div class="slide-card" id="slide-p9" data-page="9"><div class="slide-card-label">第9页</div><img class="slide-img" width="900" height="675" src="slides/ch6_p007.jpg" loading="lazy" alt="第9页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">6.1.4 Velocity, wavelength,  period and <br>frequency of wave波速波长周期频率<br>The time required for a complete vibration <br>of the wave source. Time periodicity时间周<br>期性.<br>The number of complete waves in the forward <br>distance in 1 second. The relationship between <br>frequency and period is:<br>1<br>f<br>T<br><br>The propagation speed of vibration state in <br>medium.<br>u<br>uT<br>f<br><br><br>The distance of the wave propagates in a <br>period. Spatial periodicity空间周期性.<br>Wavelegth<br>波长λ:<br>Period<br>周期T:<br>Frequency<br>频率f:<br>Wave speed<br>波速u:<br>The relationship between wave speed and <br>wavelength, period, and frequency is:</div></details></div>
+<div class="slide-card" id="slide-p10" data-page="10"><div class="slide-card-label">第10页</div><img class="slide-img" width="900" height="675" src="slides/ch6_p008.jpg" loading="lazy" alt="第10页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">(1) The period and frequency of the wave are independent of <br>the properties of the medium; <br>Normally, it is the same as the period and frequency of <br>wave source vibration<br>(2) Wave speed is essentially the speed of phase propagation<br>相位传播的速度, so it is also called phase speed相速; <br>The wave speed is mainly determined by the nature of the <br>medium主要决定于媒质的性质，and is independent of the <br>wave frequency.<br>Note</div></details></div>
+<div class="slide-card" id="slide-p13" data-page="13"><div class="slide-card-label">第13页</div><img class="slide-img" width="900" height="675" src="slides/ch6_p009.jpg" loading="lazy" alt="第13页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">vibration expression <br>at P：<br>when t=x/u, motion state of P is the state of O at t=0.<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>u<br>x<br>t<br>A<br>yP<br>cos<br>——Plane harmonic wave <br>function平面简谐波的波函数<br><br><br><br><br><br><br><br><br><br><br><br><br>u<br>x<br>t<br>A<br>y<br>cos<br><br><br><br><br><br>t<br>A<br>yO<br>cos<br>u<br>x<br>t <br>P expands to any point：<br>𝑡</div></details></div>
+<div class="slide-card" id="slide-p14" data-page="14"><div class="slide-card-label">第14页</div><img class="slide-img" width="900" height="675" src="slides/ch6_p010.jpg" loading="lazy" alt="第14页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">2024/5/17<br>substitute<br>2<br>2<br>,<br>f<br>uT<br>T<br><br><br><br><br><br><br><br>Into above,<br>𝑦= 𝐴cos[ 2π<br>𝜆(𝑢t −𝑥) + 𝜙]<br>cos[2π(<br>)<br>]<br>x<br>y<br>A<br>ft<br><br><br><br><br><br>]<br>)<br>(<br>π<br>2<br>cos[<br><br><br><br><br>x<br>T<br>t<br>A<br>y<br>Other forms of <br>wave function波<br>函数的其它形式<br><br><br><br><br><br><br><br><br><br><br><br><br>u<br>x<br>t<br>A<br>y<br>cos<br>If the wave propagates to the direction of - X axis, the phase <br>of point P leads to O point .  如果波沿x 轴的负方向传播，则P<br>点的相位要比O点的相位超前. <br><br><br><br><br><br><br><br><br><br><br><br><br>u<br>x<br>t<br>A<br>y<br>cos<br>Then the wave <br>function is:</div></details></div>
+<div class="slide-card" id="slide-p16" data-page="16"><div class="slide-card-label">第16页</div><img class="slide-img" width="900" height="675" src="slides/ch6_p011.jpg" loading="lazy" alt="第16页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">(2) Vibration equation of B：<br>)]<br>8<br>1<br>(<br>π<br>4<br>cos[<br>)<br>(<br>1 <br><br><br>u<br>x<br>t<br>A<br>t<br>yB<br>)]<br>8<br>1<br>(<br>π<br>4<br>cos[<br>)<br>,<br>(<br>1 <br><br><br><br>u<br>x<br>x<br>t<br>A<br>t<br>x<br>y<br>)]<br>8<br>1<br>(<br>π<br>4<br>cos[<br>)<br>,<br>(<br><br><br><br>u<br>x<br>t<br>A<br>t<br>x<br>y<br>(3) A as origin：<br>B as origin：<br>Wave function:<br>𝑦(𝑥, 𝑡) = 𝐴cos[ 4π(𝑡+ 𝑥1 −𝑥<br>𝑢<br>−1<br>8)]<br>𝒚𝒑(𝑡) = 𝐴cos[ 4π(𝑡−𝑥<br>𝑢+ 𝑥1<br>𝑢−1<br>8)]<br>Vibration <br>equation of P：<br>u<br>1x<br>B<br>A<br>x<br><br><br><br>P<br>𝑦𝐵(𝑡) = 𝐴cos[ 4π(𝑡−𝑥1<br>𝑢−1<br>8)]</div></details></div>
+<div class="slide-card" id="slide-p17" data-page="17"><div class="slide-card-label">第17页</div><img class="slide-img" width="900" height="675" src="slides/ch6_p012.jpg" loading="lazy" alt="第17页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">2024/5/17<br>A plane harmonic wave propagates along the positive <br>direction of the x-axis, and its wave function is :<br>m<br> <br> <br>)<br>10<br>.0<br>50<br>(<br>cos<br>04<br>.0<br>x<br>t<br>y<br><br><br><br>𝑦= 0.04 cos[𝟓𝟎π(𝑡−𝟎. 𝟎𝟎𝟐𝑥)<br>m<br> <br>04<br>.0<br><br>A<br>𝑇= 2π<br>ω = 0.04 s<br>𝜆= 𝒖𝑻= 20 m<br>𝑢=<br>𝟏<br>𝟎. 𝟎𝟎𝟐= 500 m/s<br>𝑦= 𝐴cos[ ω(𝒕−𝑥<br>𝒖) + 𝜙]<br>Wave <br>function:<br>then:<br>E:<br>Solution:<br>(1) Amplitude、wavelength、period and wave velocity；<br>(2) Maximum velocity of particle vibration.<br>Find:<br>(1)<br>)<br>10<br>.0<br>50<br>(<br>π<br>sin<br>π<br>50<br>04<br>.0<br>x<br>t<br>t<br>y<br><br><br><br><br><br><br><br>v<br>m/s<br> <br>max<br>28<br>.6<br>50<br>04<br>.0<br><br><br><br><br>v<br>(2)<br>u<br><br>ω = 𝟓𝟎π</div></details></div>
+<div class="slide-card" id="slide-p18" data-page="18"><div class="slide-card-label">第18页</div><img class="slide-img" width="900" height="675" src="slides/ch6_p013.jpg" loading="lazy" alt="第18页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">2024/5/17<br>2. Physical meaning of wave function<br>(1) when x = x 0 (constant)，<br><br><br><br><br><br><br><br>)<br>(<br>cos<br>0<br>u<br>x<br>t<br>A<br><br><br><br>Simple harmonic motion at x= x 0.<br>(2) when t = t 0 (constant)，<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>u<br>x<br>t<br>A<br>x<br>y<br>0<br>cos<br>)<br>(<br><br><br><br><br><br><br><br><br>)<br>(<br>cos<br>0<br><br><br><br>t<br>u<br>x<br>A<br>Displacement distribution function of all <br>particles.<br>The curve is waveform.<br><br><br><br><br><br><br><br><br><br><br><br><br>u<br>x<br>t<br>A<br>t<br>y<br>0<br>cos<br>)<br>(<br>𝑦= 𝐴cos 𝜔𝑡−𝑥<br>𝑢+ 𝜙<br>y<br>x<br>O<br>x0<br>x1<br>u<br>A<br>λ</div></details></div>
+<div class="slide-card" id="slide-p19" data-page="19"><div class="slide-card-label">第19页</div><img class="slide-img" width="900" height="675" src="slides/ch6_p014.jpg" loading="lazy" alt="第19页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">y<br>x<br>O<br>x1<br>x2<br>u<br>(3) Analysis of wave：<br>Amplitude A，<br>A<br>Wavelength λ；<br>λ<br>Phase difference of particle x1 and x2 :<br><br><br><br><br><br><br><br>)<br>(<br>cos<br>1<br>1<br>u<br>x<br>t<br>A<br>y<br><br><br><br>u<br>x1<br>1<br><br><br><br><br><br><br><br><br><br><br><br><br>)<br>(<br>cos<br>2<br>2<br>u<br>x<br>t<br>A<br>y<br><br><br><br>u<br>x2<br>2<br><br><br><br><br><br>)<br>(<br>π<br>2<br>)<br>(<br>Δ<br>2<br>1<br>2<br>1<br>1<br>2<br>x<br>x<br>x<br>x<br>u<br><br><br><br><br><br><br><br><br><br><br><br>Phase difference<br>相位差：<br>Wave path <br>difference波程差:<br><br><br><br><br><br>2<br>x<br>x2&gt;x1, <br>&lt;0，motion of x2  lags behind x1，x2的<br>振动落后于x1.<br><br>Δ</div></details></div>
+<div class="slide-card" id="slide-p20" data-page="20"><div class="slide-card-label">第20页</div><img class="slide-img" width="900" height="675" src="slides/ch6_p015.jpg" loading="lazy" alt="第20页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">2024/5/17<br>y<br>x<br>O<br>x1<br>x2<br>u<br>A<br>λ<br>u△t<br>c. After a time Δt, waveform shifts towards along the <br>direction of wave speed.沿波速方向平移. <br>d. The direction of the vibration <br>velocity of each particle：<br>(4) Velocity and acceleration：<br><br><br><br><br><br><br><br><br><br><br><br><br><br>x<br>t<br>A<br>y<br>2<br>cos<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>x<br>t<br>A<br>t<br>y<br>v<br>2<br>sin<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>x<br>t<br>A<br>t<br>y<br>a<br>2<br>cos<br>2<br>2<br>2</div></details></div>
+<div class="slide-card" id="slide-p22" data-page="22"><div class="slide-card-label">第22页</div><img class="slide-img" width="900" height="675" src="slides/ch6_p016.jpg" loading="lazy" alt="第22页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">2024/5/17<br>0 cos<br>0<br>t<br><br><br><br>，<br>2<br><br><br><br><br>0<br>0,<br><br>v<br>2<br><br><br>)<br>cm<br>)(<br>2<br>π<br>π<br>cos(<br>01<br>.0<br><br><br>t<br>yo<br>)<br>(cm<br>]<br>2<br>π<br>)<br>02<br>.0<br>(<br>π<br>cos[<br>01<br>.0<br><br><br><br>x<br>t<br>y<br>Wave function：<br>the vibration equation of x=0.01 point ：<br>0.01<br>0.01<br>π<br>0.01cos[π(<br>)<br>]<br>0.02<br>2<br>xy<br>t<br><br><br><br><br>0.01cos π<br>(m)<br>t<br><br>y(cm)<br>x(cm)<br>1<br>2<br>3<br>4<br>5<br>6<br>Ⅱ<br>Ⅰ<br>A</div></details></div>
+<div class="slide-card" id="slide-p23" data-page="23"><div class="slide-card-label">第23页</div><img class="slide-img" width="900" height="675" src="slides/ch6_p017.jpg" loading="lazy" alt="第23页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">2024/5/17<br>Example: A plane simple harmonic wave travel along –x <br>axis, wave velocity is u = 20 m/s, the vibration equation of <br>A point is y = 3cos 4t .<br>y’<br>Solution ：1) A is <br>origin<br>3cos4π(<br>)<br>20<br>x<br>y<br>t<br><br><br>2) B is origin, wave source is <br>at:<br>m<br>5<br>0 <br>x<br>5<br>'<br>3cos4π(<br>)<br>20<br>x<br>y<br>t<br><br><br><br>A<br>x<br>y<br>B<br>u<br>Find: (1) A is origin, find wave function；<br>(2) B is at 5m left from A, B is origin, find wave function.</div></details></div>
+<div class="slide-card" id="slide-p24" data-page="24"><div class="slide-card-label">第24页</div><img class="slide-img" width="900" height="675" src="slides/ch6_p018.jpg" loading="lazy" alt="第24页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">6.3.1 Propagation of wave energy波动能量的传播<br>6.3  Energy of waves 波的能量<br>Propagation of plane simple harmonic wave：<br>Wave move along +x axis<br>)<br>(<br>cos<br>u<br>x<br>t<br>A<br>y<br><br><br><br>1. Energy of medium element介质元的能量<br>1) Vibration kinetic energy<br>介质元的振动动能:<br>x<br>S<br>V<br>d<br>d<br><br>x<br>S<br>V<br>m<br>d<br>d<br>d<br><br><br><br><br>2<br>k<br>d<br>2<br>1<br>d<br>v<br>m<br>W </div></details></div>
+<div class="slide-card" id="slide-p27" data-page="27"><div class="slide-card-label">第27页</div><img class="slide-img" width="900" height="675" src="slides/ch6_p019.jpg" loading="lazy" alt="第27页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">2. Energy density of wave波的能量密度<br>Energy in a unit volum.<br>1) Energy density 能量密度：<br>)<br>(<br>sin<br>d<br>d<br>2<br>2<br>2<br>u<br>x<br>t<br>A<br>V<br>W<br>w<br><br><br><br><br><br><br>2) Avergy energy density平均能量密度：<br>t<br>u<br>x<br>t<br>A<br>T<br>w<br>T<br>d<br>)<br>(<br>sin<br>1<br>2<br>2<br>2<br>0<br><br><br><br><br><br>2<br>2<br>2<br>1<br><br>A<br>w <br>unit:  J·m-3<br>Conclusion:<br>The energy of mechanical wave is proportional to the square of <br>amplitude, the square of frequency and the density of the medium机<br>械波的能量与振幅的平方、频率的平方以及介质的密度成正比.<br>Average in a period.</div></details></div>
+<div class="slide-card" id="slide-p28" data-page="28"><div class="slide-card-label">第28页</div><img class="slide-img" width="900" height="675" src="slides/ch6_p020.jpg" loading="lazy" alt="第28页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">2024/5/17<br>6.3.2 Energy flow and energy flow density能流和能流密度<br>The energy of waves passing <br>vertically through a certain area <br>of the medium per unit time．<br>S<br>u<br>u<br>Energy flow<br>能流(P)：<br>Average <br>energy flow<br>平均能流：<br>uS<br>w<br>P <br>Energy flow density能流密度(Intensity of wave波的强度)：<br>Average energy per unit area of waves flowing perpendicular to <br>the direction of wave propagation per unit time单位时间内流过垂直<br>于波传播方向的单位面积的波的平均能量．<br>2<br>2<br>2<br>1<br><br>uA<br>u<br>w<br>I<br><br><br>Average value in a period.<br>unit:  W·m-2</div></details></div></aside></div></div><div id="panel-test" class="tab-panel"><h2 style="text-align:center">章节测试</h2>
+<p style="text-align:center;color:var(--ink-light);font-size:0.95em">20 题</p>
+
+<div id="score-box"><div class="score-num" id="score-num">0</div><div class="score-label">总分</div></div>
+<div id="questions-container"></div>
+<div class="grading-bar no-print"><button onclick="gradeAll()" id="grade-btn">提交批改</button></div></div>
+
+<script>
+window.__epaLightbox = function(src){
+  var lb = document.getElementById('epa-lightbox');
+  if(!lb){ lb = document.createElement('div'); lb.id='epa-lightbox';
+    lb.innerHTML='<img>'; document.body.appendChild(lb);
+    lb.addEventListener('click', function(){ lb.style.display='none'; }); }
+  lb.querySelector('img').src = src; lb.style.display='flex';
+};
+document.addEventListener('click', function(e){
+  var chip = e.target.closest('.pg-chip'); if(!chip) return;
+  var pg = chip.getAttribute('data-page');
+  var card = document.getElementById('slide-p'+pg);
+  if(card){ card.scrollIntoView({behavior:'smooth', block:'center'});
+    card.classList.remove('flash'); void card.offsetWidth; card.classList.add('flash'); }
+});
+// Shrink any display formula too wide for its column so it stays fully visible.
+window.__epaFitFormulas = function __epaFitFormulas(){
+  var list = document.querySelectorAll('.kn-main mjx-container[display="true"]');
+  for(var i=0;i<list.length;i++){
+    var m = list[i], parent = m.parentElement; if(!parent) continue;
+    m.style.fontSize=''; // reset to measure natural width
+    var avail = parent.clientWidth, w = m.scrollWidth;
+    if(avail>0 && w>avail){ m.style.fontSize=(avail/w*0.97*100).toFixed(1)+'%'; }
+  }
+}
+function __epaScheduleFit(){
+  if(window.MathJax && MathJax.startup && MathJax.startup.promise){
+    MathJax.startup.promise.then(__epaFitFormulas);
+  } else { setTimeout(__epaFitFormulas, 900); }
+}
+if(document.readyState!=='loading'){ __epaScheduleFit(); }
+else { document.addEventListener('DOMContentLoaded', __epaScheduleFit); }
+var __epaFitT=null;
+window.addEventListener('resize', function(){ clearTimeout(__epaFitT); __epaFitT=setTimeout(__epaFitFormulas,200); });
+</script>
+<script>
+var Q = [{"type": "choice", "difficulty": "basic", "kc": "kc6.0", "options": ["声波在空气中传播时是横波", "横波只能在固体中传播，纵波可在固液气中传播", "纵波中质点的振动方向与波的传播方向垂直", "横波中质点的振动方向与波的传播方向平行"], "answer": 3, "explanation": "①题型判断：概念辨析单选题。②依据：横波 ⟂ 传播方向，纵波 \\parallel 传播方向。横波需要介质能承受切应力（固体和液体表面可），纵波只需压缩弹性（固液气均可）。③分析：A项正确——横波仅在能产生切应力的介质中存在，主要是固体（液体表面也可有表面横波）；B项错误——声波在空气中是纵波；C项写反了振动方向关系；D项写反了振动方向关系。④干扰项来源：B项混淆声波类型（最常见误解）；C/D颠倒了横纵定义。⑤易错点：区分横纵看「振动方向 vs 传播方向」的夹角，垂直为横、平行为纵。正确答案对应字母A。", "question": "关于横波与纵波，下列说法正确的是哪一项？", "kc_id": "ch6-q1", "cognitive_level": "understand", "points": 3, "pitfall": ""}, {"type": "tf", "difficulty": "basic", "kc": "kc6.0", "options": [], "answer": 1, "explanation": "①题型判断：判断题，考查机械波的传播条件。②依据：机械波的定义——机械振动在弹性介质中的传播过程。③分析：机械波依赖弹性介质中各质点间的相互作用力来传递振动，真空中没有介质，振动无法从一处传到另一处。电磁波可以在真空中传播（变化的电磁场不需要介质），但机械波不行。④常见误解：把「传播能量」等同于「不需要介质」。波确实传递能量不传递物质，但机械波传递能量必须借助介质。⑤结论：陈述错误，answer=1 对应False。", "question": "机械波可以在真空中传播，因为它传递的是振动能量而非物质。", "kc_id": "ch6-q2", "cognitive_level": "understand", "points": 2, "pitfall": ""}, {"type": "calc", "difficulty": "basic", "kc": "kc6.1", "options": [], "answer": -1, "explanation": "①题型判断：$u=\\lambda f$ 基本关系计算题。②公式：$\\lambda = u/f$，$T = 1/f$，换介质时 $f$ 不变。③计算：(1) $\\lambda = 340/50 = 6.8\\,\\mathrm{m}$；(2) $T = 1/50 = 0.02\\,\\mathrm{s}$；(3) 频率不变 $f=50\\,\\mathrm{Hz}$，$\\lambda' = 1500/50 = 30\\,\\mathrm{m}$。④量从哪来：$f=50\\,\\mathrm{Hz}$、$u=340\\,\\mathrm{m/s}$ 给定。⑤易错点：换介质频率不变——这是 $f$ 由波源决定的推论。有人在(3)中错误地保持波长不变而改变频率，这是把因果关系弄反了。评分：$\\lambda=6.8\\,\\mathrm{m}$（1分）、$T=0.02\\,\\mathrm{s}$（1分）、$\\lambda'=30\\,\\mathrm{m}$ 且说明频率不变（3分）。", "question": "一列机械波的频率为 f = 50 Hz，在介质中的波速为 u = 340 m/s。求：(1) 波长 \\lambda；(2) 周期 T；(3) 若同一波源在另一种介质中波速变为 u' = 1500 m/s，求新介质中的波长 \\lambda'。（频率不变）", "kc_id": "ch6-q3", "cognitive_level": "understand", "points": 8, "pitfall": ""}, {"type": "choice", "difficulty": "basic", "kc": "kc6.1", "options": ["频率", "波速", "波长", "振幅"], "answer": 0, "explanation": "①题型判断：概念辨析单选题，考查波在不同介质中传播时各物理量的变化规律。②依据：频率由波源决定，与介质无关；波速由介质性质（弹性和密度）决定；波长 $\\lambda = u/f$ 随波速变化而变。③分析：A正确——波源振动频率不变，故波在介质中的频率始终等于波源频率。B错误——不同介质的弹性模量和密度不同，波速会变（如声波在水中的速度远大于空气中）。C错误——$\\lambda = u/f$，$u$ 变了 $\\lambda$ 必变。D错误——振幅会因介质吸收和界面反射等原因变化。④干扰项来源：有人误以为「波速是波的内在属性」，实际上波速是介质属性。⑤易错点：$u = \\lambda f$ 中 $f$ 是不变的锚点，$u$ 和 $\\lambda$ 同步变化。正确答案对应字母A。", "question": "一列波从一种介质进入另一种介质时，下列物理量中哪个一定保持不变？", "kc_id": "ch6-q4", "cognitive_level": "understand", "points": 3, "pitfall": ""}, {"type": "calc", "difficulty": "medium", "kc": "kc6.2", "options": [], "answer": -1, "explanation": "①题型判断：从波函数提取参数的计算题。②方法：将给定波函数与标准形式 $y = A\\cos[\\omega(t - x/u) + \\varphi]$ 对比。$y = 0.05\\cos[\\pi(4t - 0.2x)] = 0.05\\cos[4\\pi t - 0.2\\pi x] = 0.05\\cos[4\\pi(t - 0.05x)]$。③逐步计算：(1) $A = 0.05\\,\\mathrm{m}$；(2) $\\omega = 4\\pi\\,\\mathrm{rad/s}$；(3) 对比 $\\omega x/u = 0.2\\pi x$，即 $4\\pi x/u = 0.2\\pi x$，得 $u = 4\\pi/0.2\\pi = 20\\,\\mathrm{m/s}$；$f = \\omega/(2\\pi) = 4\\pi/(2\\pi) = 2\\,\\mathrm{Hz}$；$\\lambda = u/f = 20/2 = 10\\,\\mathrm{m}$。或直接从 $2\\pi/\\lambda = 0.2\\pi$，得 $\\lambda = 2\\pi/(0.2\\pi) = 10\\,\\mathrm{m}$。④验证：$\\lambda f = 10 \\times 2 = 20 = u$，自洽。⑤易错点：括号内不是标准 $\\omega(t-x/u)$ 形式时，先展开再比对各项系数。评分：$A=0.05\\,\\mathrm{m}$（1分）、$\\omega=4\\pi\\,\\mathrm{rad/s}$（1分）、$u=20\\,\\mathrm{m/s}$（1分）、$f=2\\,\\mathrm{Hz}$（1分）、$\\lambda=10\\,\\mathrm{m}$（1分）。", "question": "一平面简谐波的波函数为 y = 0.05\\cos[\\pi(4t - 0.2x)]（SI制，即长度单位为m，时间单位为s）。求：(1) 振幅 A；(2) 角频率 \\omega；(3) 波长 \\lambda；(4) 波速 u；(5) 频率 f。", "kc_id": "ch6-q5", "cognitive_level": "apply", "points": 8, "pitfall": ""}, {"type": "choice", "difficulty": "medium", "kc": "kc6.2", "options": ["y = A\\cos[\\omega(t - x/u) + \\varphi_0]", "y = A\\cos[\\omega(x/u - t) + \\varphi_0]", "y = A\\cos[\\omega t - x/u + \\varphi_0]", "y = A\\cos[\\omega(t + x/u) + \\varphi_0]"], "answer": 3, "explanation": "①题型判断：波函数符号方向判断单选题。②依据：沿 $-x$ 方向传播时，$x$ 处质点的振动比波源超前（波从远处传来），故相位中传播时间为 $+x/u$，波函数中为 $\\omega(t + x/u)$。③分析：B项正确——$t + x/u$ 对应沿负方向传播（远处相位超前）。A项 $t - x/u$ 对应沿正方向传播，方向错。C项写成 $x/u - t$ 改变了时间正方向，虽等价于某些形式但通常不这么写，且本题中不是标准表达。D项缺少括号，$\\omega t - x/u + \\varphi_0$ 在数学上含混不清，$x/u$ 没有与 $\\omega$ 相乘，不合规范。④干扰项来源：A项是沿 $+x$ 传播的正确表达式，是最常见的混淆项。⑤易错点：正方向传播取「$-$」号（落后），负方向传播取「$+$」号（超前）。记忆口诀：「正减负加」。正确答案对应字母B。", "question": "某平面简谐波沿 x 轴负方向传播，波源在 x = 0 处，振动方程为 y_0 = A\\cos(\\omega t + \\varphi_0)。则波函数正确的表达式是哪一项？", "kc_id": "ch6-q6", "cognitive_level": "apply", "points": 3, "pitfall": ""}, {"type": "calc", "difficulty": "medium", "kc": "kc6.2", "options": [], "answer": -1, "explanation": "①题型判断：由初始条件确定初相并建立波函数的计算题。②分析初相：$x=0$ 处振动方程 $y_O = A\\cos(\\omega t + \\varphi)$。$t=0$ 时 $y_O = A\\cos\\varphi = 0.02 = A$，即 $\\cos\\varphi = 1$，$\\varphi = 0$ 或 $2\\pi$。再判断 $v = -\\omega A\\sin\\varphi$，$t=0$ 时 $v &lt; 0$，而 $\\sin\\varphi \\ge 0$ 时 $v \\le 0$，要求 $\\sin\\varphi &gt; 0$。但 $\\cos\\varphi=1$ 时 $\\sin\\varphi=0$，这意味着 $v=0$ 而非 $v&lt;0$。重审：位移为正最大（$y=A$），正要往负方向走，说明质点恰好在正最大位移处刚要回头——此时初相 $\\varphi=0$，$\\sin 0=0$，$v=0$。但题目说「向 y 轴负方向运动」，若严格来说 $v&lt;0$，则质点必须已过正最大。取 $\\varphi=0$ 作为 $y=A$ 处即将向负方向运动的合理近似——物理上这个瞬间速度和位移都已处于边界。\\omega = 2\\pi f = 200\\pi\\,\\mathrm{rad/s}$；$\\lambda = u/f = 2\\,\\mathrm{m}$。波函数：$y = 0.02\\cos[200\\pi(t - x/200)]$ 或 $y = 0.02\\cos[2\\pi(100t - x/2)]$。③相位差：$\\Delta\\varphi = \\frac{2\\pi}{\\lambda}(x_2-x_1) = \\frac{2\\pi}{2}(8-5) = 3\\pi$。④量从哪来：$u=200$、$f=100$、$A=0.02$、$x_1=5$、$x_2=8$ 给定。⑤易错点：初相判断需要同时考虑 $y$ 和 $v$ 的符号；相位差公式 $\\Delta\\varphi = 2\\pi\\Delta x/\\lambda$ 适用于空间两点在同一时刻的比较。评分：$\\omega$ 或 $\\lambda$ 正确（1分）、初相分析（1分）、波函数（2分）、$\\Delta\\varphi=3\\pi$（1分）。", "question": "一列平面简谐波沿 +x 方向传播，波速 u = 200 m/s，频率 f = 100 Hz，振幅 A = 0.02 m。已知 x = 0 处质点在 t = 0 时位移 y = 0.02 m 且向 y 轴负方向运动。(1) 写出波函数；(2) 求 x = 5 m 与 x = 8 m 两点的相位差 \\Delta\\varphi。", "kc_id": "ch6-q7", "cognitive_level": "apply", "points": 8, "pitfall": ""}, {"type": "tf", "difficulty": "medium", "kc": "kc6.3", "options": [], "answer": 1, "explanation": "①题型判断：判断题，考查波的能量特点。②依据：波介质元中 $\\mathrm{d}W_k = \\mathrm{d}W_p$ 且两者同步变化（同周期、同大小、同相位）。③分析：题目描述的是孤立弹簧振子的能量特征（动能和势能交替，总和守恒），不是波介质元的特征。在波中，动能和势能始终相等且在平衡位置同时达到最大，在最大位移处同时为零，总能量不守恒（周期性变化，因为介质元不是孤立系统）。④结论：该陈述错误，answer=1 对应False。无选项。", "question": "在平面简谐波中，介质元的动能和弹性势能总是相位相差 \\pi/2，即动能最大时势能为零，势能最大时动能为零，总机械能守恒。", "kc_id": "ch6-q8", "cognitive_level": "apply", "points": 2, "pitfall": ""}, {"type": "choice", "difficulty": "medium", "kc": "kc6.4", "options": ["惠更斯原理可以定量计算衍射条纹的强度分布", "惠更斯原理只能解释波的反射，不能解释折射", "惠更斯原理中，任意时刻子波的包络面就是该时刻的新波前", "惠更斯原理适用于电磁波，但不适用于声波"], "answer": 2, "explanation": "①题型判断：概念辨析单选题。②依据：惠更斯原理的核心——波前上各点为子波源，子波包络面=新波前。③分析：C项正确——这是惠更斯原理的标准表述。A项错误——惠更斯原理是定性几何作图法，不能解释强度分布（菲涅耳补充子波干涉后才能量化，即惠更斯-菲涅耳原理）。B项错误——惠更斯原理可解释直线传播、反射、折射和衍射。D项错误——惠更斯原理对任何波动（包括机械波和电磁波）都适用。④干扰项来源：A项将惠更斯原理与惠更斯-菲涅耳原理混淆；D项误以为惠更斯原理有适用范围限制。⑤易错点：惠更斯原理本质上是描述「波前如何向前推进」的几何方法。正确答案对应字母C。", "question": "关于惠更斯原理，下列说法正确的是哪一项？", "kc_id": "ch6-q9", "cognitive_level": "apply", "points": 3, "pitfall": ""}, {"type": "calc", "difficulty": "medium", "kc": "kc6.5", "options": [], "answer": -1, "explanation": "①题型判断：干涉条件判断计算题。②分析：两波源初相相同（$\\varphi_1 = \\varphi_2 = 0$），直接用波程差判据。$\\delta = r_2 - r_1 = 20 - 10 = 10\\,\\mathrm{m}$。$\\delta/\\lambda = 10/4 = 2.5 = 5/2$，即 $\\delta = 5\\cdot\\lambda/2 = (2\\times 2 + 1)\\lambda/2$（$k=2$）。③判断：波程差为半波长的奇数倍 $\\longrightarrow$ 干涉相消（减弱）。④合振幅：$A = |A_1 - A_2| = |0.1 - 0.1| = 0$。⑤验证相位差：$\\Delta\\varphi = 0 - \\frac{2\\pi}{4}(20-10) = -5\\pi = \\pm(2k+1)\\pi$（$k=2$），相位差为 $\\pi$ 的奇数倍，相消。⑥易错点：$\\delta = (2k+1)\\lambda/2$ 中 $k=2$ 对应 $\\delta = 5\\lambda/2 = 10\\,\\mathrm{m}$，验算无误。当 $A_1=A_2$ 且相消时，合振幅为零，该点完全静止。评分：波程差计算（1分）、判断相消（1分）、合振幅 $A=0$（1分）、相位差验证（1分）。", "question": "两相干波源 S\\_1 和 S\\_2 振动方程均为 y = 0.1\\cos(200\\pi t)（SI制）。两波源相距 30 m，波长 \\lambda = 4 m。P 点在 S\\_1 S\\_2 连线上，距 S\\_1 为 10 m，距 S\\_2 为 20 m。试判断 P 点是干涉增强还是减弱，并求合振幅。", "kc_id": "ch6-q10", "cognitive_level": "apply", "points": 8, "pitfall": ""}, {"type": "calc", "difficulty": "hard", "kc": "kc6.5", "options": [], "answer": -1, "explanation": "①题型判断：干涉静止点（波节线）位置的综合计算。②分析：干涉相消条件为总相位差 $\\Delta\\varphi = \\pm(2k+1)\\pi$。设 P 点在连线上坐标为 $x$，$r_1 = x$，$r_2 = |9 - x|$（注意要在 S\\_1 和 S\\_2 之间或之外分段讨论）。$\\Delta\\varphi = (\\pi - 0) - \\frac{2\\pi}{\\lambda}(r_2 - r_1) = \\pi - \\frac{2\\pi}{2}(r_2 - r_1) = \\pi - \\pi(r_2 - r_1) = \\pm(2k+1)\\pi$。③求解：$\\pi - \\pi(r_2 - r_1) = \\pm(2k+1)\\pi$，即 $1 - (r_2 - r_1) = \\pm(2k+1)$。当 $0 \\le x \\le 9$（两点之间）：$r_2-x = 9-x$，$r_2-r_1 = 9 - 2x$。代入：$1 - (9-2x) = 2x - 8 = 2k+1$（用 $+$ 号）或 $2x - 8 = -(2k+1)$（用 $-$ 号，但 $-$ 号等价于重排 $k$），得 $x = (2k+9)/2 = k + 4.5$。$0 \\le x \\le 9$ 要求 $k = -4,-3,-2,-1,0,1,2,3,4$，对应 $x = 0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5$。共9个静止点。④量从哪来：$\\lambda=2$、$d=9$、$\\Delta\\varphi_0=\\pi$。⑤易错点：两波源初相不同时不能用简单波程差判据，必须回到 $\\Delta\\varphi$ 完整公式。初相差 $\\pi$ 使所有静止点偏移了半个波长。评分：列出完整 $\\Delta\\varphi$ 表达式（2分）、建立方程（1分）、正确求解 $x=k+4.5$（1分）、列出所有 $x$ 值（1分）。", "question": "两相干波源 S\\_1 和 S\\_2 的振动方程为 y_1 = A\\cos(\\omega t)，y_2 = A\\cos(\\omega t + \\pi)。波长 \\lambda = 2 m。在 S\\_1 S\\_2 连线上，S\\_1 在原点 O，S\\_2 在 x = 9 m 处。求连线上因干涉而静止（合振幅为零）的点的位置坐标 x。", "kc_id": "ch6-q11", "cognitive_level": "analyze", "points": 8, "pitfall": ""}, {"type": "calc", "difficulty": "hard", "kc": "kc6.6", "options": [], "answer": -1, "explanation": "①题型判断：驻波综合分析计算题。②合成：$y = y_1 + y_2 = 0.03\\{\\cos[2\\pi(10t - x/2)] + \\cos[2\\pi(10t + x/2)]\\} = 0.06\\cos(\\pi x)\\cos(20\\pi t)$。利用 $\\cos\\alpha + \\cos\\beta = 2\\cos\\frac{\\alpha+\\beta}{2}\\cos\\frac{\\alpha-\\beta}{2}$，其中 $\\alpha = 20\\pi t - \\pi x$，$\\beta = 20\\pi t + \\pi x$，$\\frac{\\alpha+\\beta}{2} = 20\\pi t$，$\\frac{\\alpha-\\beta}{2} = -\\pi x$。③波节：$|\\cos(\\pi x)| = 0$，$\\pi x = (2k+1)\\pi/2$，$x = (2k+1)/2 = k + 0.5$，即 $x = \\pm 0.5, \\pm 1.5, \\pm 2.5, \\ldots\\,\\mathrm{m}$。波腹：$|\\cos(\\pi x)| = 1$，$\\pi x = k\\pi$，$x = k$，即 $x = 0, \\pm 1, \\pm 2, \\ldots\\,\\mathrm{m}$。④$x=0.25$：振幅 $A'(0.25) = 0.06|\\cos(\\pi \\times 0.25)| = 0.06|\\cos(\\pi/4)| = 0.06 \\times \\sqrt{2}/2 \\approx 0.0424\\,\\mathrm{m}$。⑤量从哪来：$A=0.03$、$f=10$、$\\lambda = 2\\,\\mathrm{m}$（从 $2\\pi/\\lambda = \\pi$ 推出）。⑥易错点：波长 $\\lambda$ 需从 $2\\pi/\\lambda = \\pi$ 识别出 $\\lambda = 2\\,\\mathrm{m}$（不是 0.5 m）；波节波腹间距为 $\\lambda/2 = 1\\,\\mathrm{m}$ 可交叉验证。评分：正确合成驻波函数（2分）、波节位置（1分）、波腹位置（1分）、$x=0.25$ 处振幅（1分）。", "question": "两列波 y_1 = 0.03\\cos[2\\pi(10t - x/2)] 和 y_2 = 0.03\\cos[2\\pi(10t + x/2)]（SI制）叠加形成驻波。(1) 写出合成驻波的波函数；(2) 求波节和波腹的位置坐标；(3) 求 x = 0.25 m 处质点的振幅。", "kc_id": "ch6-q12", "cognitive_level": "analyze", "points": 8, "pitfall": ""}, {"type": "choice", "difficulty": "hard", "kc": "kc6.6", "options": ["行波中各质点的振幅相同，而驻波中各质点振幅按正弦分布", "驻波中相邻两波节之间的各质点振动相位相同，相邻段质点振动相位相反", "驻波中能量沿传播方向单向流动，与行波相同", "驻波中相位包含 x 坐标项，存在相位的空间传播"], "answer": 1, "explanation": "①题型判断：驻波与行波对比辨析单选题（高难度因选项间区分细微）。②依据：驻波 $y = 2A\\cos(2\\pi x/\\lambda)\\cos(\\omega t)$，振幅因子为 $2A|\\cos(2\\pi x/\\lambda)|$（余弦分布而非正弦），相位为 $\\cos(\\omega t)$ 不含 $x$，能量不单向传播。③分析：B项正确——同一段（两波节间）$\\cos(2\\pi x/\\lambda)$ 不变号，各质点同步振动（相位相同）；相邻段 $\\cos(2\\pi x/\\lambda)$ 符号相反，差 $\\pi$ 相位。A项错在「按正弦分布」——应改「按余弦的绝对值/幅度分布」更准确（驻波振幅分布是 $|\\cos|$ 型），且更关键的错误是分布函数不同。严格来说驻波振幅确按 $|\\cos(2\\pi x/\\lambda)|$ 分布非 $|\\sin|$。C项错——驻波能量不沿 $x$ 轴传播，只在波腹与波节间局部交换动能和势能。D项错——驻波相位中无 $x$，这是驻波与行波的根本区别之一。④干扰项来源：A项「正弦/余弦」一字之差；C项直接将行波特征赋予驻波；D项将行波特征赋予驻波。⑤易错点：驻波中相邻段相位差 $\\pi$，同一段相位相同。正确答案对应字母B。", "question": "关于驻波与行波的区别，下列说法正确的是哪一项？", "kc_id": "ch6-q13", "cognitive_level": "analyze", "points": 3, "pitfall": ""}, {"type": "calc", "difficulty": "medium", "kc": "kc6.7", "options": [], "answer": -1, "explanation": "①题型判断：多普勒效应综合计算。②(1) 观察者静止（$u_R=0$），波源远离（$u_S=-25$，远离时 $u_S$ 为负，代入 $u-u_S = u - (-25) = u+25$）：$f_R = \\frac{u}{u - u_S}f_S = \\frac{340}{340 - (-25)} \\times 600 = \\frac{340}{365} \\times 600 \\approx 558.9\\,\\mathrm{Hz}$。或直接用远离公式 $f_R = \\frac{u}{u+u_S}f_S = \\frac{340}{340+25}\\times 600 = \\frac{340}{365}\\times 600 \\approx 559\\,\\mathrm{Hz}$。频率变低。③(2) 观察者也远离（$u_R=-15$），波源远离（$u_S=-25$）：$f_R = \\frac{u + u_R}{u - u_S}f_S = \\frac{340 + (-15)}{340 - (-25)} \\times 600 = \\frac{325}{365} \\times 600 \\approx 534.2\\,\\mathrm{Hz}$。④符号约定验证：观察者远离时 $u_R=-15$（分子减小），波源远离时 $u_S=-25$（分母 $u-(-25)=u+25$ 增大），两者都使 $f_R$ 变小——物理上合理（互相远离时频率降低最多）。⑤易错点：同时运动时要完整代入统一公式 $f_R = \\frac{u+u_R}{u-u_S}f_S$，不要分步计算（容易乱）；符号「接近为正」意味着 $u_R$ 和 $u_S$ 远离时取负。评分：(1) $f_R \\approx 559\\,\\mathrm{Hz}$（2分）；(2) $f_R \\approx 534\\,\\mathrm{Hz}$，公式及符号使用正确（3分）。", "question": "一辆汽车以 25 m/s 的速度远离一位静止的观察者，同时汽车鸣笛，笛声的真实频率为 600 Hz。空气温度下声速取 340 m/s。求：(1) 观察者听到的频率； (2) 若观察者同时以 15 m/s 的速度朝远离汽车的方向跑，听到的频率又是多少？", "kc_id": "ch6-q14", "cognitive_level": "apply", "points": 8, "pitfall": ""}, {"kc_id": "kc6.5", "cognitive_level": "apply", "difficulty": "medium", "type": "calc", "points": 8, "question": "A、B 两相干波源相距 40 m，频率均为 50 Hz，波速 400 m/s，两波源振动相位差为 π。求 AB 连线上因干涉而静止的各点位置（以 A 为原点）。", "options": [], "answer": -1, "explanation": "波长 λ = u/f = 400/50 = 8 m。波程差 δ = r_B - r_A = (40-x) - x = 40 - 2x。\n\n相位差 Δφ = φ_B - φ_A - (2π/λ)·δ = π - (2π/8)(40-2x) = π - 10π + (π/2)x = (π/2)x - 9π。\n\n减弱条件（静止点）：Δφ = (2k+1)π → (π/2)x - 9π = (2k+1)π → x/2 = 2k+10 → x = 4k+20。\n\nk 为整数，x 应在 [0, 40] 内。k = -5,-4,-3,-2,-1,0,1,2,3,4,5 → x=0,4,8,12,16,20,24,28,32,36,40 m（共 11 个减弱点，但端点是波源位置需剔除）。\n\n关键步骤：波程差→相位差→减弱条件→解 k。两波源本身处不存在干涉静止（端点本身是波源），最后保留 x=4,8,12,16,24,28,32,36 m（8 个内点）。", "pitfall": "相位差公式中波程差的符号取决于谁减谁。此题 Δφ = φ_B-φ_A - (2π/λ)(r_B-r_A)，若取反会多一个负号。减弱条件是 Δφ=(2k+1)π 不是 2kπ。端点 x=0 和 x=40 分别为波源 A 和 B 的位置，不能说是「因干涉而静止」。"}, {"kc_id": "kc6.6", "cognitive_level": "apply", "difficulty": "medium", "type": "calc", "points": 8, "question": "入射波 y₁ = 0.05cos(100πt - 2πx) (SI) 在 x=0 处遇到固定端发生反射。(1)求反射波的波函数；(2)求驻波方程；(3)求波节和波腹的位置。", "options": [], "answer": -1, "explanation": "(1) 固定端反射有半波损失（相位突变 π）。反射波沿 -x 方向传播：y₂ = 0.05cos[100πt + 2πx + π] = -0.05cos(100πt + 2πx)。\n\n(2) 驻波 y = y₁ + y₂ = 0.05cos(100πt - 2πx) - 0.05cos(100πt + 2πx)。用和差化积：cosA - cosB = -2sin[(A+B)/2]sin[(A-B)/2]。y = -2·0.05·sin(100πt)·sin(-2πx) = 0.10sin(2πx)sin(100πt)。\n\n(3) 波节：sin(2πx)=0 → 2πx=kπ → x=k/2 m (k=0,1,2,...)。波腹：|sin(2πx)|=1 → 2πx=(2k+1)π/2 → x=(2k+1)/4 m。\n\n评分：反射波 3 分，驻波 3 分，波节波腹 2 分。", "pitfall": "固定端反射有半波损失（相位变 π），自由端反射无半波损失。如果误认为自由端反射的公式，反射波将为 y₂=0.05cos(100πt+2πx)（无 π），驻波在 x=0 处会是波腹而非波节。"}, {"kc_id": "kc6.7", "cognitive_level": "apply", "difficulty": "medium", "type": "calc", "points": 6, "question": "A 静止发出频率 500 Hz 的声波，B 以 60 m/s 向 A 运动，观察者 O 以 30 m/s 向 A 运动。空气中声速 340 m/s。求 O 听到来自 A 和来自 B 的频率及拍频。", "options": [], "answer": -1, "explanation": "多普勒效应公式：ν' = ν₀·(u ± v_R)/(u ∓ v_S)。\n\nA 静止（v_S=0）：ν_A' = 500 × (340+30)/(340-0) = 500 × 370/340 = 544 Hz。\n\nB 向 A 运动（v_S=60 m/s，趋近 O，分母减）：ν_B' = 500 × (340+30)/(340-60) = 500 × 370/280 = 661 Hz。\n\n拍频：f_beat = |ν_B' - ν_A'| = |661 - 544| = 117 Hz。\n\n符号规则：分子 v_R 趋近波源取 +；分母 v_S 趋近观察者取 -（使分母变小、频率变高）。", "pitfall": "多普勒效应的符号规则最容易出错：观察者趋近波源 → 分子取 +；波源趋近观察者 → 分母取 -。两个效应可以叠加，分别独立处理分子和分母。"}, {"kc_id": "kc6.2", "cognitive_level": "apply", "difficulty": "basic", "type": "choice", "points": 3, "question": "一平面简谐波沿 x 轴正方向传播，波速 u=20 m/s，t=0 时刻的波形如图。若原点 O 处质点 t=0 时在平衡位置且向 y 正方向运动，则该波的波函数为：", "options": ["y=Acos[10π(t-x/20)+π/2]", "y=Acos[10π(t-x/20)-π/2]", "y=Acos[10π(t+x/20)+π/2]", "y=Acos[10π(t-x/20)]"], "answer": 1, "explanation": "原点 t=0 时 y₀=0 且向 y 正方向运动 → 由旋转矢量法，初相 φ=-π/2（或 3π/2 等效，但 -π/2 更自然）。波沿 +x 传播 → 波函数 y=Acos[ω(t-x/u)+φ]。\n\nω=2π/T，由波形和波速关系 ω=2πu/λ，此处 ω=10π（推导略）。代入 φ=-π/2 得 y=Acos[10π(t-x/20)-π/2]。\n\n旋转矢量法：t=0 时质点位于平衡位置向正方向运动 → 相位为 -π/2（或 3π/2）。不是 0（那是最大正位移）、不是 π（那是最大负位移）、不是 +π/2（那是平衡位置向负方向）。", "pitfall": ""}, {"kc_id": "kc6.1", "cognitive_level": "understand", "difficulty": "basic", "type": "tf", "points": 2, "question": "机械波传播过程中，介质中的质点随波一起向前迁移。", "options": [], "answer": 1, "explanation": "错误。机械波传播的是振动状态和能量，介质质点只在自己平衡位置附近振动，并不随波整体迁移。横波中质点振动方向与波传播方向垂直；纵波中质点振动方向与波传播方向平行——但无论哪种波，质点都不随波迁移。", "pitfall": ""}, {"kc_id": "kc6.4", "cognitive_level": "understand", "difficulty": "basic", "type": "tf", "points": 2, "question": "根据惠更斯原理，波的衍射是指波在传播过程中遇到障碍物时发生反射的现象。", "options": [], "answer": 1, "explanation": "错误。衍射是指波绕过障碍物继续传播的现象，不是反射。惠更斯原理：介质中波前上每一点都可以看作新的子波波源，这些子波的包络面就是下一时刻的波前——这个原理可以统一解释波的反射、折射、衍射和干涉。", "pitfall": ""}];
+var LABELS = {"page_title": "章节测试", "section": {"choice": "一、选择题", "multi": "二、多选题", "tf": "三、判断题", "fill": "四、填空题", "short": "五、简答题", "calc": "六、计算题", "code": "七、代码题", "essay": "八、问答题", "comprehensive": "九、综合题"}, "section_order": ["choice", "multi", "tf", "fill", "short", "calc", "code", "essay", "comprehensive"], "points_suffix": "分", "true_label": "正确", "false_label": "错误", "placeholder": "在此作答...", "code_placeholder": "在此编写代码...", "pitfall_prefix": "易错提醒：", "correct_label": "正确", "wrong_label": "错误", "partial_label": "部分正确", "answer_prefix": "正确答案：", "reference_label": "参考答案", "graded_label": "已批改", "grade_button": "提交批改", "score_label": "总分", "duration_prefix": "满分 100 分 | 建议 ", "duration_suffix": " 分钟 | 选择答案后点击提交批改"};
+
+// ─── Answer normalization (robust to how the JSON was authored) ──────
+// tf / choice answers may arrive as int index, boolean, letter ("A"),
+// or label string ("正确"/"错误"/"对"/"错"). All are coerced to an
+// option index so grading never silently fails on a type mismatch.
+
+function tfAnswerIndex(ans) {
+  // option 0 = true_label (正确), option 1 = false_label (错误)
+  if (typeof ans === 'boolean') return ans ? 0 : 1;
+  if (typeof ans === 'number') return ans === 0 ? 0 : 1;
+  var s = ('' + ans).trim().toLowerCase();
+  var truthy = ['0', 't', 'true', '正确', '对', '是', 'yes', 'y', '√', '✓'];
+  var falsy  = ['1', 'f', 'false', '错误', '错', '否', 'no', 'n', '×', 'x'];
+  if (truthy.indexOf(s) !== -1) return 0;
+  if (falsy.indexOf(s) !== -1) return 1;
+  return ans ? 0 : 1;
+}
+
+function choiceAnswerIndex(ans, options) {
+  if (typeof ans === 'number') return ans;
+  var s = ('' + ans).trim();
+  if (/^[A-Za-z]$/.test(s)) return s.toUpperCase().charCodeAt(0) - 65;
+  if (/^\d+$/.test(s)) return parseInt(s, 10);
+  if (options) {
+    for (var i = 0; i < options.length; i++) {
+      if (('' + options[i]).trim() === s) return i;
+    }
+  }
+  return parseInt(s, 10);
+}
+
+function multiAnswerSet(ans, options) {
+  var arr = Array.isArray(ans) ? ans : [ans];
+  var set = {};
+  for (var i = 0; i < arr.length; i++) {
+    set[choiceAnswerIndex(arr[i], options)] = true;
+  }
+  return set;
+}
+
+// Normalize free text for fill-in-the-blank comparison: trim, lowercase,
+// drop surrounding whitespace and common punctuation, unify full/half width.
+function normText(s) {
+  s = ('' + s).trim().toLowerCase();
+  s = s.replace(/[\s　]+/g, '');
+  s = s.replace(/[.,;:!?。，、；：！？“”"'（）()【】\[\]<>《》]/g, '');
+  // full-width ASCII -> half-width
+  s = s.replace(/[！-～]/g, function (c) {
+    return String.fromCharCode(c.charCodeAt(0) - 0xfee0);
+  });
+  return s;
+}
+
+// How many blanks does a fill question have? Count underscore / ＿ runs.
+function fillBlankCount(question) {
+  var m = ('' + question).match(/(_{2,}|＿+)/g);
+  return m ? m.length : 0;
+}
+
+// Coerce a fill `answer` into an array (one entry per blank) of accepted
+// answer lists. Handles: string, [synonyms], [[blank1 syns],[blank2 syns]].
+function fillBlankAnswers(ans, nBlanks) {
+  if (nBlanks < 1) nBlanks = 1;
+  if (!Array.isArray(ans)) return padBlanks([[ans]], nBlanks);
+  if (ans.length && Array.isArray(ans[0])) return padBlanks(ans, nBlanks);
+  // flat array of strings
+  if (nBlanks === 1) return [ans];                 // synonyms for one blank
+  if (ans.length === nBlanks) {                    // one answer per blank
+    return ans.map(function (a) { return [a]; });
+  }
+  return padBlanks([ans], nBlanks);                // ambiguous -> all on blank 1
+}
+
+function padBlanks(arr, n) {
+  var out = arr.slice(0, n);
+  while (out.length < n) out.push(['']);
+  return out;
+}
+
+// ─── Build ───────────────────────────────────────────────────────────
+
+function build() {
+  var container = document.getElementById('questions-container');
+  if (!container) { console.error('ExamPass: questions-container not found'); return; }
+
+  // Stable-sort questions by section order so headings group correctly
+  // regardless of input order.
+  var order = LABELS.section_order || [];
+  Q.forEach(function (q, i) { q._i = i; });
+  Q.sort(function (a, b) {
+    var oa = order.indexOf(a.type); if (oa === -1) oa = 99;
+    var ob = order.indexOf(b.type); if (ob === -1) ob = 99;
+    return oa - ob || a._i - b._i;
+  });
+
+  var h = '';
+  var sec = '';
+  var titles = LABELS.section;
+
+  for (var i = 0; i < Q.length; i++) {
+    var q = Q[i];
+    if (q.type !== sec) {
+      sec = q.type;
+      if (titles[q.type]) h += '<h3>' + titles[q.type] + '</h3>';
+    }
+
+    var qid = 'q' + i;
+    h += '<div class="q-card" id="card-' + qid + '">';
+    h += '<div class="q-num">' + (i + 1) + '. (' + q.points + ' ' + LABELS.points_suffix + ')</div>';
+
+    if (q.type === 'fill') {
+      h += '<div class="q-text">' + renderFill(q, qid) + '</div>';
+    } else {
+      h += '<div class="q-text">' + q.question + '</div>';
+    }
+
+    if (q.type === 'choice') {
+      var opts = q.options || [];
+      for (var j = 0; j < opts.length; j++) {
+        h += '<label class="option" id="opt-' + qid + '-' + j + '" onclick="sel(\'' + qid + '\',' + j + ')">';
+        h += '<input type="radio" name="' + qid + '" value="' + j + '">' + String.fromCharCode(65 + j) + '. ' + opts[j] + '</label>';
+      }
+    } else if (q.type === 'multi') {
+      var mopts = q.options || [];
+      for (var k = 0; k < mopts.length; k++) {
+        h += '<label class="option" id="opt-' + qid + '-' + k + '" onclick="toggle(\'' + qid + '\',' + k + ')">';
+        h += '<input type="checkbox" name="' + qid + '" value="' + k + '">' + String.fromCharCode(65 + k) + '. ' + mopts[k] + '</label>';
+      }
+    } else if (q.type === 'tf') {
+      h += '<label class="option" id="opt-' + qid + '-0" onclick="sel(\'' + qid + '\',0)">';
+      h += '<input type="radio" name="' + qid + '" value="0">' + LABELS.true_label + '</label>';
+      h += '<label class="option" id="opt-' + qid + '-1" onclick="sel(\'' + qid + '\',1)">';
+      h += '<input type="radio" name="' + qid + '" value="1">' + LABELS.false_label + '</label>';
+    } else if (q.type === 'fill') {
+      // inputs already rendered inline inside q-text
+    } else if (q.type === 'code') {
+      h += '<textarea class="q-textarea q-code" id="text-' + qid + '" placeholder="' + (LABELS.code_placeholder || LABELS.placeholder) + '" rows="8" spellcheck="false"></textarea>';
+    } else {
+      h += '<textarea class="q-textarea" id="text-' + qid + '" placeholder="' + LABELS.placeholder + '" rows="3"></textarea>';
+    }
+
+    h += '<div class="result" id="result-' + qid + '">';
+    h += '<span class="badge" id="badge-' + qid + '"></span><span id="correct-' + qid + '"></span>';
+    h += '<div class="explanation">' + (q.explanation || '') + '</div>';
+    if (q.pitfall) {
+      h += '<div class="pitfall">' + LABELS.pitfall_prefix + q.pitfall + '</div>';
+    }
+    h += '</div></div>';
+  }
+
+  container.innerHTML = h;
+
+  if (window.MathJax && MathJax.typesetPromise) {
+    MathJax.typesetPromise([container]).catch(function (err) {
+      console.error('MathJax typeset error:', err);
+    });
+  }
+}
+
+// Render fill question text with inline <input> boxes replacing blanks.
+function renderFill(q, qid) {
+  var nBlanks = fillBlankCount(q.question);
+  var k = 0;
+  var html = ('' + q.question).replace(/(_{2,}|＿+)/g, function () {
+    var inp = '<input type="text" class="fill-input" id="fill-' + qid + '-' + k + '" autocomplete="off" spellcheck="false">';
+    k++;
+    return inp;
+  });
+  if (k === 0) {
+    // No markers in text -> append boxes based on answer shape
+    var n = fillBlankAnswers(q.answer, 1).length;
+    var ans = q.answer;
+    if (Array.isArray(ans)) n = Array.isArray(ans[0]) ? ans.length : (ans.length || 1);
+    if (n < 1) n = 1;
+    html += '<div class="fill-row">';
+    for (var b = 0; b < n; b++) {
+      if (n > 1) html += '<span class="fill-tag">' + (b + 1) + '.</span>';
+      html += '<input type="text" class="fill-input" id="fill-' + qid + '-' + b + '" autocomplete="off" spellcheck="false">';
+    }
+    html += '</div>';
+  }
+  return html;
+}
+
+document.addEventListener('DOMContentLoaded', build);
+if (document.readyState === 'interactive' || document.readyState === 'complete') {
+  build();
+}
+
+// ─── Selection handlers ──────────────────────────────────────────────
+
+function sel(qid, idx) {
+  var prefix = 'opt-' + qid + '-';
+  var all = document.querySelectorAll('[id^="' + prefix + '"]');
+  for (var i = 0; i < all.length; i++) all[i].classList.remove('selected');
+  var target = document.getElementById('opt-' + qid + '-' + idx);
+  if (target) target.classList.add('selected');
+  var radio = document.querySelector('input[name="' + qid + '"][value="' + idx + '"]');
+  if (radio) radio.checked = true;
+}
+
+function toggle(qid, idx) {
+  var box = document.querySelector('input[name="' + qid + '"][value="' + idx + '"]');
+  var label = document.getElementById('opt-' + qid + '-' + idx);
+  if (!box) return;
+  box.checked = !box.checked;
+  if (label) label.classList.toggle('selected', box.checked);
+}
+
+// ─── Grading ─────────────────────────────────────────────────────────
+
+function gradeAll() {
+  var score = 0;
+  for (var i = 0; i < Q.length; i++) {
+    var q = Q[i];
+    var qid = 'q' + i;
+    var card = document.getElementById('card-' + qid);
+    var result = document.getElementById('result-' + qid);
+    var badge = document.getElementById('badge-' + qid);
+    var correctEl = document.getElementById('correct-' + qid);
+    if (!card || !result) continue;
+
+    result.style.display = 'block';
+
+    if (q.type === 'choice' || q.type === 'tf') {
+      score += gradeSingle(q, qid, card, badge, correctEl);
+    } else if (q.type === 'multi') {
+      score += gradeMulti(q, qid, card, badge, correctEl);
+    } else if (q.type === 'fill') {
+      score += gradeFill(q, qid, card, badge, correctEl);
+    } else {
+      card.classList.add('correct');
+      badge.className = 'badge badge-ref';
+      badge.textContent = LABELS.reference_label;
+    }
+  }
+
+  var sb = document.getElementById('score-box');
+  if (sb) {
+    sb.style.display = 'block';
+    document.getElementById('score-num').textContent = roundScore(score);
+    sb.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  var opts = document.querySelectorAll('.option');
+  for (var a = 0; a < opts.length; a++) opts[a].style.pointerEvents = 'none';
+  var tas = document.querySelectorAll('.q-textarea');
+  for (var b = 0; b < tas.length; b++) tas[b].disabled = true;
+  var fis = document.querySelectorAll('.fill-input');
+  for (var c = 0; c < fis.length; c++) fis[c].disabled = true;
+
+  var btn = document.getElementById('grade-btn');
+  if (btn) { btn.disabled = true; btn.textContent = LABELS.graded_label; }
+
+  if (window.MathJax && MathJax.typesetPromise) {
+    MathJax.typesetPromise().catch(function (err) {
+      console.error('MathJax typeset error:', err);
+    });
+  }
+}
+
+function roundScore(s) {
+  return Math.round(s * 10) / 10;
+}
+
+function gradeSingle(q, qid, card, badge, correctEl) {
+  var ansIdx = q.type === 'tf' ? tfAnswerIndex(q.answer) : choiceAnswerIndex(q.answer, q.options);
+  var radio = document.querySelector('input[name="' + qid + '"]:checked');
+  if (radio && parseInt(radio.value, 10) === ansIdx) {
+    card.classList.add('correct');
+    badge.className = 'badge badge-ok';
+    badge.textContent = LABELS.correct_label;
+    correctEl.innerHTML = '';
+    var ok = document.getElementById('opt-' + qid + '-' + ansIdx);
+    if (ok) ok.classList.add('correct-answer');
+    return q.points;
+  }
+  card.classList.add('wrong');
+  badge.className = 'badge badge-no';
+  badge.textContent = LABELS.wrong_label;
+  var ansText = q.type === 'choice'
+    ? String.fromCharCode(65 + ansIdx) + '. ' + (q.options ? q.options[ansIdx] : '')
+    : (ansIdx === 0 ? LABELS.true_label : LABELS.false_label);
+  correctEl.innerHTML = LABELS.answer_prefix + ansText;
+  if (radio) {
+    var wrongOpt = document.getElementById('opt-' + qid + '-' + radio.value);
+    if (wrongOpt) wrongOpt.classList.add('wrong-answer');
+  }
+  var corr = document.getElementById('opt-' + qid + '-' + ansIdx);
+  if (corr) corr.classList.add('correct-answer');
+  return 0;
+}
+
+function gradeMulti(q, qid, card, badge, correctEl) {
+  var want = multiAnswerSet(q.answer, q.options);
+  var wantKeys = Object.keys(want).map(Number);
+  var checked = document.querySelectorAll('input[name="' + qid + '"]:checked');
+  var picked = [];
+  for (var i = 0; i < checked.length; i++) picked.push(parseInt(checked[i].value, 10));
+
+  var anyWrong = false, hitCorrect = 0;
+  for (var p = 0; p < picked.length; p++) {
+    if (want[picked[p]]) hitCorrect++;
+    else anyWrong = true;
+  }
+
+  // reveal correct / wrong option markers
+  var mopts = q.options || [];
+  for (var j = 0; j < mopts.length; j++) {
+    var el = document.getElementById('opt-' + qid + '-' + j);
+    if (!el) continue;
+    if (want[j]) el.classList.add('correct-answer');
+    else if (picked.indexOf(j) !== -1) el.classList.add('wrong-answer');
+  }
+
+  var earned;
+  if (!anyWrong && hitCorrect === wantKeys.length && picked.length === wantKeys.length) {
+    earned = q.points;
+    card.classList.add('correct');
+    badge.className = 'badge badge-ok';
+    badge.textContent = LABELS.correct_label;
+    correctEl.innerHTML = '';
+  } else if (!anyWrong && hitCorrect > 0) {
+    // 少选不错选 -> partial credit
+    earned = roundScore(q.points * hitCorrect / wantKeys.length);
+    card.classList.add('partial');
+    badge.className = 'badge badge-partial';
+    badge.textContent = LABELS.partial_label;
+    correctEl.innerHTML = LABELS.answer_prefix + multiAnswerText(wantKeys, mopts);
+  } else {
+    earned = 0;
+    card.classList.add('wrong');
+    badge.className = 'badge badge-no';
+    badge.textContent = LABELS.wrong_label;
+    correctEl.innerHTML = LABELS.answer_prefix + multiAnswerText(wantKeys, mopts);
+  }
+  return earned;
+}
+
+function multiAnswerText(keys, options) {
+  return keys.sort(function (a, b) { return a - b; }).map(function (k) {
+    return String.fromCharCode(65 + k) + '. ' + (options ? options[k] : '');
+  }).join('  ');
+}
+
+function gradeFill(q, qid, card, badge, correctEl) {
+  var nBlanks = fillBlankCount(q.question);
+  var blanks = fillBlankAnswers(q.answer, nBlanks);
+  var n = blanks.length;
+  var hit = 0;
+  var displays = [];
+
+  for (var b = 0; b < n; b++) {
+    var inp = document.getElementById('fill-' + qid + '-' + b);
+    var accepted = blanks[b] || [''];
+    var user = inp ? normText(inp.value) : '';
+    var ok = false;
+    for (var a = 0; a < accepted.length; a++) {
+      if (accepted[a] !== '' && normText(accepted[a]) === user && user !== '') { ok = true; break; }
+    }
+    if (inp) inp.classList.add(ok ? 'fill-ok' : 'fill-no');
+    if (ok) hit++;
+    displays.push((n > 1 ? (b + 1) + '. ' : '') + accepted.filter(function (x) { return x !== ''; }).join(' / '));
+  }
+
+  var earned = roundScore(q.points * hit / n);
+  correctEl.innerHTML = LABELS.answer_prefix + displays.join('   ');
+
+  if (hit === n) {
+    card.classList.add('correct');
+    badge.className = 'badge badge-ok';
+    badge.textContent = LABELS.correct_label;
+  } else if (hit > 0) {
+    card.classList.add('partial');
+    badge.className = 'badge badge-partial';
+    badge.textContent = LABELS.partial_label;
+  } else {
+    card.classList.add('wrong');
+    badge.className = 'badge badge-no';
+    badge.textContent = LABELS.wrong_label;
+  }
+  return earned;
+}
+
+</script>
+<script>
+document.addEventListener('click', function(e){
+  var btn = e.target.closest('#epa-tabs .tab-btn'); if(!btn) return;
+  var tab = btn.getAttribute('data-tab');
+  document.querySelectorAll('#epa-tabs .tab-btn').forEach(function(b){ b.classList.toggle('active', b===btn); });
+  document.querySelectorAll('.tab-panel').forEach(function(p){
+    p.classList.toggle('active', p.id === 'panel-' + tab); });
+  // The test panel is display:none on load, so build()'s MathJax typeset ran
+  // on hidden content (collapsing formula question cards to 0 height). Re-run
+  // build() the first time the panel is visible so it renders + typesets at the
+  // real size. Guarded so user answers aren't wiped on later switches.
+  if(tab === 'test' && !window.__epaTestBuilt){
+    window.__epaTestBuilt = true;
+    if(typeof build === 'function'){ try { build(); } catch(err){} }
+  }
+  if(window.__epaFitFormulas) setTimeout(window.__epaFitFormulas, 50);
+  window.scrollTo(0, 0);
+});
+</script>
+</body>
+</html>

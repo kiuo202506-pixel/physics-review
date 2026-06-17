@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Chapter 8 Thermodynamics</title>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\(', '\)']],
+    displayMath: [['$$', '$$'], ['\[', '\]']]
+  }
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"></script>
+<style>
+/* === ExamPass Shared Styles === */
+/* Paper-like warm background, clean typography, responsive */
+
+:root {
+  --paper: #fdf6e3;
+  --paper-dark: #f5ecd7;
+  --ink: #2c2c2c;
+  --ink-light: #555;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --divider: #d6c8a8;
+  --card-bg: #fef9ef;
+  --card-border: #e8dcc8;
+  --correct: #22c55e;
+  --correct-bg: #f0fdf4;
+  --wrong: #ef4444;
+  --wrong-bg: #fef2f2;
+  --tag-bg: #fef3c7;
+  --tag-text: #92400e;
+  --radius: 6px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: "Microsoft YaHei", "Noto Sans SC", "SimSun", sans-serif;
+  font-size: 12pt; line-height: 1.75; color: var(--ink);
+  max-width: 860px; margin: auto; padding: 24px 20px 60px;
+  background: var(--paper);
+}
+
+@media print {
+  body { font-size: 10.5pt; background: #fff; }
+  .no-print { display: none !important; }
+  h1, h2, h3 { page-break-after: avoid; }
+}
+
+/* ── Header ── */
+#exampass-header {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 6px 0; margin-bottom: 0;
+}
+.header-brand { font-size: 1.2em; font-weight: 700; color: #1a1a2e; letter-spacing: 0.3px; }
+.header-url  { font-size: 0.78em; color: #999; }
+.header-divider { border: none; border-top: 2px solid var(--divider); margin: 4px 0 20px 0; }
+
+/* ── Typography ── */
+h1 { font-size: 1.55em; text-align: center; border-bottom: 2px solid var(--divider); padding-bottom: 8px; margin-top: 0; }
+h2 { font-size: 1.25em; border-bottom: 1px solid var(--divider); padding-bottom: 4px; margin-top: 28px; }
+h3 { font-size: 1.08em; margin-top: 20px; color: var(--ink); }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── Tables ── */
+table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 0.95em; }
+td, th { border: 1px solid var(--card-border); padding: 5px 9px; text-align: left; }
+th { background: var(--paper-dark); font-weight: 700; }
+
+/* ── Knowledge point vs explanation ── */
+.kp { font-weight: 700; color: var(--ink); }           /* key point: bold dark */
+.exp { font-weight: 400; color: var(--ink-light); }    /* explanation: lighter */
+.exp em, .exp strong { color: var(--ink); }             /* emphasis inside explanation */
+
+/* ── Block elements ── */
+blockquote {
+  border-left: 3px solid #c0392b; background: #fef9ef;
+  padding: 6px 14px; margin: 10px 0; font-size: 0.95em;
+}
+/* Modern monospace stack — avoids the ugly Courier New fallback on Windows. */
+:root {
+  --mono: "Cascadia Code", "JetBrains Mono", "Fira Code", "Source Code Pro",
+          Consolas, "SF Mono", Menlo, "DejaVu Sans Mono", monospace;
+}
+code {
+  font-family: var(--mono);
+  background: #eee8d8; color: #8a4b1e;
+  padding: 1px 5px; border-radius: 4px; font-size: 0.9em;
+}
+pre {
+  font-family: var(--mono);
+  background: #2d2a26; color: #ece6da;
+  padding: 14px 16px; border-radius: var(--radius);
+  overflow-x: auto; line-height: 1.6; font-size: 0.9em;
+  border: 1px solid #3d3934; tab-size: 2;
+}
+pre code {
+  background: none; color: inherit; padding: 0; font-size: 1em; border-radius: 0;
+}
+
+/* ── Long display formulas: scroll inside their column, never overflow ── */
+mjx-container[display="true"] {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* ── TOC ── */
+div.toc {
+  background: var(--card-bg); padding: 14px 18px;
+  border: 1px solid var(--card-border); border-radius: var(--radius); margin-bottom: 22px;
+}
+div.toc ul { padding-left: 18px; }
+div.toc li { margin: 3px 0; font-size: 0.95em; }
+
+/* ── Priority tags ── */
+.tag-must   { background: #fee2e2; color: #991b1b; padding: 1px 6px; border-radius: 3px; font-size: 0.82em; font-weight: 600; }
+.tag-key    { background: #fef3c7; color: #92400e; padding: 1px 6px; border-radius: 3px; font-size: 0.82em; font-weight: 600; }
+.tag-freq   { background: #dbeafe; color: #1e40af; padding: 1px 6px; border-radius: 3px; font-size: 0.82em; font-weight: 600; }
+.tag-info   { background: #f0fdf4; color: #166534; padding: 1px 6px; border-radius: 3px; font-size: 0.82em; font-weight: 600; }
+
+/* ── Checkpoint self-test ── */
+.checkpoint {
+  background: #eff6ff; border: 1px solid #bfdbfe; border-radius: var(--radius);
+  padding: 10px 16px; margin: 18px 0;
+  font-size: 0.95em;
+}
+.checkpoint::before {
+  content: '🧠 自测：';
+  font-weight: 700; color: #1e40af;
+}
+.checkpoint .cp-answer { margin-top: 10px; border-top: 1px dashed #bfdbfe; padding-top: 8px; }
+.checkpoint .cp-answer summary {
+  cursor: pointer; color: #1e40af; font-weight: 600; user-select: none;
+  list-style: none;
+}
+.checkpoint .cp-answer summary::before { content: '💡 '; }
+.checkpoint .cp-answer summary::-webkit-details-marker { display: none; }
+.checkpoint .cp-answer[open] summary { margin-bottom: 6px; }
+.checkpoint .cp-answer ol, .checkpoint .cp-answer p { font-weight: 400; color: var(--ink); }
+
+/* ── TL;DR summary ── */
+.tldr {
+  background: #fefce8; border-left: 3px solid #eab308;
+  padding: 8px 14px; margin: 10px 0;
+  font-weight: 600; font-size: 0.95em;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  body { max-width: 100%; padding: 12px 10px 40px; font-size: 11pt; }
+  h1 { font-size: 1.3em; }
+  h2 { font-size: 1.12em; }
+  table { font-size: 0.85em; }
+  td, th { padding: 4px 6px; }
+  pre { font-size: 0.85em; padding: 6px; }
+}
+@media (max-width: 400px) {
+  body { padding: 8px 6px 32px; font-size: 10.5pt; }
+}
+
+/* === Interactive Test Styles === */
+
+/* ── Score box ── */
+#score-box {
+  display: none; background: var(--paper-dark); color: var(--ink);
+  padding: 16px 20px; border-radius: var(--radius); margin: 14px 0;
+  text-align: center; border: 1px solid var(--card-border);
+}
+#score-box .score-num { font-size: 2.2em; font-weight: 700; }
+#score-box .score-label { font-size: 0.85em; color: var(--ink-light); }
+
+/* ── Question card ── */
+.q-card {
+  background: var(--card-bg); border: 1px solid var(--card-border);
+  border-radius: var(--radius); padding: 12px 14px; margin: 10px 0;
+  transition: all 0.15s;
+}
+.q-card.correct { border-left: 3px solid var(--correct); background: #f7fdf4; }
+.q-card.wrong   { border-left: 3px solid var(--wrong); background: #fef9f9; }
+
+.q-num  { font-weight: 700; font-size: 0.98em; margin-bottom: 4px; }
+.q-text { margin-bottom: 8px; font-size: 0.98em; }
+
+/* ── Options (compact) ── */
+.option {
+  display: block; padding: 4px 10px; margin: 3px 0;
+  border: 1px solid var(--card-border); border-radius: 4px;
+  cursor: pointer; transition: all 0.12s; font-size: 0.93em;
+  background: #fefcf5;
+}
+.option:hover            { background: #f0ede0; }
+.option input            { margin-right: 6px; }
+.option.selected         { border-color: var(--accent); background: #eff6ff; }
+.option.correct-answer   { border-color: var(--correct); background: var(--correct-bg); }
+.option.wrong-answer     { border-color: var(--wrong); background: var(--wrong-bg); }
+
+/* ── Textareas (compact) ── */
+.q-textarea {
+  width: 100%; min-height: 56px; border: 1px solid var(--card-border);
+  border-radius: 4px; padding: 6px 10px; font-family: inherit;
+  font-size: 0.93em; background: #fefcf5; resize: vertical;
+}
+.q-textarea:focus { outline: none; border-color: var(--accent); }
+.q-code {
+  font-family: "Consolas", "Monaco", "Courier New", monospace;
+  font-size: 0.88em; line-height: 1.5; background: #1e1e2e; color: #e0e0e0;
+  tab-size: 4; white-space: pre;
+}
+.q-code:focus { border-color: var(--accent); }
+
+/* ── Partial-credit badge ── */
+.badge-partial { background: #fef3c7; color: #92400e; }
+.q-card.partial { border-color: #f59e0b; }
+
+/* ── Result after grading ── */
+.result {
+  display: none; margin-top: 8px; padding: 8px 12px;
+  background: #fefcf5; border: 1px solid var(--card-border);
+  border-radius: 4px; font-size: 0.9em; line-height: 1.6;
+}
+.result .badge {
+  display: inline-block; padding: 1px 9px; border-radius: 3px;
+  font-weight: 700; font-size: 0.82em; margin-right: 6px;
+}
+.badge-ok  { background: var(--correct-bg); color: #166534; }
+.badge-no  { background: var(--wrong-bg); color: #991b1b; }
+.badge-ref { background: #dbeafe; color: #1e40af; }
+
+.result .explanation { margin-top: 4px; color: var(--ink); }
+.result .pitfall { color: #b45309; margin-top: 3px; font-size: 0.9em; }
+
+/* ── Grading button ── */
+.grading-bar { text-align: center; margin: 20px 0; }
+.grading-bar button {
+  font-size: 1em; padding: 8px 32px; background: var(--accent);
+  color: #fff; border: none; border-radius: var(--radius);
+  cursor: pointer; font-weight: 600; letter-spacing: 0.3px;
+}
+.grading-bar button:hover     { background: var(--accent-hover); }
+.grading-bar button:disabled  { background: #bbb; cursor: not-allowed; }
+
+
+/* ── Notion-style slide cross-reference layout ── */
+/* Override base.css body max-width (860px); fill the viewport edge-to-edge,
+   capped only on ultra-wide screens for readability. */
+body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
+.kn-layout { display: flex; gap: 36px; align-items: flex-start; width: 100%; margin: 0 auto; }
+.kn-main { flex: 1 1 auto; min-width: 0; overflow-x: clip; }
+.kn-main mjx-container[display="true"] { max-width: 100%; overflow-x: auto; overflow-y: hidden; }
+.kn-rail { flex: 0 0 32%; max-width: 520px; min-width: 300px; position: sticky; top: 12px;
+  align-self: flex-start; max-height: calc(100vh - 30px); overflow-y: auto; padding-right: 4px; }
+.kn-rail-title { font-weight: 700; color: var(--ink-light); font-size: 0.9em; margin-bottom: 10px;
+  padding-bottom: 6px; border-bottom: 1px solid var(--divider); }
+.slide-card { border: 1px solid var(--card-border); border-radius: var(--radius);
+  background: var(--card-bg); padding: 8px; margin-bottom: 14px; }
+.slide-card-label { font-size: 0.78em; color: var(--ink-light); margin-bottom: 6px; }
+.slide-img { width: 100%; height: auto; border-radius: 4px; cursor: zoom-in; display: block;
+  border: 1px solid var(--divider); background: #fff; }
+.slide-text { margin-top: 6px; font-size: 0.85em; }
+.slide-text summary { cursor: pointer; color: var(--accent); user-select: none; }
+.slide-text-body { margin-top: 6px; color: var(--ink-light); line-height: 1.6;
+  max-height: 220px; overflow-y: auto; padding: 6px 8px; background: #fff;
+  border-radius: 4px; border: 1px solid var(--divider); }
+/* heading-side page chips */
+.pg-chip { display: inline-block; font-size: 0.72em; font-weight: 600; color: var(--accent);
+  background: #eff4ff; border: 1px solid #cfe0ff; border-radius: 10px; padding: 0 7px;
+  margin-left: 6px; cursor: pointer; vertical-align: middle; }
+.pg-chip:hover { background: #dbe8ff; }
+.slide-card.flash { animation: slideflash 1.2s ease; }
+@keyframes slideflash { 0%,100%{box-shadow:none;} 30%{box-shadow:0 0 0 3px var(--accent);} }
+/* lightbox */
+#epa-lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.82); display: none;
+  align-items: center; justify-content: center; z-index: 9999; cursor: zoom-out; }
+#epa-lightbox img { max-width: 94vw; max-height: 94vh; border-radius: 6px; }
+/* Tablet / narrow desktop: keep two columns but rebalance + tighten margins */
+@media (max-width: 1280px) {
+  body { width: 98vw; padding-left: 1vw; padding-right: 1vw; }
+  .kn-layout { gap: 24px; }
+  .kn-main { flex: 1 1 54%; }
+  .kn-rail { flex: 1 1 46%; }
+}
+/* Mobile: stack the rail below the notes */
+@media (max-width: 900px) {
+  body { width: 100%; padding-left: 12px; padding-right: 12px; }
+  /* align-items:stretch is critical — in a COLUMN flex, flex-start would size
+     children to max-content (overflowing the viewport). */
+  .kn-layout { flex-direction: column; align-items: stretch; gap: 16px; }
+  .kn-main { flex: none; width: 100%; }
+  .kn-rail { position: static; flex: none; max-width: 100%; width: 100%; min-width: 0; max-height: none; }
+}
+
+
+/* ── Combined page: top tab bar (清单 | 题目) ── */
+#epa-tabs { display: flex; gap: 0; justify-content: center; margin: 6px auto 22px;
+  max-width: 520px; border: 1px solid var(--divider); border-radius: 10px; overflow: hidden; }
+#epa-tabs .tab-btn { flex: 1; padding: 10px 18px; cursor: pointer; border: none;
+  background: var(--paper-dark); color: var(--ink-light); font-size: 1.02em; font-weight: 600;
+  font-family: inherit; transition: background .15s, color .15s; }
+#epa-tabs .tab-btn + .tab-btn { border-left: 1px solid var(--divider); }
+#epa-tabs .tab-btn.active { background: var(--accent); color: #fff; }
+#epa-tabs .tab-btn:not(.active):hover { background: #efe7d3; color: var(--ink); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+/* keep the test readable/centered even though the body is wide for the rail */
+#panel-test { max-width: 980px; margin: 0 auto; }
+@media print { #epa-tabs { display: none; } .tab-panel { display: block !important; } }
+
+</style>
+</head>
+<body>
+
+<header id="exampass-header">
+  <div class="header-left"><span class="header-brand">ExamPass Assistant</span></div>
+  <div class="header-right"><span class="header-url">github.com/WUBING2023/ExamPass-Assistant</span></div>
+</header>
+<hr class="header-divider">
+
+<h1>Chapter 8 Thermodynamics</h1><div id="epa-tabs" class="no-print"><button class="tab-btn active" data-tab="kn">📖 知识清单</button><button class="tab-btn" data-tab="test">📝 章节测试</button></div><div id="panel-kn" class="tab-panel active"><div class="kn-layout"><div class="kn-main"><h1></h1>
+<div class="toc">
+<h2>目录</h2>
+<ul>
+<li><a href="#s87024169">一、为什么要学热力学</a></li>
+<li><a href="#s77393271">二、功、热量与内能 —— 三个极易混淆的量 </a></li>
+  <li><a href="#s28606221">2.1 功（Work）必考</a></li>
+  <li><a href="#s27981909">2.2 热量（Heat）必考</a></li>
+  <li><a href="#s30139089">2.3 内能（Internal Energy）必考</a></li>
+<li><a href="#s62914556">三、热力学第一定律 —— 能量记账本 </a></li>
+  <li><a href="#s53968057">3.1 数学表述 必考</a></li>
+  <li><a href="#s49725527">3.2 对微小过程 补充</a></li>
+<li><a href="#s29469001">四、四大准静态过程 —— 解题核心 </a></li>
+  <li><a href="#s42057551">4.1 等容过程（Isovolumetric, dV = 0）必考</a></li>
+  <li><a href="#s21081363">4.2 等压过程（Isobaric, dp = 0）必考</a></li>
+  <li><a href="#s89146540">4.3 等温过程（Isothermal, dT = 0）必考</a></li>
+  <li><a href="#s62494467">4.4 绝热过程（Adiabatic, Q = 0）必考</a></li>
+  <li><a href="#s44455610">4.5 四大过程对比总表 必考</a></li>
+  <li><a href="#s23101507">4.6 解题流程 高频</a></li>
+<li><a href="#s17064916">五、循环过程、热机与制冷机 </a></li>
+  <li><a href="#s10112085">5.1 循环过程特性 必考</a></li>
+  <li><a href="#s64295814">5.2 热机效率 必考</a></li>
+  <li><a href="#s14204795">5.3 制冷系数 COP 重点</a></li>
+<li><a href="#s53881837">六、卡诺循环与卡诺定理 </a></li>
+  <li><a href="#s34313619">6.1 卡诺循环的四步分解 必考</a></li>
+  <li><a href="#s43903511">6.2 卡诺效率 必考</a></li>
+  <li><a href="#s43717763">6.3 卡诺定理 重点</a></li>
+<li><a href="#s89006163">七、热力学第二定律 </a></li>
+  <li><a href="#s17971426">7.1 两种经典表述 必考</a></li>
+  <li><a href="#s15311612">7.2 可逆与不可逆过程 必考</a></li>
+<li><a href="#s64360311">八、熵与熵增加原理 </a></li>
+  <li><a href="#s84402859">8.1 熵的定义 重点</a></li>
+  <li><a href="#s38097787">8.2 熵增加原理 必考</a></li>
+  <li><a href="#s24746837">8.3 理想气体熵变计算 高频</a></li>
+<li><a href="#s29932504">九、公式速查卡</a></li>
+</ul>
+</div>
+<h1>第8章 热力学基础 <span style="font-size:0.6em;color:var$--text-dim$">Thermodynamics Basis</span></h1>
+
+<!-- ===== Hook ===== -->
+<p>为什么一杯热水放久了会凉，而同样一杯凉水不会自动变热？为什么摩擦生热轻而易举，而用热来驱动机器却需要锅炉和冷凝器两套设备？这些「方向性」问题，牛顿力学和能量守恒都回答不了——热力学正是为此而生。</p>
+
+<!-- ===== TL;DR ===== -->
+<div class="tldr">
+<strong>TL;DR</strong> — 热力学第一定律（<span class="kp">ΔE = Q + W</span>）是能量记账本：系统内能变化 = 吸热 + 外界做功。热力学第二定律管方向：热量不能自发从低温传向高温；不可能从单一热源吸热全部转化为功而不产生其他影响。卡诺定理给出了热机效率的天花板 <span class="kp">η = 1 − T₂/T₁</span>。解题核心思路：先判断过程类型→套对应公式。
+</div>
+
+<!-- ===== Why ===== -->
+<h2 id="s87024169">一、为什么要学热力学</h2>
+<p>热力学处理的是<strong>大量分子集体行为的宏观规律</strong>。它不关心单个分子的速度和位置，而是关心压强 P、体积 V、温度 T 和内能 E 这些可测量的宏观量。</p>
+<p>热力学的三大支柱：</p>
+<ul>
+  <li><strong>第一定律</strong>（能量守恒）→ 告诉你「能不能发生」——能量是否平衡</li>
+  <li><strong>第二定律</strong>（方向性）→ 告诉你「会不会自发发生」——过程有无方向限制</li>
+  <li><strong>卡诺定理</strong>（效率上限）→ 告诉你「能做到多好」——理论效率不可逾越</li>
+</ul>
+
+<!-- ===== What: 三大核心概念区分 ===== -->
+<h2 id="s77393271">二、功、热量与内能 —— 三个极易混淆的量 <span class="pg-chip" data-page="3">页3</span><span class="pg-chip" data-page="4">页4</span><span class="pg-chip" data-page="5">页5</span></h2>
+
+<h3 id="s28606221">2.1 功（Work）<span class="tag-must">必考</span></h3>
+<p><span class="kp">功是过程量</span>，<span class="exp">不是状态函数。依赖具体路径，同样的初末态走不同路径，功的大小不同。</span></p>
+<div class="formula-block">
+  $$dA = p\,dV, \qquad A = \int_{V_1}^{V_2} p\,dV$$
+</div>
+<p><span class="exp">A 等于 P-V 图上过程曲线下的面积。dA > 0（dV > 0）表示系统对外做正功；dA < 0（dV < 0）表示外界对系统做功。</span></p>
+<blockquote>易错：A = ∫p dV 只适用于<strong>准静态过程</strong>。非准静态过程不能用此式积分，但等容过程（dV=0）无论准静态与否都有 A = 0。</blockquote>
+
+<div class="checkpoint">功是不是状态函数？不是——从 A 到 B 走不同路径，P-V 曲线下面积不同，功不同。</div>
+
+<h3 id="s27981909">2.2 热量（Heat）<span class="tag-must">必考</span></h3>
+<p><span class="kp">热量也是过程量</span>，<span class="exp">因温差而传递的能量。与功一样依赖过程路径，不是状态函数。「物体含有多少热量」是错误说法——热量只在传递过程中有意义。</span></p>
+
+<h3 id="s30139089">2.3 内能（Internal Energy）<span class="tag-must">必考</span></h3>
+<p><span class="kp">内能是状态函数</span>，<span class="exp">只取决于系统的当前状态（对理想气体只取决于温度）。</span></p>
+<div class="formula-block">
+  $$E = \frac{M}{M_{\text{mol}}} \cdot \frac{i}{2}RT, \qquad \Delta E = \frac{M}{M_{\text{mol}}} \cdot \frac{i}{2}R\,\Delta T$$
+</div>
+<p><span class="exp">M 为气体质量，M<sub>mol</sub> 为摩尔质量，i 为自由度（单原子 i=3，双原子刚性 i=5，多原子刚性 i=6），R = 8.31 J/$mol·K$。ΔE 只由初末态温度差决定，与路径无关。</span></p>
+
+<div class="card">
+  <table>
+    <tr><th>物理量</th><th>功 A</th><th>热量 Q</th><th>内能 E / ΔE</th></tr>
+    <tr>
+      <td><strong>类型</strong></td>
+      <td><span class="kp">过程量</span></td>
+      <td><span class="kp">过程量</span></td>
+      <td><span class="kp">状态函数</span></td>
+    </tr>
+    <tr>
+      <td><strong>与路径</strong></td>
+      <td>有关</td>
+      <td>有关</td>
+      <td>无关（只取决于温度）</td>
+    </tr>
+    <tr>
+      <td><strong>几何意义</strong></td>
+      <td>P-V 曲线下面积</td>
+      <td>无直接几何对应</td>
+      <td>无</td>
+    </tr>
+    <tr>
+      <td><strong>符号约定</strong></td>
+      <td>A>0：系统对外做功</td>
+      <td>Q>0：系统吸热</td>
+      <td>ΔE>0：内能增加（T↑）</td>
+    </tr>
+  </table>
+</div>
+
+<div class="checkpoint">「内能是状态函数」这句话的具体含义是什么？——初末态确定后 ΔE 就唯一确定，无论中间走等温还是等压还是绝热路径。</div>
+
+<!-- ===== What: 热力学第一定律 ===== -->
+<h2 id="s62914556">三、热力学第一定律 —— 能量记账本 <span class="pg-chip" data-page="8">页8</span><span class="pg-chip" data-page="9">页9</span></h2>
+
+<h3 id="s53968057">3.1 数学表述 <span class="tag-must">必考</span></h3>
+<div class="formula-block">
+  $$\Delta E = Q + W$$
+</div>
+<p><span class="exp">其中 Q 为系统从外界吸收的热量，W 为<strong>外界对系统做的功</strong>。注意：PPT 用 ΔE = Q + A，但此处的 A 是系统对外做的功，即 ΔE = Q − A<sub>对外</sub>。这里统一用 ΔE = Q + W 的符号体系，W 为外界对系统的功。</span></p>
+
+<p><strong>符号约定（与 PPT 一致）：</strong></p>
+<ul>
+  <li><span class="kp">Q > 0</span>：系统吸热；<span class="kp">Q < 0</span>：系统放热</li>
+  <li><span class="kp">A > 0</span>（PPT）：系统对外做正功 → 按 ΔE = Q − A 使用</li>
+  <li><span class="kp">W > 0</span>：外界对系统做正功 → 按 ΔE = Q + W 使用</li>
+</ul>
+<blockquote>易错：考试时注意题目用的是 ΔE = Q − A（A 为系统对外做功）还是 ΔE = Q + W（W 为外界对系统做功）。两者等价，只是 A = −W。读题先判断用的是哪个符号体系。</blockquote>
+
+<p><strong>另一表述：</strong><span class="exp">第一类永动机（不消耗任何能量而持续对外做功的机器）不可能制成。</span></p>
+
+<h3 id="s49725527">3.2 对微小过程 <span class="tag-info">补充</span></h3>
+<div class="formula-block">
+  $$dQ = dE + dA = dE + p\,dV$$
+</div>
+<p><span class="exp">把第一定律拆成微分量形式，便于对各种过程积分计算。</span></p>
+
+<div class="checkpoint">内能增加100J，同时对外做功50J，系统吸热多少？——ΔE = Q − A → 100 = Q − 50 → Q = 150J。</div>
+
+<!-- ===== How: 四大准静态过程 ===== -->
+<h2 id="s29469001">四、四大准静态过程 —— 解题核心 <span class="pg-chip" data-page="10-13">页13</span></h2>
+<p><strong>解题口诀（用户偏好）：</strong>拿到热力学题→先判断过程类型→套对应规则：<span class="kp">等温→ΔE=0</span>、<span class="kp">等容→W=0</span>、<span class="kp">绝热→Q=0</span>、<span class="kp">循环→ΔE=0</span>。</p>
+
+<h3 id="s42057551">4.1 等容过程（Isovolumetric, dV = 0）<span class="tag-must">必考</span></h3>
+<div class="formula-block">
+  $$A = 0, \qquad Q_V = \Delta E = \frac{M}{M_{\text{mol}}} \cdot \frac{i}{2} R \,\Delta T = \frac{M}{M_{\text{mol}}} C_V \Delta T$$
+</div>
+<p><span class="exp">体积不变→不做功→所有吸热全用来增加内能。</span></p>
+<p><span class="kp">等容摩尔热容：</span><span class="exp">C<sub>V</sub> = $i/2$R。单原子 C<sub>V</sub> = $3/2$R，双原子刚性 C<sub>V</sub> = $5/2$R。</span></p>
+
+<h3 id="s21081363">4.2 等压过程（Isobaric, dp = 0）<span class="tag-must">必考</span></h3>
+<div class="formula-block">
+  $$A = p$V_2 - V_1$ = \frac{M}{M_{\text{mol}}} R \,\Delta T$$
+  $$Q_P = \Delta E + A = \frac{M}{M_{\text{mol}}} \cdot \frac{i+2}{2} R \,\Delta T = \frac{M}{M_{\text{mol}}} C_P \Delta T$$
+</div>
+<p><span class="exp">系统吸热→一部分增加内能，一部分对外做功。</span></p>
+<p><span class="kp">迈耶公式（Mayer's formula）：</span><span class="exp">C<sub>P</sub> = C<sub>V</sub> + R = $i+2$R/2。1 mol 理想气体等压升温 1K 比等容多吸 8.31J 热量——多出的正好用来对外做功。</span></p>
+<div class="formula-block">
+  $$\text{比热容比（绝热指数）：} \gamma = \frac{C_P}{C_V} = \frac{i+2}{i}$$
+</div>
+<p><span class="exp">单原子 γ = 5/3 ≈ 1.67；双原子刚性 γ = 7/5 = 1.40；多原子刚性 γ = 8/6 ≈ 1.33。</span></p>
+
+<blockquote>易错：等压升温时，Q = ΔE + A > ΔE。有同学误以为「吸热只增加内能」，忘了等压过程还要对外做 pΔV 的功。</blockquote>
+
+<h3 id="s89146540">4.3 等温过程（Isothermal, dT = 0）<span class="tag-must">必考</span></h3>
+<div class="formula-block">
+  $$\Delta E = 0, \qquad Q = A = \frac{M}{M_{\text{mol}}} RT \ln\frac{V_2}{V_1} = \frac{M}{M_{\text{mol}}} RT \ln\frac{p_1}{p_2}$$
+</div>
+<p><span class="exp">温度不变→内能不变（ΔE=0）→吸热全部用来对外做功。A 可用 pV = $M/M<sub>mol</sub>$RT 和 p = $M/M<sub>mol</sub>$RT/V 代入积分得到。</span></p>
+
+<blockquote>易错：等温过程 Q = A 不是普遍结论——仅当系统为<strong>理想气体</strong>时成立（因为只有理想气体的内能仅取决于温度）。</blockquote>
+
+<h3 id="s62494467">4.4 绝热过程（Adiabatic, Q = 0）<span class="tag-must">必考</span></h3>
+<p><span class="kp">绝热过程中系统与外界无热量交换。</span><span class="exp">对外做功完全以内能减少为代价：A = −ΔE。</span></p>
+<div class="formula-block">
+  $$A = -\Delta E = -\frac{M}{M_{\text{mol}}} C_V $T_2 - T_1$ = \frac{M}{M_{\text{mol}}} C_V $T_1 - T_2$$
+</div>
+<p><strong>准静态绝热方程（三组等价形式）：</strong></p>
+<div class="formula-block">
+  $$pV^{\gamma} = \text{const}_1, \qquad V^{\gamma-1}T = \text{const}_2, \qquad p^{\gamma-1}T^{-\gamma} = \text{const}_3$$
+</div>
+<p><span class="exp">注意三个 const 互不相同。</span></p>
+<p><strong>绝热线比等温线陡：</strong><span class="exp">在 P-V 图上，绝热线曲率更大。原因：绝热膨胀时温度同时下降，压强比等温膨胀降得更快。</span></p>
+
+<blockquote>易错：绝热自由膨胀（气体冲入真空）是<strong>非准静态</strong>过程→绝热方程不适用！但 Q=0, A=0（真空→无反抗），所以 ΔE = 0, T 不变。与准静态绝热膨胀（对外做功→T↓）完全不同！</blockquote>
+
+<div class="checkpoint">绝热自由膨胀 VS 准静态绝热膨胀：前者 Q=0, A=0, ΔE=0, T 不变；后者 Q=0, A>0（对外做功）, ΔE<0, T 下降。</div>
+
+<!-- ===== 四大过程对比表 ===== -->
+<h3 id="s44455610">4.5 四大过程对比总表 <span class="tag-must">必考</span></h3>
+<div style="overflow-x:auto;">
+<table>
+  <tr>
+    <th>过程</th>
+    <th>条件</th>
+    <th>过程方程</th>
+    <th>Q</th>
+    <th>W（外界对系统）</th>
+    <th>ΔE</th>
+    <th>特点</th>
+  </tr>
+  <tr>
+    <td><strong>等容</strong></td>
+    <td>dV = 0</td>
+    <td>p/T = const</td>
+    <td>$M/M<sub>mol</sub>$C<sub>V</sub>ΔT</td>
+    <td><span class="kp">0</span></td>
+    <td>$M/M<sub>mol</sub>$C<sub>V</sub>ΔT</td>
+    <td>Q = ΔE，功为零</td>
+  </tr>
+  <tr>
+    <td><strong>等压</strong></td>
+    <td>dp = 0</td>
+    <td>V/T = const</td>
+    <td>$M/M<sub>mol</sub>$C<sub>P</sub>ΔT</td>
+    <td>−pΔV</td>
+    <td>$M/M<sub>mol</sub>$C<sub>V</sub>ΔT</td>
+    <td>Q = ΔE − W，三项均非零</td>
+  </tr>
+  <tr>
+    <td><strong>等温</strong></td>
+    <td>dT = 0</td>
+    <td>pV = const</td>
+    <td>$M/M<sub>mol</sub>$RT ln$V₂/V₁$</td>
+    <td>−$M/M<sub>mol</sub>$RT ln$V₂/V₁$</td>
+    <td><span class="kp">0</span></td>
+    <td>Q = −W，内能不变</td>
+  </tr>
+  <tr>
+    <td><strong>绝热</strong></td>
+    <td>Q = 0</td>
+    <td>pV<sup>γ</sup> = const</td>
+    <td><span class="kp">0</span></td>
+    <td>$M/M<sub>mol</sub>$C<sub>V</sub>$T₂−T₁$</td>
+    <td>−$M/M<sub>mol</sub>$C<sub>V</sub>ΔT</td>
+    <td>W = ΔE，热为零</td>
+  </tr>
+</table>
+</div>
+<p style="font-size:0.85em;color:var$--text-dim$">注：表中 W 按 ΔE = Q + W 体系（外界对系统做功为正）。若用 PPT 的 ΔE = Q − A 体系，将 W 列取反即为 A。</p>
+
+<h3 id="s23101507">4.6 解题流程 <span class="tag-freq">高频</span></h3>
+<div class="card">
+  <p><strong>三步法解热力学计算题：</strong></p>
+  <ol>
+    <li><strong>判断过程类型</strong>（等容/等压/等温/绝热/循环？）→ 确定一个 Q/W/ΔE 中哪个为零</li>
+    <li><strong>用状态方程</strong> pV = nRT 求出未知状态参数</li>
+    <li><strong>用第一定律 + 过程特性</strong> 计算各量</li>
+  </ol>
+</div>
+
+<div class="checkpoint">1 mol 双原子理想气体等温膨胀，V₁→2V₁，T=300K。求 Q。——ΔE=0，Q=A=RTln2=8.31×300×0.693≈1728J。</div>
+
+<!-- ===== 循环过程 ===== -->
+<h2 id="s17064916">五、循环过程、热机与制冷机 <span class="pg-chip" data-page="26-30">页30</span></h2>
+
+<h3 id="s10112085">5.1 循环过程特性 <span class="tag-must">必考</span></h3>
+<p><span class="kp">系统经历一系列变化后回到初始状态→ΔE = 0（内能不变）。</span><span class="exp">在 P-V 图上，循环是一条闭合曲线。</span></p>
+<div class="formula-block">
+  $$\Delta E_{\text{cycle}} = 0, \qquad Q_{\text{net}} = A_{\text{net}}$$
+</div>
+<p><span class="kp">净功（A<sub>net</sub>）= 闭合曲线包围的面积。</span><span class="exp">顺时针→正循环（热机），对外做正功；逆时针→逆循环（制冷机），外界对系统做正功。</span></p>
+
+<h3 id="s64295814">5.2 热机效率 <span class="tag-must">必考</span></h3>
+<div class="formula-block">
+  $$\eta = \frac{A_{\text{net}}}{Q_1} = 1 - \frac{Q_2}{Q_1}$$
+</div>
+<p><span class="exp">Q<sub>1</sub> 为循环中<strong>所有吸热过程的热量之和</strong>（取绝对值），Q<sub>2</sub> 为<strong>所有放热过程的热量之和</strong>（取绝对值）。</span></p>
+<blockquote>易错：η = 1 − Q₂/Q₁ 中的 Q₁ 和 Q₂ 都是取绝对值后的数值（正数），不是代数意义上的代数量。</blockquote>
+
+<h3 id="s14204795">5.3 制冷系数 COP <span class="tag-key">重点</span></h3>
+<div class="formula-block">
+  $$e = \frac{Q_2}{A_{\text{net}}} = \frac{Q_2}{Q_1 - Q_2}$$
+</div>
+<p><span class="exp">Q<sub>2</sub> 为从低温热源吸收的热量，A<sub>net</sub> 为外界对系统做的净功。</span></p>
+
+<div class="checkpoint">热机循环中，总吸热 Q₁=500J，总放热 Q₂=350J。效率 η = ?——η = 1 − 350/500 = 0.30 = 30%。</div>
+
+<!-- ===== 卡诺循环与卡诺定理 ===== -->
+<h2 id="s53881837">六、卡诺循环与卡诺定理 <span class="pg-chip" data-page="24">页24</span><span class="pg-chip" data-page="25">页25</span><span class="pg-chip" data-page="26">页26</span></h2>
+
+<h3 id="s34313619">6.1 卡诺循环的四步分解 <span class="tag-must">必考</span></h3>
+<p><span class="exp">卡诺循环由两个等温过程 + 两个绝热过程组成，工作在 T₁（高温）和 T₂（低温）两个热源之间。</span></p>
+
+<div class="carnot-steps">
+  <div class="carnot-step">
+    <div class="step-num">1</div>
+    <div><strong>等温膨胀</strong></div>
+    <div style="color:var$--text-dim$;font-size:0.8em;">A→B, T=T₁</div>
+    <div>从高温热源 <strong>吸热 Q₁</strong></div>
+    <div style="font-size:0.8em;color:var$--exp$">Q₁ = nRT₁ ln$V₂/V₁$</div>
+  </div>
+  <div class="carnot-step">
+    <div class="step-num">2</div>
+    <div><strong>绝热膨胀</strong></div>
+    <div style="color:var$--text-dim$;font-size:0.8em;">B→C, Q=0</div>
+    <div>温度降至 T₂</div>
+    <div style="font-size:0.8em;color:var$--exp$">V₂^$γ−1$T₁ = V₃^$γ−1$T₂</div>
+  </div>
+  <div class="carnot-step">
+    <div class="step-num">3</div>
+    <div><strong>等温压缩</strong></div>
+    <div style="color:var$--text-dim$;font-size:0.8em;">C→D, T=T₂</div>
+    <div>向低温热源 <strong>放热 Q₂</strong></div>
+    <div style="font-size:0.8em;color:var$--exp$">Q₂ = nRT₂ ln$V₃/V₄$</div>
+  </div>
+  <div class="carnot-step">
+    <div class="step-num">4</div>
+    <div><strong>绝热压缩</strong></div>
+    <div style="color:var$--text-dim$;font-size:0.8em;">D→A, Q=0</div>
+    <div>温度回升至 T₁</div>
+    <div style="font-size:0.8em;color:var$--exp$">V₁^$γ−1$T₁ = V₄^$γ−1$T₂</div>
+  </div>
+</div>
+
+<h3 id="s43903511">6.2 卡诺效率 <span class="tag-must">必考</span></h3>
+<div class="formula-block">
+  $$\eta_{\text{Carnot}} = 1 - \frac{T_2}{T_1}$$
+</div>
+<p><span class="exp">T₁ 为高温热源温度，T₂ 为低温热源温度（单位：K）。</span></p>
+<p><strong>关键推导步骤：</strong></p>
+<ol>
+  <li>等温膨胀吸热：Q₁ = nRT₁ ln$V₂/V₁$</li>
+  <li>等温压缩放热：Q₂ = nRT₂ ln$V₃/V₄$</li>
+  <li>利用绝热方程得 V₂/V₁ = V₃/V₄ → Q₂/Q₁ = T₂/T₁</li>
+  <li>代入 η = 1 − Q₂/Q₁ = 1 − T₂/T₁</li>
+</ol>
+
+<h3 id="s43717763">6.3 卡诺定理 <span class="tag-key">重点</span></h3>
+<ul>
+  <li><span class="kp">工作在相同高低温热源之间的一切可逆热机，效率均等于卡诺效率</span> 1 − T₂/T₁。</li>
+  <li><span class="kp">不可逆热机的效率小于卡诺效率。</span></li>
+  <li><span class="exp">卡诺效率仅取决于两个热源的温度，与工作物质无关。</span></li>
+</ul>
+
+<div class="formula-block">
+  $$\eta_{\text{Carnot refrigerator}} = \frac{T_2}{T_1 - T_2}$$
+</div>
+<p><span class="exp">卡诺制冷机的制冷系数。</span></p>
+
+<blockquote>易错：提高热机效率的途径是<strong>增大高低温热源温差</strong>（提高 T₁ 或降低 T₂），而不是增加工作物质质量或改变工质种类。卡诺效率与工质无关！</blockquote>
+
+<div class="checkpoint">T₁=500K, T₂=300K 的卡诺热机，效率多少？——η = 1 − 300/500 = 40%。如果实际效率只有 25%，正常吗？——正常，因为实际热机为不可逆，效率必然小于卡诺效率。</div>
+
+<!-- ===== 热力学第二定律 ===== -->
+<h2 id="s89006163">七、热力学第二定律 <span class="pg-chip" data-page="20">页20</span><span class="pg-chip" data-page="21">页21</span><span class="pg-chip" data-page="22">页22</span></h2>
+
+<h3 id="s17971426">7.1 两种经典表述 <span class="tag-must">必考</span></h3>
+
+<div class="grid-2">
+  <div class="card">
+    <strong>开尔文表述（Kelvin Statement）</strong>
+    <p style="margin-top:0.3em;"><span class="kp">不可能从单一热源吸取热量全部转化为功而不产生其他影响。</span></p>
+    <p style="font-size:0.85em;color:var$--text-dim$">→ 第二类永动机（η=100% 的热机）不可能制成。</p>
+  </div>
+  <div class="card">
+    <strong>克劳修斯表述（Clausius Statement）</strong>
+    <p style="margin-top:0.3em;"><span class="kp">热量不可能<strong>自动地</strong>从低温物体传到高温物体而不产生其他影响。</span></p>
+    <p style="font-size:0.85em;color:var$--text-dim$">→ 冰箱能把热量从低温搬到高温——但消耗了电能（产生了其他影响）。</p>
+  </div>
+</div>
+
+<div class="card">
+  <strong>两种表述的对比：</strong>
+  <table>
+    <tr><th></th><th>开尔文表述</th><th>克劳修斯表述</th></tr>
+    <tr><td><strong>涉及过程</strong></td><td>热→功转换</td><td>热量传递</td></tr>
+    <tr><td><strong>关键词</strong></td><td>单一热源、全部转化、无其他影响</td><td>自动地、低温→高温、无其他影响</td></tr>
+    <tr><td><strong>否定对象</strong></td><td>第二类永动机</td><td>自发传热反向</td></tr>
+    <tr><td><strong>实质</strong></td><td>热功转换不可逆</td><td>热传导不可逆</td></tr>
+    <tr><td><strong>等价性</strong></td><td colspan="2" style="text-align:center;">两种表述等价——违反其一则必违反其二</td></tr>
+  </table>
+</div>
+
+<blockquote>易错：热力学第二定律最常考的错误说法——「热量不能从低温物体传到高温物体」（缺少「自动地/不产生其他影响」）。冰箱就是把热量从低温搬到高温，但它消耗了电能！</blockquote>
+
+<h3 id="s15311612">7.2 可逆与不可逆过程 <span class="tag-must">必考</span></h3>
+<ul>
+  <li><span class="kp">可逆过程</span><span class="exp">：系统反向进行时能重复正向过程的每一状态，且不引起外界任何变化。条件：无限缓慢（准静态）+ 无摩擦/无耗散。</span></li>
+  <li><span class="kp">不可逆过程</span><span class="exp">：自然界绝大多数实际过程都是不可逆的。</span></li>
+</ul>
+
+<p><strong>典型的不可逆过程：</strong></p>
+<ul>
+  <li>摩擦生热（功→热）</li>
+  <li>热传导（高温→低温）</li>
+  <li>气体自由膨胀（无反抗膨胀）</li>
+  <li>扩散过程</li>
+</ul>
+
+<p><strong>重要结论：</strong></p>
+<ul>
+  <li>卡诺循环是<span class="kp">可逆循环</span>。</li>
+  <li>可逆过程一定是准静态过程；但<span class="kp">准静态过程不一定可逆</span>（如有摩擦的缓慢过程是准静态但不可逆）。</li>
+  <li>有摩擦的过程一定不可逆。</li>
+</ul>
+
+<blockquote>易错：（1）可逆过程必为准静态过程 ✓；（2）准静态过程必为可逆过程 ✗（缺「无耗散」条件）；（3）不可逆过程就是不能反向进行的过程 ✗（可以反向，只是反向时会引起其他变化）；（4）有摩擦的过程必为不可逆过程 ✓。</blockquote>
+
+<div class="checkpoint">判断正误：「热力学第二定律说明，功可以全部转化为热，但热不能全部转化为功。」——错！热可以全部转化为功（如等温膨胀 Q=A），但不能在循环中从单一热源吸热全部转化为功而不产生其他影响。关键词是「单一热源」「不产生其他影响」。</div>
+
+<!-- ===== 熵 ===== -->
+<h2 id="s64360311">八、熵与熵增加原理 <span class="pg-chip" data-page="28">页28</span><span class="pg-chip" data-page="29">页29</span><span class="pg-chip" data-page="30">页30</span></h2>
+
+<h3 id="s84402859">8.1 熵的定义 <span class="tag-key">重点</span></h3>
+<p><span class="kp">熵（Entropy）是状态函数</span>，<span class="exp">度量系统的无序程度。对于可逆过程：</span></p>
+<div class="formula-block">
+  $$dS = \frac{dQ_{\text{rev}}}{T}, \qquad \Delta S = S_2 - S_1 = \int_1^2 \frac{dQ_{\text{rev}}}{T}$$
+</div>
+<p><span class="exp">单位：J/K。dQ<sub>rev</sub> 为可逆过程中系统吸收的热量。因为熵是状态函数，ΔS 只取决于初末态，与是否可逆路径无关——计算 ΔS 时可以设计一个连接初末态的可逆过程来算。</span></p>
+
+<h3 id="s38097787">8.2 熵增加原理 <span class="tag-must">必考</span></h3>
+<div class="formula-block">
+  $$\Delta S_{\text{孤立系统}} \geq 0$$
+</div>
+<p><span class="kp">孤立系统（或绝热系统）中，自发过程总是朝着熵增加的方向进行。</span><span class="exp">「=」对应可逆过程，「>」对应不可逆过程。熵增加原理是热力学第二定律的数学表述。</span></p>
+
+<h3 id="s24746837">8.3 理想气体熵变计算 <span class="tag-freq">高频</span></h3>
+<p><span class="exp">对于理想气体可逆过程，可以推导出：</span></p>
+<div class="formula-block">
+  $$\Delta S = \frac{M}{M_{\text{mol}}} C_V \ln\frac{T_2}{T_1} + \frac{M}{M_{\text{mol}}} R \ln\frac{V_2}{V_1}$$
+</div>
+<p><span class="exp">此式适用于任意连接状态 $T₁, V₁$ 到 $T₂, V₂$ 的熵变计算，因为熵是状态函数。</span></p>
+
+<p><strong>各过程熵变特例：</strong></p>
+<ul>
+  <li>等温过程：ΔS = nR ln$V₂/V₁$</li>
+  <li>等容过程：ΔS = nC<sub>V</sub> ln$T₂/T₁$</li>
+  <li>绝热可逆过程：ΔS = 0（等熵过程）</li>
+  <li>绝热自由膨胀：ΔS = nR ln$V₂/V₁$ > 0（不可逆→熵增）</li>
+</ul>
+
+<blockquote>易错：绝热可逆过程 ΔS = 0（等熵），但绝热不可逆过程（如自由膨胀）ΔS > 0！只因为「绝热」不能推出「熵不变」——还需要「可逆」。</blockquote>
+
+<div class="checkpoint">1 mol 理想气体等温膨胀，体积加倍。ΔS = ?——ΔS = R ln 2 ≈ 8.31 × 0.693 ≈ 5.76 J/K。</div>
+
+<!-- ===== 附录：公式速查 ===== -->
+<h2 id="s29932504">九、公式速查卡</h2>
+<div class="card">
+  <table>
+    <tr><th>公式</th><th>适用条件</th></tr>
+    <tr><td>ΔE = $M/M<sub>mol</sub>$·$i/2$R·ΔT</td><td>理想气体，任意过程（状态函数）</td></tr>
+    <tr><td>A = ∫p dV</td><td>准静态过程</td></tr>
+    <tr><td>pV = $M/M<sub>mol</sub>$RT</td><td>理想气体状态方程</td></tr>
+    <tr><td>C<sub>V</sub> = $i/2$R</td><td>理想气体等容摩尔热容</td></tr>
+    <tr><td>C<sub>P</sub> = C<sub>V</sub> + R</td><td>迈耶公式</td></tr>
+    <tr><td>γ = C<sub>P</sub>/C<sub>V</sub> = $i+2$/i</td><td>比热容比</td></tr>
+    <tr><td>pV<sup>γ</sup> = const</td><td>准静态绝热过程</td></tr>
+    <tr><td>η = 1 − Q₂/Q₁</td><td>热机效率（通用）</td></tr>
+    <tr><td>η<sub>Carnot</sub> = 1 − T₂/T₁</td><td>卡诺热机效率（仅取决于温度）</td></tr>
+    <tr><td>e = Q₂/$Q₁−Q₂$</td><td>制冷系数（通用）</td></tr>
+    <tr><td>e<sub>Carnot</sub> = T₂/$T₁−T₂$</td><td>卡诺制冷系数</td></tr>
+    <tr><td>ΔS = ∫ dQ<sub>rev</sub>/T</td><td>熵变的定义（熵是状态函数）</td></tr>
+    <tr><td>ΔS ≥ 0</td><td>孤立系统熵增加原理</td></tr>
+  </table>
+</div></div><aside class="kn-rail"><div class="kn-rail-title">📑 原始幻灯片对照</div><div class="slide-card" id="slide-p3" data-page="3"><div class="slide-card-label">第3页</div><img class="slide-img" width="900" height="675" src="slides/ch8_p001.jpg" loading="lazy" alt="第3页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">1<br>2<br>E<br>E<br>E<br>－<br>＝<br><br>&amp;Increment of internal energy<br>&amp;It only depends on the initial and final state of the system, and is not related <br>to the process<br>理想气体内能：<br>RT<br>i<br>M<br>M<br>E<br>mol 2<br><br>Note: One internal energy can correspond to multiple states<br>M is mass of gas</div></details></div>
+<div class="slide-card" id="slide-p4" data-page="4"><div class="slide-card-label">第4页</div><img class="slide-img" width="900" height="675" src="slides/ch8_p002.jpg" loading="lazy" alt="第4页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">There are two ways in the system that can change: <br>Work and heat transfer<br>1、  Work is a measure of energy transfer and transformation.<br>          Work is a process quantity, not a state function. Different <br>quasi-static processes can be experienced between two <br>equilibrium states, and the system does different work.<br>2、Heat is the energy transferred by the temperature <br>difference between the system and the outside world   <br>Heat is the amount of process. It is associated with a <br>certain process.<br>3、To change the state of the system, heat transfer and work <br>is equivalent.</div></details></div>
+<div class="slide-card" id="slide-p5" data-page="5"><div class="slide-card-label">第5页</div><img class="slide-img" width="900" height="675" src="slides/ch8_p003.jpg" loading="lazy" alt="第5页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Thermodynamic processes: The process by which <br>thermodynamic systems change from one state to another under <br>external influence.<br>thermodynamic <br>process<br>Non-static process非静态过程<br>Quasi-static process准静态过程 <br>Quasi-static process: The system goes from one equilibrium <br>state to another, if all intermediate states in the process can be <br>approximated as a process of equilibrium.<br>Non-static process: A process in which the system goes from <br>one equilibrium state to another, and all intermediate states in <br>the process are non-equilibrium.</div></details></div>
+<div class="slide-card" id="slide-p8" data-page="8"><div class="slide-card-label">第8页</div><img class="slide-img" width="900" height="675" src="slides/ch8_p004.jpg" loading="lazy" alt="第8页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">,0<br>dV<br>系统对外作正功；<br>,0<br>dV<br>系统对外作负功；<br>,0<br>dV<br>系统不作功。<br><br><br>2<br>1<br>V<br>V PdV<br>A<br> <br>No friction<br>P<br>S<br>dl<br>work to the system:  -A<br>pdV<br>pSdl<br>Fdl<br>dA<br><br><br></div></details></div>
+<div class="slide-card" id="slide-p9" data-page="9"><div class="slide-card-label">第9页</div><img class="slide-img" width="900" height="675" src="slides/ch8_p005.jpg" loading="lazy" alt="第9页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">The magnitude of work is <br>equal to the area under the <br>process curve P=P (V) on the P-<br>V diagram.<br> Work is related to the process <br>path.<br><br><br>2<br>1<br>V<br>V PdV<br>A<br>  <br>P<br>A<br>B<br>V<br>0<br>1<br>V<br>2<br>V<br><br>1<br>1<br>V<br>V PdV<br>PdV<br>Compare the work done from state A to state B along <br>different paths</div></details></div>
+<div class="slide-card" id="slide-p10" data-page="10"><div class="slide-card-label">第10页</div><img class="slide-img" width="900" height="675" src="slides/ch8_p006.jpg" loading="lazy" alt="第10页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">•Formula application conditions : <br>(1)Quasi-static process<br> <br> (2)Whether it is a quasi-static process or a non-quasi-static <br>process, when the volume is unchanged, there is an A=0<br><br><br>2<br>1<br>V<br>V PdV<br>A</div></details></div>
+<div class="slide-card" id="slide-p11" data-page="11"><div class="slide-card-label">第11页</div><img class="slide-img" width="900" height="675" src="slides/ch8_p007.jpg" loading="lazy" alt="第11页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">(1) If the expansion process of a gas <br>is a-1-b, then the work done by <br>the gas is W=  ________;<br>(2) If  gas undergoes the cycle <br>process of a-2-b-1-a, it does <br>external work W=__________<br>E： As shown in the figure, it is known that the areas of the two <br>parts of the figure drawing different slashes are S1 and S2, <br>respectively，<br>1 <br>2<br>p <br>V <br>O <br>a <br>b <br>S1 <br>S2 <br>S1+ S2 <br>- S1</div></details></div>
+<div class="slide-card" id="slide-p12" data-page="12"><div class="slide-card-label">第12页</div><img class="slide-img" width="900" height="675" src="slides/ch8_p008.jpg" loading="lazy" alt="第12页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">A<br>E<br>Q<br>＋<br>＝<br>包括热现象<br>的能量守恒<br>外<br>界<br>传<br>给<br>系<br>统<br>热<br>量<br>内<br>能<br>增<br>量<br>系<br>统<br>对<br>外<br>作<br>功<br>对于微小过程：<br>dA<br>dE<br>dQ<br>＋<br>＝<br>得到的=留下的+付出的<br>P、V、T<br><br>一、   The First Law of Thermodynamics</div></details></div>
+<div class="slide-card" id="slide-p13" data-page="13"><div class="slide-card-label">第13页</div><img class="slide-img" width="900" height="675" src="slides/ch8_p009.jpg" loading="lazy" alt="第13页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Regulation:<br>Q&gt;0，system absorb heat；Q&lt;0, system release heat；<br>A&gt;0, system do positive work to outside；A&lt;0, system do <br>negative work to outside；<br>E&gt;0, internal energy increases，E&lt;0, internal energy <br>decereases。<br>Another expression of the first law of thermodynamics热力学<br>第一定律另一表述：<br>    It is impossible to manufacture the first type of perpetual motion <br>machine (a machine that can continuously and automatically perform <br>external work without consuming any fuel or providing other energy).制造<br>第一类永动机(能对外不断自动作功而不需要消耗任何燃料、也不需要提<br>供其他能量的机器)是不可能的。</div></details></div>
+<div class="slide-card" id="slide-p20" data-page="20"><div class="slide-card-label">第20页</div><img class="slide-img" width="900" height="675" src="slides/ch8_p010.jpg" loading="lazy" alt="第20页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">(2)<br>(<br>)<br>c<br>b<br>a<br>c<br>V<br>V<br>acb<br>V<br>V<br>b<br>c<br>A<br>PdV<br>PdV<br>P V<br>V<br><br><br><br><br><br><br>5<br>3<br>2<br>1 1.013 10<br>22.4 10<br>22.7 10 ( )<br>J<br><br><br><br><br><br><br><br>2<br>=<br>=22.7 10<br>acb<br>acb<br>ab<br>acb<br>Q<br>A<br>E<br>A<br>J<br><br><br><br><br>V(l)<br>P(atm)<br>０<br>a<br>b<br>c<br>22.4<br>44.8<br>1<br>2<br>,<br>0<br>a<br>b<br>ab<br>T<br>T<br>E<br><br><br></div></details></div>
+<div class="slide-card" id="slide-p21" data-page="21"><div class="slide-card-label">第21页</div><img class="slide-img" width="900" height="675" src="slides/ch8_p011.jpg" loading="lazy" alt="第21页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">热容量：<br>dT<br>dQ<br>C <br>（JK-1)<br>摩尔热容<br> ：heat capacity when the <br>amount of substance物质 is 1 mol.<br>比热C比：the heat capacity when the amount of substance is <br>1 kg<br>（J kg-1 K-1 )<br>unit： <br>（Jmol -1  K-1)<br>unit： <br>（简称热容）<br>表示升高1K所吸收的热量<br>比<br>MC<br>C <br>m<br>mol<br>C<br>M<br>M<br>C </div></details></div>
+<div class="slide-card" id="slide-p22" data-page="22"><div class="slide-card-label">第22页</div><img class="slide-img" width="900" height="675" src="slides/ch8_p012.jpg" loading="lazy" alt="第22页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">等容过程中，1摩尔物质，<br>温度升高1K时所吸收的热量<br>isovolumetric<br>note：CV is related with degree of freedom i<br>&amp;For a certain mass of ideal gas：<br>dT<br>C<br>M<br>M<br>dE<br>V<br>mol<br><br>For any process<br><br><br>R<br>i<br>dT<br>dE<br>dT<br>dQ<br>C<br>v<br>v<br>2<br><br><br></div></details></div>
+<div class="slide-card" id="slide-p24" data-page="24"><div class="slide-card-label">第24页</div><img class="slide-img" width="900" height="675" src="slides/ch8_p013.jpg" loading="lazy" alt="第24页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">In the isobaric process, when the temperature of 1mol ideal gas <br>rises by 1K, it absorbs 8.31J more heat than isovolume process, <br>the absord heat is for do work.在等压过程中，1mol理想气体温度<br>升高1K时，要比在等体过程中多吸收8.31Ｊ的热量，用于对外作<br>功。<br>Heat absorbed by ideal gas in isobaric process摩尔数为<br>M/Mmol的理想气体在等压过程中吸收的热量<br><br><br>dT<br>C<br>M<br>M<br>dQ<br>P<br>mol<br>P <br>T<br>C<br>M<br>M<br>Q<br>P<br>mol<br><br><br><br>A<br>i<br>Q<br>2<br>2<br><br><br></div></details></div>
+<div class="slide-card" id="slide-p25" data-page="25"><div class="slide-card-label">第25页</div><img class="slide-img" width="900" height="675" src="slides/ch8_p014.jpg" loading="lazy" alt="第25页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">R<br>2<br>2<br>i<br>R<br>)<br>1<br>2<br>i<br>(<br>CP<br><br><br><br><br><br><br><br><br><br><br><br>单原子<br>双原子<br>多原子<br>67<br>.<br>1<br>40<br>.<br>1<br>33<br>.<br>1<br>i<br>2<br>i<br>C<br>C<br>V<br>P<br><br>The heat capacity of an ideal gas is independent of temperature. This <br>conclusion is consistent with the experimental value at low temperature, but <br>not at high temperature.理想气体的热容与温度无关。这一结论在低温时与<br>实验值相符，在高温时与实验值不符。<br>（摩尔热容比）<br><br>V<br>C<br>R<br>2<br>i<br>定义比热容比   ：<br></div></details></div>
+<div class="slide-card" id="slide-p26" data-page="26"><div class="slide-card-label">第26页</div><img class="slide-img" width="900" height="675" src="slides/ch8_p015.jpg" loading="lazy" alt="第26页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">1. Work of adiabatic process 绝热过程的功：<br>T<br>C<br>M<br>M<br>E<br>A<br>V<br>mol<br><br><br><br><br><br><br>Whether the process is quasi-static<br>Or non quasi static无论过程是准静态<br>的还是非准静态的<br>----The process in which the system does not exchange heat with the outside world<br>系统不与外界交换热量的过程。<br>         The work done by the system in the adiabatic process is all at the <br>cost of reducing the internal energy of the system.绝热过程中系统对外<br>做功全部是以系统内能减少为代价的。</div></details></div>
+<div class="slide-card" id="slide-p28" data-page="28"><div class="slide-card-label">第28页</div><img class="slide-img" width="900" height="675" src="slides/ch8_p016.jpg" loading="lazy" alt="第28页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">0<br>V<br>dV<br>P<br>dP<br><br><br>const1. (3)<br>PV<br>1<br>const 2.<br>(4)<br>V<br>T<br>－<br>＝<br>1<br>const 3.<br>(5)<br>P<br>T<br><br><br><br>－<br>＝<br>combine                             and                                  :<br>const 1<br>PV <br>RT<br>M<br>M<br>PV<br>mol<br><br>（3）、（4）、(5) is called Adiabatic equation<br>绝热方程。       <br>note：const1, const2, const3 are differenct.</div></details></div>
+<div class="slide-card" id="slide-p29" data-page="29"><div class="slide-card-label">第29页</div><img class="slide-img" width="900" height="675" src="slides/ch8_p017.jpg" loading="lazy" alt="第29页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">dT=0<br>dQ=0<br>0<br>V<br>P<br>A<br>(1)isothermal等温：PV=const<br>Gradient at A:<br>A点的斜率：<br>A<br>A<br>T<br>V<br>P<br>dV<br>dp<br><br><br><br><br><br><br><br><br>(2)adiabatic绝热：<br>Gradient at A:：<br>A<br>A<br>a<br>V<br>P<br>dV<br>dp<br><br><br><br><br><br><br><br><br><br>1<br><br><br><br>The adiabatic line is steeper than the isotherm<br>绝热线比等温线陡<br>&amp;The adiabatic line is steeper than the isotherm line<br>绝热线比等温线陡<br>const<br>PV<br><br></div></details></div>
+<div class="slide-card" id="slide-p30" data-page="30"><div class="slide-card-label">第30页</div><img class="slide-img" width="900" height="675" src="slides/ch8_p018.jpg" loading="lazy" alt="第30页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Solution1：According to the first law<br>dE<br>pdV<br>,<br>dQ<br><br><br>0<br>)<br>T<br>T<br>(<br>C<br>M<br>M<br>pdV<br>V<br>mol<br>V<br>V<br>1<br>2<br>2<br>1<br><br><br><br><br>pdV<br>dE<br>dQ<br><br><br>Compressed gas压缩气体：T↑，E ↑。<br>Gas expansion气体膨胀：T↓ ，E↓。<br>&amp;Calculation of work in quasi-static adiabatic <br>process准静态绝热过程的功的计算：</div></details></div></aside></div></div><div id="panel-test" class="tab-panel"><h2 style="text-align:center">章节测试</h2>
+<p style="text-align:center;color:var(--ink-light);font-size:0.95em">20 题</p>
+
+<div id="score-box"><div class="score-num" id="score-num">0</div><div class="score-label">总分</div></div>
+<div id="questions-container"></div>
+<div class="grading-bar no-print"><button onclick="gradeAll()" id="grade-btn">提交批改</button></div></div>
+
+<script>
+window.__epaLightbox = function(src){
+  var lb = document.getElementById('epa-lightbox');
+  if(!lb){ lb = document.createElement('div'); lb.id='epa-lightbox';
+    lb.innerHTML='<img>'; document.body.appendChild(lb);
+    lb.addEventListener('click', function(){ lb.style.display='none'; }); }
+  lb.querySelector('img').src = src; lb.style.display='flex';
+};
+document.addEventListener('click', function(e){
+  var chip = e.target.closest('.pg-chip'); if(!chip) return;
+  var pg = chip.getAttribute('data-page');
+  var card = document.getElementById('slide-p'+pg);
+  if(card){ card.scrollIntoView({behavior:'smooth', block:'center'});
+    card.classList.remove('flash'); void card.offsetWidth; card.classList.add('flash'); }
+});
+// Shrink any display formula too wide for its column so it stays fully visible.
+window.__epaFitFormulas = function __epaFitFormulas(){
+  var list = document.querySelectorAll('.kn-main mjx-container[display="true"]');
+  for(var i=0;i<list.length;i++){
+    var m = list[i], parent = m.parentElement; if(!parent) continue;
+    m.style.fontSize=''; // reset to measure natural width
+    var avail = parent.clientWidth, w = m.scrollWidth;
+    if(avail>0 && w>avail){ m.style.fontSize=(avail/w*0.97*100).toFixed(1)+'%'; }
+  }
+}
+function __epaScheduleFit(){
+  if(window.MathJax && MathJax.startup && MathJax.startup.promise){
+    MathJax.startup.promise.then(__epaFitFormulas);
+  } else { setTimeout(__epaFitFormulas, 900); }
+}
+if(document.readyState!=='loading'){ __epaScheduleFit(); }
+else { document.addEventListener('DOMContentLoaded', __epaScheduleFit); }
+var __epaFitT=null;
+window.addEventListener('resize', function(){ clearTimeout(__epaFitT); __epaFitT=setTimeout(__epaFitFormulas,200); });
+</script>
+<script>
+var Q = [{"type": "choice", "difficulty": "basic", "options": ["功和热量是过程量，内能是状态函数", "功和热量都是状态函数，内能是过程量", "内能和热量是状态函数，功是过程量", "功、热量和内能都是状态函数"], "answer": 0, "explanation": "功和热量的值与具体过程路径有关，是过程量；内能只取决于系统的状态（对理想气体只取决于温度），是状态函数。", "question": "关于功、热量和内能，以下说法正确的是：", "kc_id": "kc8.0", "cognitive_level": "understand", "points": 3, "pitfall": ""}, {"type": "choice", "difficulty": "basic", "options": ["350J", "50J", "−50J", "−350J"], "answer": 1, "explanation": "由 ΔE = Q − A（A 为系统对外做功），150 = 200 − A → A = 50J。系统对外做正功 50J。注意符号体系。", "question": "对于理想气体的某一热力学过程，系统从外界吸热 200J，内能增加 150J，则此过程中系统对外做功为：", "kc_id": "kc8.1", "cognitive_level": "understand", "points": 3, "pitfall": ""}, {"type": "choice", "difficulty": "basic", "options": ["系统对外做功为零，内能增加", "系统对外做功为正，内能增加", "系统对外做功为零，内能不变", "系统对外做功为正，内能不变"], "answer": 0, "explanation": "等容过程 dV=0 → A=0（不做功）。温度升高 → ΔE > 0（内能增加）。由 ΔE = Q − A 得 Q = ΔE，吸收的热量全部用于增加内能。", "question": "一定质量理想气体经历等容升温过程，以下说法正确的是：", "kc_id": "kc8.2", "cognitive_level": "understand", "points": 3, "pitfall": ""}, {"type": "calc", "difficulty": "medium", "options": [], "answer": -1, "steps": [{"desc": "等温过程 ΔE=0", "formula": "\\Delta E = 0"}, {"desc": "由第一定律 Q = A", "formula": "Q = A"}, {"desc": "等温过程的功 A = nRT ln(V₂/V₁)", "formula": "A = 1 \\times 8.31 \\times 300 \\times \\ln(20/10)"}, {"desc": "代入计算", "formula": "A = 8.31 \\times 300 \\times 0.693 \\approx 1728 \\text{ J}"}, {"desc": "结论", "formula": "A \\approx 1728\\text{ J}, Q \\approx 1728\\text{ J}"}], "question": "1mol 理想气体在温度 T=300K 下等温膨胀，体积从 10L 变为 20L。求此过程中气体对外做的功 A 和吸收的热量 Q。（R=8.31 J/(mol·K)，ln2≈0.693）", "kc_id": "kc8.2", "cognitive_level": "apply", "points": 8, "pitfall": "", "explanation": "（计算题，参见题库答案文件 答案/Chapter 8 Thermodynamics 答案.md 第4题完整解答）"}, {"type": "calc", "difficulty": "medium", "options": [], "answer": -1, "steps": [{"desc": "双原子刚性分子 i=5 → C_V = (5/2)R, C_P = (7/2)R", "formula": "C_V = \\frac{5}{2}R = 20.775\\text{ J/(mol·K)}, C_P = \\frac{7}{2}R = 29.085\\text{ J/(mol·K)}"}, {"desc": "等压过程吸热 Q = nC_P ΔT", "formula": "Q = 1 \\times \\frac{7}{2}R \\times (400-300) = \\frac{7}{2} \\times 8.31 \\times 100"}, {"desc": "Q = 2908.5 J", "formula": "Q \\approx 2909\\text{ J}"}, {"desc": "等压过程对外做功 A = pΔV = nRΔT", "formula": "A = 1 \\times 8.31 \\times 100 = 831\\text{ J}"}, {"desc": "内能增量 ΔE = nC_V ΔT = Q − A", "formula": "\\Delta E = 2909 - 831 = 2078\\text{ J}"}], "question": "1mol 刚性双原子分子理想气体（i=5）在等压条件下温度从 300K 升高到 400K。求：(1) 气体吸收的热量 Q；(2) 气体对外做的功 A；(3) 内能增量 ΔE。（R=8.31 J/(mol·K)）", "kc_id": "kc8.2", "cognitive_level": "apply", "points": 8, "pitfall": "", "explanation": "（计算题，参见题库答案文件 答案/Chapter 8 Thermodynamics 答案.md 第5题完整解答）"}, {"type": "calc", "difficulty": "hard", "options": [], "answer": -1, "steps": [{"desc": "准静态绝热过程用绝热方程 V^(γ−1)T = const", "formula": "V_1^{\\gamma-1}T_1 = V_2^{\\gamma-1}T_2"}, {"desc": "γ = 1.4 → γ−1 = 0.4", "formula": "\\gamma - 1 = 0.4"}, {"desc": "T₂/T₁ = (V₁/V₂)^(γ−1)", "formula": "\\frac{T_2}{T_1} = \\left(\\frac{V_1}{V_2}\\right)^{\\gamma-1} = \\left(\\frac{10}{20}\\right)^{0.4}"}, {"desc": "计算 (0.5)^0.4", "formula": "(0.5)^{0.4} = 2^{-0.4} \\approx 0.758"}, {"desc": "T₂ ≈ 0.758 T₁，温度下降", "formula": "T_2 \\approx 0.758 T_1"}], "question": "1mol 双原子刚性理想气体（γ=1.4）从状态 (p₁=2atm, V₁=10L) 经准静态绝热膨胀至体积 V₂=20L。求膨胀后的温度 T₂ 与初始温度 T₁ 的比值 T₂/T₁。", "kc_id": "kc8.3", "cognitive_level": "analyze", "points": 8, "pitfall": "", "explanation": "（计算题，参见题库答案文件 答案/Chapter 8 Thermodynamics 答案.md 第6题完整解答）"}, {"type": "choice", "difficulty": "medium", "options": ["热量不可能从低温物体传到高温物体", "不可能从单一热源吸取热量并全部转化为功", "第二类永动机违反热力学第一定律", "热量不可能自动地从低温物体传到高温物体而不产生其他影响"], "answer": 3, "explanation": "A 缺少「自动地/不产生其他影响」（冰箱就是反例）；B 缺少「而不产生其他影响」（等温膨胀中 Q=A，但产生了体积变化的影响）且缺少「循环过程」限定；C 第二类永动机不违反第一定律，违反的是第二定律；D 是克劳修斯表述的准确说法。", "question": "关于热力学第二定律，以下说法正确的是：", "kc_id": "kc8.4", "cognitive_level": "apply", "points": 3, "pitfall": ""}, {"type": "choice", "difficulty": "hard", "options": ["准静态过程一定是可逆过程", "有摩擦的过程一定是不可逆过程", "不可逆过程就是不能反向进行的过程", "可逆过程不一定是准静态过程"], "answer": 1, "explanation": "（1）可逆过程必为准静态过程，但准静态不一定可逆（需要有摩擦→不可逆），故 A 错；（2）不可逆过程可以反向，但反向时会引起其他变化，故 B 错；（3）摩擦导致功变热，是不可逆的，C 正确；（4）可逆过程必须是准静态的，D 错。", "question": "关于可逆与不可逆过程，以下判断正确的是：", "kc_id": "kc8.1", "cognitive_level": "analyze", "points": 3, "pitfall": ""}, {"type": "calc", "difficulty": "medium", "options": [], "answer": -1, "steps": [{"desc": "卡诺效率仅取决于温度", "formula": "\\eta = 1 - \\frac{T_2}{T_1} = 1 - \\frac{300}{500} = 0.40"}, {"desc": "η = 40%", "formula": ""}, {"desc": "净功 A_net = η × Q₁", "formula": "A_{\\text{net}} = 0.40 \\times 2000 = 800\\text{ J}"}, {"desc": "放热量 Q₂ = Q₁ − A_net", "formula": "Q_2 = 2000 - 800 = 1200\\text{ J}"}, {"desc": "验证：Q₂/Q₁ = T₂/T₁", "formula": "\\frac{1200}{2000} = 0.60 = \\frac{300}{500} \\checkmark"}], "question": "一台卡诺热机工作在高温热源 T₁=500K 和低温热源 T₂=300K 之间。若每循环从高温热源吸热 2000J，求：(1) 热机效率 η；(2) 每循环对外做的净功 A_net；(3) 向低温热源的放热量 Q₂。", "kc_id": "kc8.5", "cognitive_level": "apply", "points": 8, "pitfall": "", "explanation": "（计算题，参见题库答案文件 答案/Chapter 8 Thermodynamics 答案.md 第9题完整解答）"}, {"type": "calc", "difficulty": "hard", "options": [], "answer": -1, "steps": [{"desc": "a→b 等容升温：T_a = p₁V₁/nR, T_b = 2p₁V₁/nR = 2T_a", "formula": "\\Delta T_{ab} = T_a"}, {"desc": "a→b 等容吸热 Q_ab = nC_V(2T_a−T_a) = (3/2)R·T_a = (3/2)p₁V₁", "formula": "Q_{ab} = \\frac{3}{2}p_1V_1 = \\frac{3}{2} \\times 1013 = 1519.5\\text{ J}"}, {"desc": "b→c 等温膨胀：T_b=2T_a, ΔE=0, Q_bc=A_bc=nRT_b ln(V_c/V_b)=2p₁V₁ ln2", "formula": "Q_{bc} = 2p_1V_1 \\ln 2 = 2 \\times 1013 \\times 0.693 = 1404\\text{ J}"}, {"desc": "b→c 吸热 Q_bc ≈ 1404 J", "formula": ""}, {"desc": "c→a 等压压缩放热 |Q_ca| = nC_P|ΔT| = (5/2)R·T_a = (5/2)p₁V₁ = 2532.5 J", "formula": "|Q_{ca}| = \\frac{5}{2}p_1V_1 = 2532.5\\text{ J}"}, {"desc": "总吸热 Q₁ = Q_ab + Q_bc = 2923.5 J, 总放热 Q₂ = 2532.5 J", "formula": ""}, {"desc": "效率 η = 1 − Q₂/Q₁ = 1 − 2532.5/2923.5 ≈ 13.4%", "formula": "\\eta = 1 - \\frac{2532.5}{2923.5} \\approx 0.134"}], "question": "1mol 单原子理想气体完成如图循环：a→b 等容升压（p₁→2p₁, V₁），b→c 等温膨胀（2p₁→p₁, V₁→2V₁），c→a 等压压缩（2V₁→V₁, p₁）。已知 V₁=10L, p₁=1atm=1.013×10⁵Pa，1atm·L=101.3J。求此循环的效率 η。", "kc_id": "kc8.2", "cognitive_level": "analyze", "points": 8, "pitfall": "", "explanation": "（计算题，参见题库答案文件 答案/Chapter 8 Thermodynamics 答案.md 第10题完整解答）"}, {"type": "tf", "difficulty": "basic", "options": [], "answer": 0, "explanation": "错误。开尔文表述的完整说法必须加上「而不产生其他影响」。等温膨胀过程中 Q=A，热量全部转化为功——但这产生了体积变化的影响，且不是一个循环过程。", "question": "热力学第二定律的开尔文表述指出：不可能从单一热源吸取热量使之完全变为有用功。", "kc_id": "kc8.3", "cognitive_level": "understand", "points": 2, "pitfall": ""}, {"type": "tf", "difficulty": "medium", "options": [], "answer": 1, "explanation": "正确。绝热自由膨胀：Q=0（绝热），A=0（真空无反抗→对外不做功），由 ΔE=Q−A=0，理想气体内能仅取决于温度，故温度不变。注意与准静态绝热膨胀（对外做功→T↓）区分。", "question": "绝热自由膨胀过程中，理想气体的温度保持不变。", "kc_id": "kc8.2", "cognitive_level": "apply", "points": 2, "pitfall": ""}, {"type": "tf", "difficulty": "medium", "options": [], "answer": 1, "explanation": "正确。对于可逆绝热过程：dQ_rev = 0 → dS = dQ_rev/T = 0 → ΔS = 0，即为等熵过程。但注意绝热不可逆过程（如自由膨胀）ΔS > 0。", "question": "可逆绝热过程也称为等熵过程，过程中系统的熵变为零。", "kc_id": "kc8.5", "cognitive_level": "apply", "points": 2, "pitfall": ""}, {"type": "fill", "difficulty": "hard", "options": [], "answer": -1, "explanation": "卡诺效率 η_c = 1−300/600 = 0.50 = 50%；实际效率 η = 1−600/1000 = 40%；40% &lt; 50%，实际效率小于卡诺效率，符合卡诺定理。", "question": "工作在 T₁=600K 和 T₂=300K 之间的卡诺热机，其理论最大效率为______%。若实际热机每循环吸热 1000J，放热 600J，则实际效率为______%，该效率______（填「大于」「等于」或「小于」）卡诺效率。", "kc_id": "kc8.4", "cognitive_level": "analyze", "points": 3, "pitfall": ""}, {"type": "short", "difficulty": "hard", "options": [], "answer": -1, "explanation": "熵是状态函数→ΔS只取决于初末态，与过程无关→两种过程ΔS相同。设计可逆等温过程计算：ΔS=∫dQ_rev/T=Q_rev/T=nRTln(2V/V)/T=nRln2=Rln2≈5.76J/K。虽然绝热自由膨胀是绝热不可逆过程，熵变仍为正→验证了熵增加原理。", "steps": [{"desc": "熵是状态函数，ΔS只取决于初末态", "formula": ""}, {"desc": "设计可逆等温膨胀连接初末态", "formula": "\\Delta S = \\frac{Q_{\\text{rev}}}{T} = \\frac{nRT\\ln 2}{T} = nR\\ln 2"}, {"desc": "n=1 → ΔS = R ln 2 ≈ 5.76 J/K", "formula": "\\Delta S = R\\ln 2"}, {"desc": "两种过程ΔS相同（状态函数）", "formula": ""}], "question": "1mol 理想气体在绝热条件下自由膨胀，体积从 V 变为 2V。求此过程的熵变 ΔS。若改为可逆等温膨胀达到同样初末态，求 ΔS，并比较两者。（用 R 表示结果）", "kc_id": "kc8.2", "cognitive_level": "analyze", "points": 5, "pitfall": ""}, {"kc_id": "kc8.2", "cognitive_level": "apply", "difficulty": "hard", "type": "calc", "points": 10, "question": "1 mol 单原子理想气体经历如图循环：AB 等压（V_A→3V_A），BC 等容（p_B→p_C），CA 等温。已知 T_A=300 K，p_A=1×10⁵ Pa，V_A=1×10⁻³ m³。求：(1)各过程的 Q、W、ΔU；(2)循环是热机还是制冷机？效率或制冷系数为多少？", "options": [], "answer": -1, "explanation": "(1)A→B 等压：T_B=T_A×(V_B/V_A)=900 K。W_AB=pΔV=10⁵×2×10⁻³=200 J。ΔU_AB=nC_VΔT=(3R/2)×600=7.48 kJ。Q_AB=ΔU+W=7.68 kJ。\n\nB→C 等容：W_BC=0。T_C=T_A=300 K。ΔU_BC=(3R/2)×(-600)=-7.48 kJ。Q_BC=-7.48 kJ(放热)。\n\nC→A 等温：ΔU_CA=0。W_CA=nRT_A ln(V_A/V_C)=R×300×ln(1/3)=-2.74 kJ。Q_CA=-2.74 kJ(放热)。\n\n(2)净功 W_net=200+0-2740=-2.54 kJ&lt;0→制冷循环。总吸热 Q_in=7.68 kJ(仅AB吸)。制冷系数 ε=Q_in/|W_net|=7.68/2.54=3.02。\n\n评分：三过程各2分，判断循环类型2分，制冷系数2分。", "pitfall": "此循环净功为负→不是热机是制冷机。制冷系数 ε=Q_吸/|W_外|（外界对系统做净功来从低温吸热）。不要混淆热机效率 η=W_net/Q_in 和制冷系数。另外等温压缩的过程功需用 ln(V_A/V_C)，V_A&lt;V_C→ln&lt;0→W&lt;0（外界对气体做功）。"}, {"kc_id": "kc8.4", "cognitive_level": "apply", "difficulty": "medium", "type": "calc", "points": 8, "question": "一卡诺热机工作于 T₁=500 K 高温热源和 T₂=300 K 低温热源之间，每次循环对外作净功 8000 J。若维持 T₂ 不变，提高 T₁ 使每次循环净功变为 10000 J（两循环工作在相同两条绝热线之间）。求：(1)第二个循环的效率；(2)第二个循环的高温热源温度。", "options": [], "answer": -1, "explanation": "第一循环：η₁=1-T₂/T₁=1-300/500=40%。W₁=8000 J→吸热 Q₁=W₁/η₁=20000 J。放热 Q₂=Q₁-W₁=12000 J。\n\n两循环绝热线相同→放热量相同（卡诺循环中 Q₂ 仅由低温热源温度和绝热线决定）→Q₂' = 12000 J。\n\n第二循环：W₂=10000 J→吸热 Q₁'=Q₂'+W₂=22000 J。η₂=W₂/Q₁'=10000/22000=45.5%。\n\n由 η₂=1-T₂/T₁' → T₁'=T₂/(1-η₂)=300/(1-0.455)=550 K。\n\n关键：两循环绝热线相同意味着放热量相同——这是连接两个循环的桥梁。", "pitfall": "第二个循环的吸热量不能直接用第一个的 Q₁=20000 J——因为 T₁ 变了、η 变了。唯一不变的是 Q₂（绝热线相同），必须通过 Q₂ 反推。"}, {"kc_id": "kc8.3", "cognitive_level": "understand", "difficulty": "basic", "type": "choice", "points": 3, "question": "关于热力学第二定律，下列说法正确的是：", "options": ["热量不能从低温物体传到高温物体", "不可能从单一热源吸热使之完全转化为功而不引起其他变化", "第二类永动机不违反热力学第一定律但违反热力学第二定律", "以上说法都正确"], "answer": 2, "explanation": "开尔文表述：不可能从单一热源吸热使之完全转化为功而不引起其他变化——对应第二类永动机（不违反第一定律、违反第二定律）。\n\nA错：缺少「自动」二字——热量可以从低温传到高温（如冰箱），但需要外界做功，不是自动的。B是开尔文表述的正确陈述。C正确——第二类永动机的唯一热源是海洋/大气，吸热全变功不违反 ΔU=Q+W（第一定律），但违反第二定律（必须有低温热源排出部分热量）。\n\nD错因为A也是错的。", "pitfall": ""}, {"kc_id": "kc8.5", "cognitive_level": "understand", "difficulty": "basic", "type": "choice", "points": 3, "question": "一绝热容器用隔板分为两半，一半是真空，另一半是理想气体。抽出隔板后气体自由膨胀达到新平衡。在此过程中：", "options": ["温度不变，熵不变", "温度升高，熵增加", "温度不变，熵增加", "温度降低，熵增加"], "answer": 2, "explanation": "自由膨胀：W=0（真空，无反抗压力），Q=0（绝热容器）→ΔU=0→理想气体内能仅与温度有关→温度不变。\n\n气体体积增大→混乱度增加→熵增加。虽然实际自由膨胀是不可逆过程，但熵是状态函数——可设计可逆等温过程连接初末态求熵变 ΔS=nRln(V₂/V₁)>0。\n\n自由膨胀是理解「不可逆过程熵增加」的经典案例——虽然 Q=0，但熵仍然增加了（不可逆过程的熵产）。", "pitfall": ""}, {"kc_id": "kc8.2", "cognitive_level": "understand", "difficulty": "basic", "type": "tf", "points": 2, "question": "一定量刚性双原子理想气体在等压膨胀过程中对外做功 2 J，则该过程需传给气体的热量为 7 J。", "options": [], "answer": 0, "explanation": "正确。双原子分子 C_V=5R/2，C_p=7R/2。\n\n等压过程：W=pΔV=nRΔT=2 J→nRΔT=2 J。Q=nC_pΔT=n(7R/2)ΔT=(7/2)nRΔT=(7/2)×2=7 J。\n\n有用比值：对双原子理想气体，等压过程中 A/Q = R/C_p = 2/7。所以 Q = 7A/2 = 7 J。", "pitfall": ""}];
+var LABELS = {"page_title": "章节测试", "section": {"choice": "一、选择题", "multi": "二、多选题", "tf": "三、判断题", "fill": "四、填空题", "short": "五、简答题", "calc": "六、计算题", "code": "七、代码题", "essay": "八、问答题", "comprehensive": "九、综合题"}, "section_order": ["choice", "multi", "tf", "fill", "short", "calc", "code", "essay", "comprehensive"], "points_suffix": "分", "true_label": "正确", "false_label": "错误", "placeholder": "在此作答...", "code_placeholder": "在此编写代码...", "pitfall_prefix": "易错提醒：", "correct_label": "正确", "wrong_label": "错误", "partial_label": "部分正确", "answer_prefix": "正确答案：", "reference_label": "参考答案", "graded_label": "已批改", "grade_button": "提交批改", "score_label": "总分", "duration_prefix": "满分 100 分 | 建议 ", "duration_suffix": " 分钟 | 选择答案后点击提交批改"};
+
+// ─── Answer normalization (robust to how the JSON was authored) ──────
+// tf / choice answers may arrive as int index, boolean, letter ("A"),
+// or label string ("正确"/"错误"/"对"/"错"). All are coerced to an
+// option index so grading never silently fails on a type mismatch.
+
+function tfAnswerIndex(ans) {
+  // option 0 = true_label (正确), option 1 = false_label (错误)
+  if (typeof ans === 'boolean') return ans ? 0 : 1;
+  if (typeof ans === 'number') return ans === 0 ? 0 : 1;
+  var s = ('' + ans).trim().toLowerCase();
+  var truthy = ['0', 't', 'true', '正确', '对', '是', 'yes', 'y', '√', '✓'];
+  var falsy  = ['1', 'f', 'false', '错误', '错', '否', 'no', 'n', '×', 'x'];
+  if (truthy.indexOf(s) !== -1) return 0;
+  if (falsy.indexOf(s) !== -1) return 1;
+  return ans ? 0 : 1;
+}
+
+function choiceAnswerIndex(ans, options) {
+  if (typeof ans === 'number') return ans;
+  var s = ('' + ans).trim();
+  if (/^[A-Za-z]$/.test(s)) return s.toUpperCase().charCodeAt(0) - 65;
+  if (/^\d+$/.test(s)) return parseInt(s, 10);
+  if (options) {
+    for (var i = 0; i < options.length; i++) {
+      if (('' + options[i]).trim() === s) return i;
+    }
+  }
+  return parseInt(s, 10);
+}
+
+function multiAnswerSet(ans, options) {
+  var arr = Array.isArray(ans) ? ans : [ans];
+  var set = {};
+  for (var i = 0; i < arr.length; i++) {
+    set[choiceAnswerIndex(arr[i], options)] = true;
+  }
+  return set;
+}
+
+// Normalize free text for fill-in-the-blank comparison: trim, lowercase,
+// drop surrounding whitespace and common punctuation, unify full/half width.
+function normText(s) {
+  s = ('' + s).trim().toLowerCase();
+  s = s.replace(/[\s　]+/g, '');
+  s = s.replace(/[.,;:!?。，、；：！？“”"'（）()【】\[\]<>《》]/g, '');
+  // full-width ASCII -> half-width
+  s = s.replace(/[！-～]/g, function (c) {
+    return String.fromCharCode(c.charCodeAt(0) - 0xfee0);
+  });
+  return s;
+}
+
+// How many blanks does a fill question have? Count underscore / ＿ runs.
+function fillBlankCount(question) {
+  var m = ('' + question).match(/(_{2,}|＿+)/g);
+  return m ? m.length : 0;
+}
+
+// Coerce a fill `answer` into an array (one entry per blank) of accepted
+// answer lists. Handles: string, [synonyms], [[blank1 syns],[blank2 syns]].
+function fillBlankAnswers(ans, nBlanks) {
+  if (nBlanks < 1) nBlanks = 1;
+  if (!Array.isArray(ans)) return padBlanks([[ans]], nBlanks);
+  if (ans.length && Array.isArray(ans[0])) return padBlanks(ans, nBlanks);
+  // flat array of strings
+  if (nBlanks === 1) return [ans];                 // synonyms for one blank
+  if (ans.length === nBlanks) {                    // one answer per blank
+    return ans.map(function (a) { return [a]; });
+  }
+  return padBlanks([ans], nBlanks);                // ambiguous -> all on blank 1
+}
+
+function padBlanks(arr, n) {
+  var out = arr.slice(0, n);
+  while (out.length < n) out.push(['']);
+  return out;
+}
+
+// ─── Build ───────────────────────────────────────────────────────────
+
+function build() {
+  var container = document.getElementById('questions-container');
+  if (!container) { console.error('ExamPass: questions-container not found'); return; }
+
+  // Stable-sort questions by section order so headings group correctly
+  // regardless of input order.
+  var order = LABELS.section_order || [];
+  Q.forEach(function (q, i) { q._i = i; });
+  Q.sort(function (a, b) {
+    var oa = order.indexOf(a.type); if (oa === -1) oa = 99;
+    var ob = order.indexOf(b.type); if (ob === -1) ob = 99;
+    return oa - ob || a._i - b._i;
+  });
+
+  var h = '';
+  var sec = '';
+  var titles = LABELS.section;
+
+  for (var i = 0; i < Q.length; i++) {
+    var q = Q[i];
+    if (q.type !== sec) {
+      sec = q.type;
+      if (titles[q.type]) h += '<h3>' + titles[q.type] + '</h3>';
+    }
+
+    var qid = 'q' + i;
+    h += '<div class="q-card" id="card-' + qid + '">';
+    h += '<div class="q-num">' + (i + 1) + '. (' + q.points + ' ' + LABELS.points_suffix + ')</div>';
+
+    if (q.type === 'fill') {
+      h += '<div class="q-text">' + renderFill(q, qid) + '</div>';
+    } else {
+      h += '<div class="q-text">' + q.question + '</div>';
+    }
+
+    if (q.type === 'choice') {
+      var opts = q.options || [];
+      for (var j = 0; j < opts.length; j++) {
+        h += '<label class="option" id="opt-' + qid + '-' + j + '" onclick="sel(\'' + qid + '\',' + j + ')">';
+        h += '<input type="radio" name="' + qid + '" value="' + j + '">' + String.fromCharCode(65 + j) + '. ' + opts[j] + '</label>';
+      }
+    } else if (q.type === 'multi') {
+      var mopts = q.options || [];
+      for (var k = 0; k < mopts.length; k++) {
+        h += '<label class="option" id="opt-' + qid + '-' + k + '" onclick="toggle(\'' + qid + '\',' + k + ')">';
+        h += '<input type="checkbox" name="' + qid + '" value="' + k + '">' + String.fromCharCode(65 + k) + '. ' + mopts[k] + '</label>';
+      }
+    } else if (q.type === 'tf') {
+      h += '<label class="option" id="opt-' + qid + '-0" onclick="sel(\'' + qid + '\',0)">';
+      h += '<input type="radio" name="' + qid + '" value="0">' + LABELS.true_label + '</label>';
+      h += '<label class="option" id="opt-' + qid + '-1" onclick="sel(\'' + qid + '\',1)">';
+      h += '<input type="radio" name="' + qid + '" value="1">' + LABELS.false_label + '</label>';
+    } else if (q.type === 'fill') {
+      // inputs already rendered inline inside q-text
+    } else if (q.type === 'code') {
+      h += '<textarea class="q-textarea q-code" id="text-' + qid + '" placeholder="' + (LABELS.code_placeholder || LABELS.placeholder) + '" rows="8" spellcheck="false"></textarea>';
+    } else {
+      h += '<textarea class="q-textarea" id="text-' + qid + '" placeholder="' + LABELS.placeholder + '" rows="3"></textarea>';
+    }
+
+    h += '<div class="result" id="result-' + qid + '">';
+    h += '<span class="badge" id="badge-' + qid + '"></span><span id="correct-' + qid + '"></span>';
+    h += '<div class="explanation">' + (q.explanation || '') + '</div>';
+    if (q.pitfall) {
+      h += '<div class="pitfall">' + LABELS.pitfall_prefix + q.pitfall + '</div>';
+    }
+    h += '</div></div>';
+  }
+
+  container.innerHTML = h;
+
+  if (window.MathJax && MathJax.typesetPromise) {
+    MathJax.typesetPromise([container]).catch(function (err) {
+      console.error('MathJax typeset error:', err);
+    });
+  }
+}
+
+// Render fill question text with inline <input> boxes replacing blanks.
+function renderFill(q, qid) {
+  var nBlanks = fillBlankCount(q.question);
+  var k = 0;
+  var html = ('' + q.question).replace(/(_{2,}|＿+)/g, function () {
+    var inp = '<input type="text" class="fill-input" id="fill-' + qid + '-' + k + '" autocomplete="off" spellcheck="false">';
+    k++;
+    return inp;
+  });
+  if (k === 0) {
+    // No markers in text -> append boxes based on answer shape
+    var n = fillBlankAnswers(q.answer, 1).length;
+    var ans = q.answer;
+    if (Array.isArray(ans)) n = Array.isArray(ans[0]) ? ans.length : (ans.length || 1);
+    if (n < 1) n = 1;
+    html += '<div class="fill-row">';
+    for (var b = 0; b < n; b++) {
+      if (n > 1) html += '<span class="fill-tag">' + (b + 1) + '.</span>';
+      html += '<input type="text" class="fill-input" id="fill-' + qid + '-' + b + '" autocomplete="off" spellcheck="false">';
+    }
+    html += '</div>';
+  }
+  return html;
+}
+
+document.addEventListener('DOMContentLoaded', build);
+if (document.readyState === 'interactive' || document.readyState === 'complete') {
+  build();
+}
+
+// ─── Selection handlers ──────────────────────────────────────────────
+
+function sel(qid, idx) {
+  var prefix = 'opt-' + qid + '-';
+  var all = document.querySelectorAll('[id^="' + prefix + '"]');
+  for (var i = 0; i < all.length; i++) all[i].classList.remove('selected');
+  var target = document.getElementById('opt-' + qid + '-' + idx);
+  if (target) target.classList.add('selected');
+  var radio = document.querySelector('input[name="' + qid + '"][value="' + idx + '"]');
+  if (radio) radio.checked = true;
+}
+
+function toggle(qid, idx) {
+  var box = document.querySelector('input[name="' + qid + '"][value="' + idx + '"]');
+  var label = document.getElementById('opt-' + qid + '-' + idx);
+  if (!box) return;
+  box.checked = !box.checked;
+  if (label) label.classList.toggle('selected', box.checked);
+}
+
+// ─── Grading ─────────────────────────────────────────────────────────
+
+function gradeAll() {
+  var score = 0;
+  for (var i = 0; i < Q.length; i++) {
+    var q = Q[i];
+    var qid = 'q' + i;
+    var card = document.getElementById('card-' + qid);
+    var result = document.getElementById('result-' + qid);
+    var badge = document.getElementById('badge-' + qid);
+    var correctEl = document.getElementById('correct-' + qid);
+    if (!card || !result) continue;
+
+    result.style.display = 'block';
+
+    if (q.type === 'choice' || q.type === 'tf') {
+      score += gradeSingle(q, qid, card, badge, correctEl);
+    } else if (q.type === 'multi') {
+      score += gradeMulti(q, qid, card, badge, correctEl);
+    } else if (q.type === 'fill') {
+      score += gradeFill(q, qid, card, badge, correctEl);
+    } else {
+      card.classList.add('correct');
+      badge.className = 'badge badge-ref';
+      badge.textContent = LABELS.reference_label;
+    }
+  }
+
+  var sb = document.getElementById('score-box');
+  if (sb) {
+    sb.style.display = 'block';
+    document.getElementById('score-num').textContent = roundScore(score);
+    sb.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  var opts = document.querySelectorAll('.option');
+  for (var a = 0; a < opts.length; a++) opts[a].style.pointerEvents = 'none';
+  var tas = document.querySelectorAll('.q-textarea');
+  for (var b = 0; b < tas.length; b++) tas[b].disabled = true;
+  var fis = document.querySelectorAll('.fill-input');
+  for (var c = 0; c < fis.length; c++) fis[c].disabled = true;
+
+  var btn = document.getElementById('grade-btn');
+  if (btn) { btn.disabled = true; btn.textContent = LABELS.graded_label; }
+
+  if (window.MathJax && MathJax.typesetPromise) {
+    MathJax.typesetPromise().catch(function (err) {
+      console.error('MathJax typeset error:', err);
+    });
+  }
+}
+
+function roundScore(s) {
+  return Math.round(s * 10) / 10;
+}
+
+function gradeSingle(q, qid, card, badge, correctEl) {
+  var ansIdx = q.type === 'tf' ? tfAnswerIndex(q.answer) : choiceAnswerIndex(q.answer, q.options);
+  var radio = document.querySelector('input[name="' + qid + '"]:checked');
+  if (radio && parseInt(radio.value, 10) === ansIdx) {
+    card.classList.add('correct');
+    badge.className = 'badge badge-ok';
+    badge.textContent = LABELS.correct_label;
+    correctEl.innerHTML = '';
+    var ok = document.getElementById('opt-' + qid + '-' + ansIdx);
+    if (ok) ok.classList.add('correct-answer');
+    return q.points;
+  }
+  card.classList.add('wrong');
+  badge.className = 'badge badge-no';
+  badge.textContent = LABELS.wrong_label;
+  var ansText = q.type === 'choice'
+    ? String.fromCharCode(65 + ansIdx) + '. ' + (q.options ? q.options[ansIdx] : '')
+    : (ansIdx === 0 ? LABELS.true_label : LABELS.false_label);
+  correctEl.innerHTML = LABELS.answer_prefix + ansText;
+  if (radio) {
+    var wrongOpt = document.getElementById('opt-' + qid + '-' + radio.value);
+    if (wrongOpt) wrongOpt.classList.add('wrong-answer');
+  }
+  var corr = document.getElementById('opt-' + qid + '-' + ansIdx);
+  if (corr) corr.classList.add('correct-answer');
+  return 0;
+}
+
+function gradeMulti(q, qid, card, badge, correctEl) {
+  var want = multiAnswerSet(q.answer, q.options);
+  var wantKeys = Object.keys(want).map(Number);
+  var checked = document.querySelectorAll('input[name="' + qid + '"]:checked');
+  var picked = [];
+  for (var i = 0; i < checked.length; i++) picked.push(parseInt(checked[i].value, 10));
+
+  var anyWrong = false, hitCorrect = 0;
+  for (var p = 0; p < picked.length; p++) {
+    if (want[picked[p]]) hitCorrect++;
+    else anyWrong = true;
+  }
+
+  // reveal correct / wrong option markers
+  var mopts = q.options || [];
+  for (var j = 0; j < mopts.length; j++) {
+    var el = document.getElementById('opt-' + qid + '-' + j);
+    if (!el) continue;
+    if (want[j]) el.classList.add('correct-answer');
+    else if (picked.indexOf(j) !== -1) el.classList.add('wrong-answer');
+  }
+
+  var earned;
+  if (!anyWrong && hitCorrect === wantKeys.length && picked.length === wantKeys.length) {
+    earned = q.points;
+    card.classList.add('correct');
+    badge.className = 'badge badge-ok';
+    badge.textContent = LABELS.correct_label;
+    correctEl.innerHTML = '';
+  } else if (!anyWrong && hitCorrect > 0) {
+    // 少选不错选 -> partial credit
+    earned = roundScore(q.points * hitCorrect / wantKeys.length);
+    card.classList.add('partial');
+    badge.className = 'badge badge-partial';
+    badge.textContent = LABELS.partial_label;
+    correctEl.innerHTML = LABELS.answer_prefix + multiAnswerText(wantKeys, mopts);
+  } else {
+    earned = 0;
+    card.classList.add('wrong');
+    badge.className = 'badge badge-no';
+    badge.textContent = LABELS.wrong_label;
+    correctEl.innerHTML = LABELS.answer_prefix + multiAnswerText(wantKeys, mopts);
+  }
+  return earned;
+}
+
+function multiAnswerText(keys, options) {
+  return keys.sort(function (a, b) { return a - b; }).map(function (k) {
+    return String.fromCharCode(65 + k) + '. ' + (options ? options[k] : '');
+  }).join('  ');
+}
+
+function gradeFill(q, qid, card, badge, correctEl) {
+  var nBlanks = fillBlankCount(q.question);
+  var blanks = fillBlankAnswers(q.answer, nBlanks);
+  var n = blanks.length;
+  var hit = 0;
+  var displays = [];
+
+  for (var b = 0; b < n; b++) {
+    var inp = document.getElementById('fill-' + qid + '-' + b);
+    var accepted = blanks[b] || [''];
+    var user = inp ? normText(inp.value) : '';
+    var ok = false;
+    for (var a = 0; a < accepted.length; a++) {
+      if (accepted[a] !== '' && normText(accepted[a]) === user && user !== '') { ok = true; break; }
+    }
+    if (inp) inp.classList.add(ok ? 'fill-ok' : 'fill-no');
+    if (ok) hit++;
+    displays.push((n > 1 ? (b + 1) + '. ' : '') + accepted.filter(function (x) { return x !== ''; }).join(' / '));
+  }
+
+  var earned = roundScore(q.points * hit / n);
+  correctEl.innerHTML = LABELS.answer_prefix + displays.join('   ');
+
+  if (hit === n) {
+    card.classList.add('correct');
+    badge.className = 'badge badge-ok';
+    badge.textContent = LABELS.correct_label;
+  } else if (hit > 0) {
+    card.classList.add('partial');
+    badge.className = 'badge badge-partial';
+    badge.textContent = LABELS.partial_label;
+  } else {
+    card.classList.add('wrong');
+    badge.className = 'badge badge-no';
+    badge.textContent = LABELS.wrong_label;
+  }
+  return earned;
+}
+
+</script>
+<script>
+document.addEventListener('click', function(e){
+  var btn = e.target.closest('#epa-tabs .tab-btn'); if(!btn) return;
+  var tab = btn.getAttribute('data-tab');
+  document.querySelectorAll('#epa-tabs .tab-btn').forEach(function(b){ b.classList.toggle('active', b===btn); });
+  document.querySelectorAll('.tab-panel').forEach(function(p){
+    p.classList.toggle('active', p.id === 'panel-' + tab); });
+  // The test panel is display:none on load, so build()'s MathJax typeset ran
+  // on hidden content (collapsing formula question cards to 0 height). Re-run
+  // build() the first time the panel is visible so it renders + typesets at the
+  // real size. Guarded so user answers aren't wiped on later switches.
+  if(tab === 'test' && !window.__epaTestBuilt){
+    window.__epaTestBuilt = true;
+    if(typeof build === 'function'){ try { build(); } catch(err){} }
+  }
+  if(window.__epaFitFormulas) setTimeout(window.__epaFitFormulas, 50);
+  window.scrollTo(0, 0);
+});
+</script>
+</body>
+</html>

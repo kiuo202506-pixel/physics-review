@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Chapter 2 Particle Dynamics 质点动力学</title>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\(', '\)']],
+    displayMath: [['$$', '$$'], ['\[', '\]']]
+  }
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"></script>
+<style>
+/* === ExamPass Shared Styles === */
+/* Paper-like warm background, clean typography, responsive */
+
+:root {
+  --paper: #fdf6e3;
+  --paper-dark: #f5ecd7;
+  --ink: #2c2c2c;
+  --ink-light: #555;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --divider: #d6c8a8;
+  --card-bg: #fef9ef;
+  --card-border: #e8dcc8;
+  --correct: #22c55e;
+  --correct-bg: #f0fdf4;
+  --wrong: #ef4444;
+  --wrong-bg: #fef2f2;
+  --tag-bg: #fef3c7;
+  --tag-text: #92400e;
+  --radius: 6px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: "Microsoft YaHei", "Noto Sans SC", "SimSun", sans-serif;
+  font-size: 12pt; line-height: 1.75; color: var(--ink);
+  max-width: 860px; margin: auto; padding: 24px 20px 60px;
+  background: var(--paper);
+}
+
+@media print {
+  body { font-size: 10.5pt; background: #fff; }
+  .no-print { display: none !important; }
+  h1, h2, h3 { page-break-after: avoid; }
+}
+
+/* ── Header ── */
+#exampass-header {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 6px 0; margin-bottom: 0;
+}
+.header-brand { font-size: 1.2em; font-weight: 700; color: #1a1a2e; letter-spacing: 0.3px; }
+.header-url  { font-size: 0.78em; color: #999; }
+.header-divider { border: none; border-top: 2px solid var(--divider); margin: 4px 0 20px 0; }
+
+/* ── Typography ── */
+h1 { font-size: 1.55em; text-align: center; border-bottom: 2px solid var(--divider); padding-bottom: 8px; margin-top: 0; }
+h2 { font-size: 1.25em; border-bottom: 1px solid var(--divider); padding-bottom: 4px; margin-top: 28px; }
+h3 { font-size: 1.08em; margin-top: 20px; color: var(--ink); }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── Tables ── */
+table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 0.95em; }
+td, th { border: 1px solid var(--card-border); padding: 5px 9px; text-align: left; }
+th { background: var(--paper-dark); font-weight: 700; }
+
+/* ── Knowledge point vs explanation ── */
+.kp { font-weight: 700; color: var(--ink); }           /* key point: bold dark */
+.exp { font-weight: 400; color: var(--ink-light); }    /* explanation: lighter */
+.exp em, .exp strong { color: var(--ink); }             /* emphasis inside explanation */
+
+/* ── Block elements ── */
+blockquote {
+  border-left: 3px solid #c0392b; background: #fef9ef;
+  padding: 6px 14px; margin: 10px 0; font-size: 0.95em;
+}
+/* Modern monospace stack — avoids the ugly Courier New fallback on Windows. */
+:root {
+  --mono: "Cascadia Code", "JetBrains Mono", "Fira Code", "Source Code Pro",
+          Consolas, "SF Mono", Menlo, "DejaVu Sans Mono", monospace;
+}
+code {
+  font-family: var(--mono);
+  background: #eee8d8; color: #8a4b1e;
+  padding: 1px 5px; border-radius: 4px; font-size: 0.9em;
+}
+pre {
+  font-family: var(--mono);
+  background: #2d2a26; color: #ece6da;
+  padding: 14px 16px; border-radius: var(--radius);
+  overflow-x: auto; line-height: 1.6; font-size: 0.9em;
+  border: 1px solid #3d3934; tab-size: 2;
+}
+pre code {
+  background: none; color: inherit; padding: 0; font-size: 1em; border-radius: 0;
+}
+
+/* ── Long display formulas: scroll inside their column, never overflow ── */
+mjx-container[display="true"] {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* ── TOC ── */
+div.toc {
+  background: var(--card-bg); padding: 14px 18px;
+  border: 1px solid var(--card-border); border-radius: var(--radius); margin-bottom: 22px;
+}
+div.toc ul { padding-left: 18px; }
+div.toc li { margin: 3px 0; font-size: 0.95em; }
+
+/* ── Priority tags ── */
+.tag-must   { background: #fee2e2; color: #991b1b; padding: 1px 6px; border-radius: 3px; font-size: 0.82em; font-weight: 600; }
+.tag-key    { background: #fef3c7; color: #92400e; padding: 1px 6px; border-radius: 3px; font-size: 0.82em; font-weight: 600; }
+.tag-freq   { background: #dbeafe; color: #1e40af; padding: 1px 6px; border-radius: 3px; font-size: 0.82em; font-weight: 600; }
+.tag-info   { background: #f0fdf4; color: #166534; padding: 1px 6px; border-radius: 3px; font-size: 0.82em; font-weight: 600; }
+
+/* ── Checkpoint self-test ── */
+.checkpoint {
+  background: #eff6ff; border: 1px solid #bfdbfe; border-radius: var(--radius);
+  padding: 10px 16px; margin: 18px 0;
+  font-size: 0.95em;
+}
+.checkpoint::before {
+  content: '🧠 自测：';
+  font-weight: 700; color: #1e40af;
+}
+.checkpoint .cp-answer { margin-top: 10px; border-top: 1px dashed #bfdbfe; padding-top: 8px; }
+.checkpoint .cp-answer summary {
+  cursor: pointer; color: #1e40af; font-weight: 600; user-select: none;
+  list-style: none;
+}
+.checkpoint .cp-answer summary::before { content: '💡 '; }
+.checkpoint .cp-answer summary::-webkit-details-marker { display: none; }
+.checkpoint .cp-answer[open] summary { margin-bottom: 6px; }
+.checkpoint .cp-answer ol, .checkpoint .cp-answer p { font-weight: 400; color: var(--ink); }
+
+/* ── TL;DR summary ── */
+.tldr {
+  background: #fefce8; border-left: 3px solid #eab308;
+  padding: 8px 14px; margin: 10px 0;
+  font-weight: 600; font-size: 0.95em;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  body { max-width: 100%; padding: 12px 10px 40px; font-size: 11pt; }
+  h1 { font-size: 1.3em; }
+  h2 { font-size: 1.12em; }
+  table { font-size: 0.85em; }
+  td, th { padding: 4px 6px; }
+  pre { font-size: 0.85em; padding: 6px; }
+}
+@media (max-width: 400px) {
+  body { padding: 8px 6px 32px; font-size: 10.5pt; }
+}
+
+/* === Interactive Test Styles === */
+
+/* ── Score box ── */
+#score-box {
+  display: none; background: var(--paper-dark); color: var(--ink);
+  padding: 16px 20px; border-radius: var(--radius); margin: 14px 0;
+  text-align: center; border: 1px solid var(--card-border);
+}
+#score-box .score-num { font-size: 2.2em; font-weight: 700; }
+#score-box .score-label { font-size: 0.85em; color: var(--ink-light); }
+
+/* ── Question card ── */
+.q-card {
+  background: var(--card-bg); border: 1px solid var(--card-border);
+  border-radius: var(--radius); padding: 12px 14px; margin: 10px 0;
+  transition: all 0.15s;
+}
+.q-card.correct { border-left: 3px solid var(--correct); background: #f7fdf4; }
+.q-card.wrong   { border-left: 3px solid var(--wrong); background: #fef9f9; }
+
+.q-num  { font-weight: 700; font-size: 0.98em; margin-bottom: 4px; }
+.q-text { margin-bottom: 8px; font-size: 0.98em; }
+
+/* ── Options (compact) ── */
+.option {
+  display: block; padding: 4px 10px; margin: 3px 0;
+  border: 1px solid var(--card-border); border-radius: 4px;
+  cursor: pointer; transition: all 0.12s; font-size: 0.93em;
+  background: #fefcf5;
+}
+.option:hover            { background: #f0ede0; }
+.option input            { margin-right: 6px; }
+.option.selected         { border-color: var(--accent); background: #eff6ff; }
+.option.correct-answer   { border-color: var(--correct); background: var(--correct-bg); }
+.option.wrong-answer     { border-color: var(--wrong); background: var(--wrong-bg); }
+
+/* ── Textareas (compact) ── */
+.q-textarea {
+  width: 100%; min-height: 56px; border: 1px solid var(--card-border);
+  border-radius: 4px; padding: 6px 10px; font-family: inherit;
+  font-size: 0.93em; background: #fefcf5; resize: vertical;
+}
+.q-textarea:focus { outline: none; border-color: var(--accent); }
+.q-code {
+  font-family: "Consolas", "Monaco", "Courier New", monospace;
+  font-size: 0.88em; line-height: 1.5; background: #1e1e2e; color: #e0e0e0;
+  tab-size: 4; white-space: pre;
+}
+.q-code:focus { border-color: var(--accent); }
+
+/* ── Partial-credit badge ── */
+.badge-partial { background: #fef3c7; color: #92400e; }
+.q-card.partial { border-color: #f59e0b; }
+
+/* ── Result after grading ── */
+.result {
+  display: none; margin-top: 8px; padding: 8px 12px;
+  background: #fefcf5; border: 1px solid var(--card-border);
+  border-radius: 4px; font-size: 0.9em; line-height: 1.6;
+}
+.result .badge {
+  display: inline-block; padding: 1px 9px; border-radius: 3px;
+  font-weight: 700; font-size: 0.82em; margin-right: 6px;
+}
+.badge-ok  { background: var(--correct-bg); color: #166534; }
+.badge-no  { background: var(--wrong-bg); color: #991b1b; }
+.badge-ref { background: #dbeafe; color: #1e40af; }
+
+.result .explanation { margin-top: 4px; color: var(--ink); }
+.result .pitfall { color: #b45309; margin-top: 3px; font-size: 0.9em; }
+
+/* ── Grading button ── */
+.grading-bar { text-align: center; margin: 20px 0; }
+.grading-bar button {
+  font-size: 1em; padding: 8px 32px; background: var(--accent);
+  color: #fff; border: none; border-radius: var(--radius);
+  cursor: pointer; font-weight: 600; letter-spacing: 0.3px;
+}
+.grading-bar button:hover     { background: var(--accent-hover); }
+.grading-bar button:disabled  { background: #bbb; cursor: not-allowed; }
+
+
+/* ── Notion-style slide cross-reference layout ── */
+/* Override base.css body max-width (860px); fill the viewport edge-to-edge,
+   capped only on ultra-wide screens for readability. */
+body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
+.kn-layout { display: flex; gap: 36px; align-items: flex-start; width: 100%; margin: 0 auto; }
+.kn-main { flex: 1 1 auto; min-width: 0; overflow-x: clip; }
+.kn-main mjx-container[display="true"] { max-width: 100%; overflow-x: auto; overflow-y: hidden; }
+.kn-rail { flex: 0 0 32%; max-width: 520px; min-width: 300px; position: sticky; top: 12px;
+  align-self: flex-start; max-height: calc(100vh - 30px); overflow-y: auto; padding-right: 4px; }
+.kn-rail-title { font-weight: 700; color: var(--ink-light); font-size: 0.9em; margin-bottom: 10px;
+  padding-bottom: 6px; border-bottom: 1px solid var(--divider); }
+.slide-card { border: 1px solid var(--card-border); border-radius: var(--radius);
+  background: var(--card-bg); padding: 8px; margin-bottom: 14px; }
+.slide-card-label { font-size: 0.78em; color: var(--ink-light); margin-bottom: 6px; }
+.slide-img { width: 100%; height: auto; border-radius: 4px; cursor: zoom-in; display: block;
+  border: 1px solid var(--divider); background: #fff; }
+.slide-text { margin-top: 6px; font-size: 0.85em; }
+.slide-text summary { cursor: pointer; color: var(--accent); user-select: none; }
+.slide-text-body { margin-top: 6px; color: var(--ink-light); line-height: 1.6;
+  max-height: 220px; overflow-y: auto; padding: 6px 8px; background: #fff;
+  border-radius: 4px; border: 1px solid var(--divider); }
+/* heading-side page chips */
+.pg-chip { display: inline-block; font-size: 0.72em; font-weight: 600; color: var(--accent);
+  background: #eff4ff; border: 1px solid #cfe0ff; border-radius: 10px; padding: 0 7px;
+  margin-left: 6px; cursor: pointer; vertical-align: middle; }
+.pg-chip:hover { background: #dbe8ff; }
+.slide-card.flash { animation: slideflash 1.2s ease; }
+@keyframes slideflash { 0%,100%{box-shadow:none;} 30%{box-shadow:0 0 0 3px var(--accent);} }
+/* lightbox */
+#epa-lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.82); display: none;
+  align-items: center; justify-content: center; z-index: 9999; cursor: zoom-out; }
+#epa-lightbox img { max-width: 94vw; max-height: 94vh; border-radius: 6px; }
+/* Tablet / narrow desktop: keep two columns but rebalance + tighten margins */
+@media (max-width: 1280px) {
+  body { width: 98vw; padding-left: 1vw; padding-right: 1vw; }
+  .kn-layout { gap: 24px; }
+  .kn-main { flex: 1 1 54%; }
+  .kn-rail { flex: 1 1 46%; }
+}
+/* Mobile: stack the rail below the notes */
+@media (max-width: 900px) {
+  body { width: 100%; padding-left: 12px; padding-right: 12px; }
+  /* align-items:stretch is critical — in a COLUMN flex, flex-start would size
+     children to max-content (overflowing the viewport). */
+  .kn-layout { flex-direction: column; align-items: stretch; gap: 16px; }
+  .kn-main { flex: none; width: 100%; }
+  .kn-rail { position: static; flex: none; max-width: 100%; width: 100%; min-width: 0; max-height: none; }
+}
+
+
+/* ── Combined page: top tab bar (清单 | 题目) ── */
+#epa-tabs { display: flex; gap: 0; justify-content: center; margin: 6px auto 22px;
+  max-width: 520px; border: 1px solid var(--divider); border-radius: 10px; overflow: hidden; }
+#epa-tabs .tab-btn { flex: 1; padding: 10px 18px; cursor: pointer; border: none;
+  background: var(--paper-dark); color: var(--ink-light); font-size: 1.02em; font-weight: 600;
+  font-family: inherit; transition: background .15s, color .15s; }
+#epa-tabs .tab-btn + .tab-btn { border-left: 1px solid var(--divider); }
+#epa-tabs .tab-btn.active { background: var(--accent); color: #fff; }
+#epa-tabs .tab-btn:not(.active):hover { background: #efe7d3; color: var(--ink); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+/* keep the test readable/centered even though the body is wide for the rail */
+#panel-test { max-width: 980px; margin: 0 auto; }
+@media print { #epa-tabs { display: none; } .tab-panel { display: block !important; } }
+
+</style>
+</head>
+<body>
+
+<header id="exampass-header">
+  <div class="header-left"><span class="header-brand">ExamPass Assistant</span></div>
+  <div class="header-right"><span class="header-url">github.com/WUBING2023/ExamPass-Assistant</span></div>
+</header>
+<hr class="header-divider">
+
+<h1>Chapter 2 Particle Dynamics 质点动力学</h1><div id="epa-tabs" class="no-print"><button class="tab-btn active" data-tab="kn">📖 知识清单</button><button class="tab-btn" data-tab="test">📝 章节测试</button></div><div id="panel-kn" class="tab-panel active"><div class="kn-layout"><div class="kn-main"><h1></h1>
+<div class="toc">
+<h2>目录</h2>
+<ul>
+<li><a href="#s39150889">一、牛顿运动定律 </a></li>
+  <li><a href="#s18617029">牛顿第一定律与惯性参考系 
+  必考</a></li>
+  <li><a href="#s52711837">牛顿第二定律 F=ma 
+  核心枢纽</a></li>
+  <li><a href="#s37607972">例题：定滑轮连接体 
+  必考</a></li>
+  <li><a href="#s27391385">牛顿第三定律与作用力-反作用力辨析 
+  必考</a></li>
+<li><a href="#s68509861">二、动量与动量守恒 </a></li>
+  <li><a href="#s51202086">动量、冲量与动量定理 
+  核心枢纽</a></li>
+  <li><a href="#s32115493">动量定理例题：篮球落地碰撞 
+  高频</a></li>
+  <li><a href="#s15139226">动量守恒定律 
+  必考</a></li>
+  <li><a href="#s18344377">动量守恒例题：火箭分裂 + 人车反冲 
+  高频</a></li>
+<li><a href="#s87283275">三、功能关系与机械能守恒 </a></li>
+  <li><a href="#s37747296">功与动能定理 
+  必考</a></li>
+  <li><a href="#s44100104">动能定理例题：钉入木头 + 链条滑落 
+  高频</a></li>
+  <li><a href="#s61493354">保守力与势能 
+  必考</a></li>
+  <li><a href="#s13464385">机械能守恒定律 
+  必考</a></li>
+</ul>
+</div>
+<article id="ch2-particle-dynamics">
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- CHAPTER 2: PARTICLE DYNAMICS 质点动力学                          -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+
+<!-- ============================================================ -->
+<!-- 一、牛顿运动定律                                                -->
+<!-- ============================================================ -->
+<h2 id="s39150889">一、牛顿运动定律 <span class="pg-chip" data-page="3">页3</span><span class="pg-chip" data-page="4">页4</span><span class="pg-chip" data-page="5">页5</span><span class="pg-chip" data-page="6">页6</span><span class="pg-chip" data-page="7">页7</span><span class="pg-chip" data-page="8">页8</span><span class="pg-chip" data-page="9">页9</span><span class="pg-chip" data-page="10">页10</span><span class="pg-chip" data-page="11">页11</span><span class="pg-chip" data-page="15">页15</span><span class="pg-chip" data-page="16">页16</span><span class="pg-chip" data-page="17">页17</span><span class="pg-chip" data-page="18">页18</span><span class="pg-chip" data-page="19">页19</span><span class="pg-chip" data-page="20">页20</span><span class="pg-chip" data-page="21">页21</span><span class="pg-chip" data-page="22">页22</span><span class="pg-chip" data-page="23">页23</span><span class="pg-chip" data-page="24">页24</span><span class="pg-chip" data-page="25">页25</span><span class="pg-chip" data-page="26">页26</span><span class="pg-chip" data-page="27">页27</span><span class="pg-chip" data-page="28">页28</span></h2>
+
+<p>力学全部解题的「定律工具箱」从这里出发。读完本节你应建立这条主线：<span class="exp">认模型（质点、隔离体）--&gt; 选定律（F=ma / 动量定理 / 动量守恒 / 动能定理 / 机械能守恒）--&gt; 列方程 --&gt; 查单位与方向</span>。牛顿三定律回答的是「力如何瞬时改变运动」，是后面所有积累效应（动量、能量）的源头。</p>
+
+
+<!-- ──────────────────────────────────────── -->
+<h3 id="s18617029">牛顿第一定律与惯性参考系 <span class="pg-chip" data-page="3">页3</span><span class="pg-chip" data-page="4">页4</span><span class="pg-chip" data-page="5">页5</span><span class="pg-chip" data-page="6">页6</span><span class="pg-chip" data-page="7">页7</span><span class="pg-chip" data-page="8">页8</span>
+  <span class="tag-must">必考</span></h3>
+
+<div class="hook">站在公交车上，司机突然刹车——你为什么会往前倾倒？不是有人推你，是你的身体「拒绝」改变原有的运动状态。</div>
+
+<div class="tldr">任何物体在<span class="kp">合外力为零</span>时，保持<span class="kp">静止或匀速直线运动</span>状态不变。第一定律不是 F=0 时的特例——它独立完成了两件大事：<span class="exp">定义了惯性参考系</span>，并<span class="exp">定性定义了力</span>（力是改变运动状态的根源，不是维持运动的原因）。</div>
+
+<h4>Why：没有惯性系就没有牛顿力学</h4>
+<p>牛顿第二定律 F=ma 中，加速度 a 必须相对于<span class="kp">惯性系</span>测量。如果参考系本身在加速（非惯性系），F=ma 直接使用会得到荒谬结果——比如在急刹车的公交车上，你感觉被「往前推」，但没有一个真实的力在推你。第一定律划定了舞台边界。</p>
+
+<h4>What：惯性与惯性系的精确含义</h4>
+<ul>
+  <li><span class="kp">惯性（Inertia）</span>：<span class="exp">物体保持原有运动状态的「顽固性」，是物质最基本的属性之一。</span>质量 m 是惯性大小的定量量度——m 越大，速度越难改变。</li>
+  <li><span class="kp">惯性参考系</span>：<span class="exp">牛顿定律成立的参考系。</span>判据：不受外力作用的物体在此参考系中保持静止或匀速直线运动。</li>
+</ul>
+
+<table class="comp-table">
+<caption>实用惯性系的精度层级</caption>
+<tr><th>惯性系</th><th>非惯性因素</th><th>角速度量级 $rad/s$</th><th>实用程度</th></tr>
+<tr><td>地面参考系</td><td>地球自转</td><td>$\omega \approx 7.3\times10^{-5}$</td><td>最常用，近似惯性系</td></tr>
+<tr><td>地心参考系</td><td>地球绕太阳公转</td><td>$\omega \approx 2.0\times10^{-7}$</td><td>较地面系严格</td></tr>
+<tr><td>日心参考系</td><td>太阳绕银河中心</td><td>$\omega \approx 8.0\times10^{-16}$</td><td>更严格</td></tr>
+<tr><td>FK4 参考系</td><td>—</td><td>—</td><td>当前最佳（1535 颗恒星平均位形基准）</td></tr>
+</table>
+
+<blockquote>易错：<span class="kp">运动学</span>中，参考系可以任意选取（运动描述是相对的，选哪个系都合法）；<span class="kp">动力学</span>中，牛顿定律只能在惯性系中使用。在非惯性系中直接套 F=ma 会得到错误结果——必须引入惯性力才能修正。</blockquote>
+
+<div class="checkpoint">
+  <p>在匀速行驶的高铁车厢内，桌面上一个苹果保持静止。以地面为参考系，苹果受哪些力？合力多大？以高铁为参考系呢？高铁是严格的惯性系吗？</p>
+  <details class="cp-answer"><summary>参考答案</summary>
+  以地面为系：受重力 mg 向下、桌面支持力 N 向上，合力为零（v=常数，a=0）。以高铁为系：同样受 mg 和 N，合力也为零——高铁匀速运动，相对地面的加速度为零，因此高铁也是惯性系。但地面只是近似惯性系（地球自转 $\omega\approx7.3\times10^{-5}$ rad/s），严格来说高铁也不是严格惯性系。
+  </details>
+</div>
+
+<div class="checkpoint">
+  <p>判断：「牛顿第一定律其实就是牛顿第二定律在 F=0 时的特例。」</p>
+  <details class="cp-answer"><summary>参考答案</summary>
+  错误。第一定律独立地定义了惯性参考系——这一功能是第二定律无法完成的。没有第一定律划定惯性系，第二定律中的加速度就没有参照基准。同时第一定律还定性定义了「力」——力是改变运动状态的原因（而非维持运动的原因），这也是第二定律未明确阐述的。
+  </details>
+</div>
+
+
+<!-- ──────────────────────────────────────── -->
+<h3 id="s52711837">牛顿第二定律 F=ma <span class="pg-chip" data-page="9">页9</span><span class="pg-chip" data-page="10">页10</span><span class="pg-chip" data-page="18">页18</span><span class="pg-chip" data-page="19">页19</span><span class="pg-chip" data-page="20">页20</span><span class="pg-chip" data-page="21">页21</span><span class="pg-chip" data-page="22">页22</span>
+  <span class="tag-key">核心枢纽</span></h3>
+
+<div class="hook">推动一辆空购物车和一辆装满货的购物车——用同样的力，空车一下子飞出去，满载车慢悠悠起步。力的「效果」不仅取决于力有多大，还取决于对象的「质量」——即惯性有多大。</div>
+
+<div class="tldr"><span class="kp">$$\vec{F}_{\text{合}} = m\vec{a}$$</span> 合外力 = 质量 x 加速度。这是经典力学的核心方程——<span class="exp">将力（原因）与加速度（结果）建立了定量、瞬时、矢量性的联系</span>。且力满足<span class="kp">叠加原理</span>：几个力同时作用，合力产生的加速度等于各力单独产生的加速度之矢量和。</div>
+
+<h4>Why：为什么 F=ma 是「枢纽」？</h4>
+<p>牛顿之前，人们普遍认为力维持运动（亚里士多德）。伽利略用思想实验、牛顿用数学语言终结了这个两千年的误解：<span class="kp">力不维持速度，力改变速度（产生加速度）</span>。F=ma 是一切后续定律（动量定理、动能定理、角动量定理）的微分源头——对时间积分得到动量定理，对空间积分得到动能定理。</p>
+
+<h4>What：定律的四个本质属性</h4>
+<ul>
+  <li><span class="kp">矢量性</span>：a 的方向始终与合外力方向相同，不是大小关系而是矢量等式。</li>
+  <li><span class="kp">瞬时性</span>：F 和 a 是同一瞬时的一一对应——F 变了，a 同时改变，没有延迟。</li>
+  <li><span class="kp">叠加性</span>：$\vec{F}_{\text{合}} = \sum\vec{F}_i$，合力产生的加速度 = 各分力单独产生的加速度的矢量和。但<span class="exp">力的叠加原理的成立不能自动地导致运动的叠加</span>——若 F 是 v 的函数，每个分力单独产生的运动和合力产生的运动并不线性叠加。</li>
+  <li><span class="kp">适用范围</span>：仅适用于惯性系、仅适用于质点模型。</li>
+</ul>
+
+<h4>How：坐标系分量式</h4>
+
+<table class="comp-table">
+<caption>不同坐标系下的牛顿第二定律</caption>
+<tr><th>坐标系</th><th>分量方程</th><th>最佳场景</th></tr>
+<tr><td>直角坐标</td><td>$F_x = ma_x,\; F_y = ma_y,\; F_z = ma_z$</td><td>直线运动、斜面、平抛</td></tr>
+<tr><td>自然坐标</td><td>$F_t = m\frac{dv}{dt},\; F_n = m\frac{v^2}{\rho}$</td><td>圆周运动、一般曲线</td></tr>
+</table>
+
+<p>根据力函数的形式选择方程类型：恒力 --&gt; $F=ma$；力是速度的函数 F$v$ --&gt; $F(v$=m\frac{dv}{dt}\)；力是位置的函数 F$r$ --&gt; $F(r$=m\frac{d^2r}{dt^2}\)。</p>
+
+<div class="procedure">
+<strong>力学标准解题流程</strong>（全体例题通用）：<br>
+① <span class="kp">选对象</span>（单质点 or 系统？） --&gt; ② <span class="kp">画受力图</span>（隔离体法，标出全部力，不遗漏不重复） --&gt; ③ <span class="kp">判断过程</span>（直线/曲线？恒力/变力？瞬时/积累？） --&gt; ④ <span class="kp">选定律</span>（F=ma / 动量定理 / 动能定理 / 守恒定律，见对比表） --&gt; ⑤ <span class="kp">列方程</span>（写分量式，明确正方向） --&gt; ⑥ <span class="kp">检查</span>（量纲、特殊值极限、物理合理性）
+</div>
+
+<blockquote>易错：力的叠加原理成立 ≠ 运动的叠加原理自动成立。若力函数形式复杂（如 F=F$v$ 非线性），合力产生的运动 ≠ 各分力单独产生运动之和。</blockquote>
+
+<div class="checkpoint">
+  <p>质量 m=2 kg 的物体受到两个力 $\vec{F}_1=3\hat{i}$ N、$\vec{F}_2=4\hat{j}$ N。求加速度的大小和方向。</p>
+  <details class="cp-answer"><summary>参考答案</summary>
+  $\vec{F}_{\text{合}}=(3\hat{i}+4\hat{j}$\) N，$|\vec{F}_{\text{合}}|=\sqrt{3^2+4^2}=5$ N。$a=F_{\text{合}}/m=5/2=2.5$ m/s²，方向与 x 轴夹角 $\theta=\arctan(4/3$\approx 53^\circ\)。这是由「力叠加」求「加速度叠加」的直接应用。
+  </details>
+</div>
+
+
+<!-- ──────────────────────────────────────── -->
+<h3 id="s37607972">例题：定滑轮连接体 <span class="pg-chip" data-page="23">页23</span><span class="pg-chip" data-page="24">页24</span><span class="pg-chip" data-page="25">页25</span>
+  <span class="tag-must">必考</span></h3>
+
+<div class="hook">两个不同质量的物体用轻绳跨过光滑定滑轮相连——哪个加速下降？加速度多大？绳中张力在两边一样吗？这是大学物理的「Hello World」级基准题。</div>
+
+<div class="tldr"><span class="kp">定滑轮连接体</span>：隔离每个物体单独列 F=ma，利用绳长不变的约束 $a_1 = a_2$（大小相等），联立得 <span class="exp">$a = \frac{m_1 - m_2}{m_1 + m_2}g$</span> 和张力 <span class="exp">$F_T = \frac{2m_1 m_2}{m_1 + m_2}g$</span>。</div>
+
+<h4>标准例题（PPT E2.1$1$）</h4>
+<p>轻绳跨过光滑轴承的定滑轮，两端分别悬挂 $m_1$ 和 $m_2$（设 $m_1 &gt; m_2$）。滑轮和绳质量不计，绳不可伸长。求加速度 a 和绳中张力 $F_T$。</p>
+
+<p><strong>所用定律</strong>：牛顿第二定律 F=ma（隔离体法）。为什么不用动量/能量？因为恒力作用求瞬时加速度——F=ma 最直接。</p>
+
+<strong>解题步骤</strong>：
+<ol>
+  <li><span class="kp">选对象</span>：分别隔离 $m_1$ 和 $m_2$</li>
+  <li><span class="kp">画受力图</span>：$m_1$ 受 $m_1 g$（向下）、$F_T$（向上）；$m_2$ 受 $m_2 g$（向下）、$F_T$（向上）</li>
+  <li><span class="kp">判断过程</span>：$m_1 &gt; m_2$，$m_1$ 向下加速、$m_2$ 向上加速。绳不可伸长 → $a_1=a_2=a$（大小）</li>
+  <li><span class="kp">列方程</span>（各自沿加速度方向为正）：
+    $$\begin{aligned}m_1 g - F_T &= m_1 a \quad $\text{对 }m_1\text{，向下为正}$\\F_T - m_2 g &= m_2 a \quad $\text{对 }m_2\text{，向上为正}$\end{aligned}$$
+  </li>
+  <li><span class="kp">联立解</span>：
+    $$a = \frac{m_1 - m_2}{m_1 + m_2}g,\qquad F_T = \frac{2m_1 m_2}{m_1 + m_2}g$$
+  </li>
+</ol>
+
+<p><span class="exp">张力小于较重物体的重力大于较轻物体的重力：$m_2 g &lt; F_T &lt; m_1 g$。</span></p>
+
+<h4>变式：电梯中的滑轮（PPT E2.1$2$）</h4>
+<p>整个装置放在以加速度 $a_0$ 上升的电梯中。物体相对电梯的加速度：
+$$a_r = \frac{m_1 - m_2}{m_1 + m_2}$g + a_0$,\qquad F_T = \frac{2m_1 m_2}{m_1 + m_2}$g + a_0$$
+<span class="exp">只把 g 换成 $g+a_0$，物理本质：电梯加速上升等效于重力场变强。</span></p>
+
+<h4>变式：电梯斜面滑块（PPT E2.2）</h4>
+<p>电梯以 $a_1$ 上升，光滑斜面倾角 $\theta$，物体从长 l 的斜面顶滑到底：</p>
+<p>物体相对斜面的加速度：$a_2 = (g + a_1$\sin\theta\)</p>
+<p>压力（牛顿第三定律）：$N = m(g + a_1$\cos\theta\)</p>
+<p>到底时间：$t = \sqrt{\frac{2l}{(g + a_1$\sin\theta}}\)</p>
+
+<blockquote>易错：对 $m_2$ 列方程时正方向容易取反。建议每个物体独立选正方向（沿各自加速度方向为正），不要强制统一。如果统一取向下为正，则 $m_2$ 的方程是 $m_2 g - F_T = -m_2 a$——多一个负号，容易遗漏。</blockquote>
+
+
+<!-- ──────────────────────────────────────── -->
+<h3 id="s27391385">牛顿第三定律与作用力-反作用力辨析 <span class="pg-chip" data-page="11">页11</span><span class="pg-chip" data-page="15">页15</span><span class="pg-chip" data-page="16">页16</span><span class="pg-chip" data-page="17">页17</span>
+  <span class="tag-must">必考</span></h3>
+
+<div class="hook">你用手掌抵住墙面用力推——墙纹丝不动，但你的手掌有强烈的被压迫感。墙「没动」不代表墙没给你反作用力。事实上，墙推你的力精确等于你推墙的力。</div>
+
+<div class="tldr"><span class="kp">$\vec{F}_{A \to B} = -\vec{F}_{B \to A}$</span>——作用力与反作用力<span class="exp">大小相等、方向相反、沿同一直线、作用在不同物体上</span>，<span class="exp">同时存在同时消失，属于同一性质的力</span>。它们绝不能互相抵消——因为作用在<span class="kp">不同</span>物体上。</div>
+
+<table class="comp-table">
+<caption>平衡力 vs 作用力与反作用力（高频混淆点）</caption>
+<tr><th>比较项目</th><th>平衡力</th><th>作用力与反作用力</th></tr>
+<tr><td>作用对象</td><td><span class="kp">同一物体</span></td><td><span class="kp">两个不同物体</span></td></tr>
+<tr><td>力的性质</td><td>可以不同（重力 vs 支持力）</td><td><span class="kp">必须相同</span>（都是弹力/引力）</td></tr>
+<tr><td>能否抵消</td><td>能（合力为零，物体平衡）</td><td><span class="kp">不能</span>（作用对象不同，无法合成）</td></tr>
+<tr><td>依赖关系</td><td>不一定同时存在</td><td><span class="kp">同时存在、同时消失</span></td></tr>
+<tr><td>效果</td><td>物体保持静止或匀速（a=0）</td><td>各自使对方产生加速度</td></tr>
+<tr><td>实例</td><td>书放桌上：重力 + 支持力（都作用在书上）</td><td>书压桌的力 ↔ 桌撑书的力</td></tr>
+</table>
+
+<div class="checkpoint">
+  <p>一本书静止在水平桌面上。书的「重力 mg」和「桌面对书的支持力 N」是一对作用力与反作用力吗？如果各拿一个弹簧秤挂在一起对拉，两秤的读数为什么总是相等？</p>
+  <details class="cp-answer"><summary>参考答案</summary>
+  重力和支持力<span class="kp">不是</span>作用力与反作用力——它们都作用在<span class="kp">同一物体（书）</span>上，是一对平衡力。真正的反作用力是：书对桌面的压力（书→桌）↔ 桌对书的支持力（桌→书）；书的重力是地球对书的引力，其反作用力是书对地球的引力。弹簧秤对拉读数相等是因为牛顿第三定律——无论两人拉力是否相等，两秤之间的相互作用力始终等大反向。
+  </details>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- 二、动量与动量守恒                                              -->
+<!-- ============================================================ -->
+<h2 id="s68509861">二、动量与动量守恒 <span class="pg-chip" data-page="29">页29</span><span class="pg-chip" data-page="30">页30</span><span class="pg-chip" data-page="31">页31</span><span class="pg-chip" data-page="32">页32</span><span class="pg-chip" data-page="33">页33</span><span class="pg-chip" data-page="34">页34</span><span class="pg-chip" data-page="35">页35</span><span class="pg-chip" data-page="36">页36</span><span class="pg-chip" data-page="37">页37</span><span class="pg-chip" data-page="38">页38</span><span class="pg-chip" data-page="39">页39</span><span class="pg-chip" data-page="40">页40</span><span class="pg-chip" data-page="41">页41</span><span class="pg-chip" data-page="42">页42</span></h2>
+
+
+<!-- ──────────────────────────────────────── -->
+<h3 id="s51202086">动量、冲量与动量定理 <span class="pg-chip" data-page="30">页30</span><span class="pg-chip" data-page="31">页31</span><span class="pg-chip" data-page="32">页32</span><span class="pg-chip" data-page="34">页34</span><span class="pg-chip" data-page="35">页35</span><span class="pg-chip" data-page="36">页36</span>
+  <span class="tag-key">核心枢纽</span></h3>
+
+<div class="hook">车祸中，为什么要加装气囊？同样的速度变化（比如从 60 km/h 到 0），碰撞时间从 0.01 秒（硬碰硬）延长到 0.1 秒（有气囊缓冲），受力就降低到原来的 1/10——这不是工程直觉，是动量定理的精确预言。</div>
+
+<div class="tldr"><span class="kp">动量 $\vec{p} = m\vec{v}$</span>（矢量），<span class="kp">冲量 $\vec{I} = \int_{t_1}^{t_2}\vec{F}\,dt$</span>（力对时间的积分），满足 <span class="kp">$$\vec{I} = \Delta\vec{p} = m\vec{v}_2 - m\vec{v}_1$$</span> 合外力的冲量等于动量的增量——即动量定理。</div>
+
+<h4>Why：为什么需要动量定理——牛顿第二定律还不够吗？</h4>
+<p>牛顿第二定律是<span class="kp">瞬时</span>关系——告诉我们某一时刻的 F 和 a 如何对应。但在碰撞、打击问题中，力在极短时间内剧烈变化，精确知道每一瞬时的力既不可能也不必要。动量定理将「力在时间上的累积效应（冲量）」与「运动状态的整体变化（动量差）」直接挂钩——<span class="exp">我们不关心中间每一时刻的力，只关心总效果</span>。</p>
+
+<h4>What：精确的数学定义</h4>
+<ul>
+  <li><span class="kp">动量</span> $\vec{p} = m\vec{v}$：矢量，单位 kg·m/s，方向 = 速度方向。</li>
+  <li><span class="kp">恒力冲量</span> $\vec{I} = \vec{F}\Delta t$：方向与力相同。</li>
+  <li><span class="kp">变力冲量</span> $\vec{I} = \int_{t_1}^{t_2}\vec{F}\,dt$：<span class="exp">方向由积分结果整体决定，不能说「冲量方向与力方向一致」</span>（力方向在过程中可能变化）。</li>
+  <li><span class="kp">平均力</span>：$\bar{F}_x = \frac{\int F_x dt}{\Delta t} = \frac{\Delta p_x}{\Delta t}$</li>
+</ul>
+
+<h4>分量式与核心结论</h4>
+$$I_x = \int_{t_1}^{t_2} F_x\,dt = mv_{2x} - mv_{1x},\quad I_y = \int_{t_1}^{t_2} F_y\,dt = mv_{2y} - mv_{1y}$$
+<p><span class="kp">某方向受到冲量，该方向的动量就改变</span>——这是分量独立性的直接推论。<span class="exp">碰撞中冲力远大于重力（数量级差几十倍），重力常可忽略。</span>动量定理仅对惯性系成立（由牛二导出）。</p>
+
+<table class="comp-table">
+<caption>动量定理 vs 动能定理（核心对比——分别对应「时间」和「空间」两种积累）</caption>
+<tr><th>比较项目</th><th>动量定理</th><th>动能定理</th></tr>
+<tr><td>表达式</td><td>$\int\vec{F}\,dt = \Delta\vec{p}$</td><td>$\int\vec{F}\cdot d\vec{r} = \Delta E_k$</td></tr>
+<tr><td>积累量</td><td>力对<span class="kp">时间</span>的累积（冲量）</td><td>力对<span class="kp">空间</span>的累积（功）</td></tr>
+<tr><td>量纲</td><td>$1455L551455L551455L55^{-1}$</td><td>$1455L551455L55^21455L55^{-2}$</td></tr>
+<tr><td>数学性质</td><td><span class="kp">矢量方程</span>（可分解到三个方向）</td><td><span class="kp">标量方程</span>（只有正负，无方向性）</td></tr>
+<tr><td>适用条件</td><td>惯性系中普遍成立</td><td>惯性系中普遍成立（注意功与参考系有关）</td></tr>
+<tr><td>守恒条件</td><td>合外力 = 0</td><td>仅保守力做功</td></tr>
+<tr><td>典型场景</td><td>碰撞、打击（时间极短）</td><td>弹簧压缩、斜面下滑（路径明确）</td></tr>
+</table>
+
+<div class="checkpoint">
+  <p>质量为 0.5 kg 的小球以 10 m/s 水平射向墙壁，以 8 m/s 反向弹回，碰撞时间 0.02 s。求墙对球的平均作用力。提示：注意速度的符号（矢量差不是标量差）。</p>
+  <details class="cp-answer"><summary>参考答案</summary>
+  取反弹方向为正：$v_1 = -10$ m/s，$v_2 = +8$ m/s。$I = mv_2 - mv_1 = 0.5\times 8 - 0.5\times(-10$ = 4 + 5 = 9\) N·s。$\bar{F} = I/\Delta t = 9/0.02 = 450$ N。若误用 $0.5\times(8-10$ = -1\) N·s，相当于忽略了速度方向的矢量性质。
+  </details>
+</div>
+
+
+<!-- ──────────────────────────────────────── -->
+<h3 id="s32115493">动量定理例题：篮球落地碰撞 <span class="pg-chip" data-page="37">页37</span><span class="pg-chip" data-page="38">页38</span>
+  <span class="tag-freq">高频</span></h3>
+
+<div class="hook">一个篮球从 2 米高自由落下，以同样速率反弹——短短 0.019 秒的触地时间里，地面给了篮球多大的平均力？</div>
+
+<div class="tldr">篮球触地问题用<span class="kp">动量定理</span>：落地速度 $v = \sqrt{2gh}$，反弹速度等大反向，动量变化 $\Delta p = 2mv$。$(\bar{F} - mg$\Delta t = 2mv\)，得 <span class="exp">$\bar{F} = \frac{2mv}{\Delta t} + mg \approx 382$ N</span>——约为篮球自重的 66 倍。</div>
+
+<h4>PPT E2.8 详解</h4>
+<p>质量 m=0.58 kg，从 h=2 m 静止下落，以相同速率反弹，触地时间 $\Delta t = 0.019$ s。求地面平均作用力。</p>
+
+<p><strong>所用定律</strong>：动量定理（碰撞问题——时间极短、力复杂变化、冲力远大于重力）。</p>
+
+<strong>解题步骤</strong>：
+<ol>
+  <li>落地速度：$v = \sqrt{2gh} = \sqrt{2 \times 9.80 \times 2} = 6.26$ m/s</li>
+  <li><span class="kp">取向上为正</span>：触地前 $v_1 = -6.26$ m/s（向下），反弹后 $v_2 = +6.26$ m/s（向上）</li>
+  <li>动量定理：$(\bar{F} - mg$\Delta t = mv_2 - mv_1 = m$v_2 - v_1$ = 2mv\)</li>
+  <li>$\bar{F} = \frac{2mv}{\Delta t} + mg = \frac{2\times 0.58 \times 6.26}{0.019} + 0.58\times 9.80$</li>
+  <li>$\bar{F} = 382.2 + 5.68 \approx 3.82\times 10^2$ N</li>
+</ol>
+
+<p><span class="exp">382.2 N &gt;&gt; 5.68 N（mg），冲力约为重力的 66 倍。在粗略估计中重力可忽略，但严格计算中必须计入重力修正（力平衡项）。</span></p>
+
+<blockquote>易错：初末速度大小相等，$(v_2 - v_1$\) 不是 0 而是 $2v$。错误来源在于将矢量误当标量——速度方向变了，动量方向也变了。若取向下为正，则 $v_1 = +v$，$v_2 = -v$，$\Delta p = -2mv$，数值相同。</blockquote>
+
+<h4>PPT E2.9 变式：斜抛落地碰撞（分方向处理）</h4>
+<p>质点以水平速度 $v_0$ 从高度 $y_0$ 抛出，碰撞后反弹最高 $y_0/2$，水平速度变 $v_0/2$，求地面的竖直和水平冲量。</p>
+<p>竖直冲量（向上为正）：$I_y = m\sqrt{2g\cdot y_0/2} - (-m\sqrt{2gy_0}$ = m\sqrt{gy_0}\,$1 + \sqrt{2}$\)</p>
+<p>水平冲量：$I_x = m(v_0/2$ - mv_0 = -\frac{1}{2}mv_0\)（负号表示地面给质点的水平冲量与初速方向相反——地面摩擦减速了小球）</p>
+
+
+<!-- ──────────────────────────────────────── -->
+<h3 id="s15139226">动量守恒定律 <span class="pg-chip" data-page="39">页39</span>
+  <span class="tag-must">必考</span></h3>
+
+<div class="hook">你站在光滑冰面上，抱着一块石头。把石头向前猛推出去——你自己会向后退。往前推石头之前你和石头的总动量是零；推出去之后，你后退的动量和石头前进的动量加起来——仍然精确为零。</div>
+
+<div class="tldr"><span class="kp">$$\sum\vec{F}_{\text{外}} = 0 \;\Longrightarrow\; \sum m_i \vec{v}_i = \text{常数}$$</span> 当质点系<span class="exp">合外力为零</span>时，系统总动量保持不变。<span class="exp">内力可以重新分配各质点的动量，但不能改变总动量</span>。且动量守恒是分量式的——某方向外力为零则该方向动量的分量守恒。</div>
+
+<h4>Why：为什么动量守恒比逐个列 F=ma 更「高级」？</h4>
+<p>处理多体碰撞或分裂问题时，逐一隔离每个物体列 F=ma 需要知道全部内力细节——而内力往往大而复杂且我们并不关心。动量守恒定律只需判断<span class="kp">一个条件</span>（合外力是否为零），就可以用一个代数方程直接关联初末状态——不需要知道中间发生了什么。它是比牛顿第二定律更高层次的规律——甚至在现代物理中，即使没有「力」这个概念，动量守恒依然成立。</p>
+
+<h4>What：守恒条件的三种情况</h4>
+<ul>
+  <li><span class="kp">严格守恒</span>：系统合外力为零 → 总动量矢量守恒（大小和方向都不变）。</li>
+  <li><span class="kp">分量守恒</span>：合外力在某个方向的分量为零 → 该方向动量分量守恒。如光滑水平面上的碰撞，水平动量守恒但竖直方向不守恒（有重力）。</li>
+  <li><span class="kp">近似守恒</span>：碰撞、爆炸过程中，内力远大于外力，极短时间内外力冲量可忽略 → 近似认为动量守恒。</li>
+</ul>
+
+<table class="comp-table">
+<caption>动量守恒 vs 机械能守恒（关键判断表：何时用哪个？）</caption>
+<tr><th>比较项目</th><th>动量守恒</th><th>机械能守恒</th></tr>
+<tr><td>守恒条件</td><td><span class="kp">合外力为零</span>（或某方向分量为零）</td><td><span class="kp">只有保守力做功</span>（非保守力不做功）</td></tr>
+<tr><td>判断是对什么</td><td>对系统外部的力（外力）</td><td>对系统内部非保守力的功</td></tr>
+<tr><td>典型守恒场景</td><td>碰撞、爆炸、反冲、分裂</td><td>自由落体、光滑斜面下滑、弹簧振子</td></tr>
+<tr><td>典型不守恒场景</td><td>有外力（摩擦、推力）</td><td>有摩擦力做功、塑性碰撞</td></tr>
+<tr><td>完全弹性碰撞</td><td><span class="kp">守恒</span></td><td><span class="kp">守恒</span></td></tr>
+<tr><td>完全非弹性碰撞</td><td><span class="kp">守恒</span></td><td><span class="kp">不守恒</span>（部分动能转为热能）</td></tr>
+</table>
+
+<div class="checkpoint">
+  <p>两个小球在光滑水平面上发生碰撞。下列说法正确的是：$1$碰撞中动量一定守恒 $2$碰撞中机械能一定守恒 $3$碰撞中动能一定守恒。</p>
+  <details class="cp-answer"><summary>参考答案</summary>
+  只有 $1$ 正确。光滑水平面 → 水平方向无外力 → 动量守恒。$2$$3$ 都不对：只有完全弹性碰撞机械能（动能）才守恒；一般非弹性碰撞中，部分动能转化为内能，机械能不守恒，但动量依然守恒。这是两类守恒定律最核心的区分点。
+  </details>
+</div>
+
+
+<!-- ──────────────────────────────────────── -->
+<h3 id="s18344377">动量守恒例题：火箭分裂 + 人车反冲 <span class="pg-chip" data-page="40">页40</span><span class="pg-chip" data-page="41">页41</span><span class="pg-chip" data-page="42">页42</span>
+  <span class="tag-freq">高频</span></h3>
+
+<div class="hook">一枚火箭在太空中以 2.5 km/s 水平飞行，突然分为前后两截。分开后仪器舱相对容器舱以 1 km/s 的水平速度向前飞出——你能算出两截各自相对地面的速度吗？</div>
+
+<div class="tldr">火箭分裂问题用<span class="kp">动量守恒 + 相对速度约束</span>：$(m_1+m_2$v = m_1 v_1 + m_2 v_2\) 和 $v_1 - v_2 = v'$，联立得 <span class="exp">$v_2 = v - \frac{m_1}{m_1+m_2}v'$</span>，$v_1 = v_2 + v'$。</div>
+
+<h4>PPT E2.11 火箭分裂</h4>
+<p>火箭以 v=2500 m/s 水平飞行，分为仪器舱 $\(m_1=100$ kg) 和火箭容器 $\(m_2=200$ kg)。仪器舱相对容器舱的水平速度为 $v'=1000$ m/s。求两舱相对惯性系 S 的速度。</p>
+
+<p><strong>所用定律</strong>：动量守恒（分裂中合外力为零）。<strong>为什么不选其他定律？</strong> 分裂是内力驱动的分离过程，动量守恒直接给出两体速度关系，无需知道内力细节。</p>
+
+<strong>解题步骤</strong>：
+<ol>
+  <li>分裂前总动量：$(m_1+m_2$v\)</li>
+  <li>分裂后总动量：$m_1 v_1 + m_2 v_2$</li>
+  <li>动量守恒：$(m_1+m_2$v = m_1 v_1 + m_2 v_2\)</li>
+  <li>相对速度约束：仪器舱在前，向前飞出 → $v_1 = v_2 + v'$</li>
+  <li>代入：
+    $$v_2 = v - \frac{m_1}{m_1+m_2}v' = 2500 - \frac{100}{300} \times 1000 = 2167 \approx 2.17 \times 10^3\text{ m/s}$$
+    $$v_1 = v_2 + v' = 2167 + 1000 = 3167 \approx 3.17 \times 10^3\text{ m/s}$$
+  </li>
+</ol>
+
+<blockquote>易错：相对速度约束方程的方向。仪器舱在前、容器舱在后，分裂后仪器舱应更快（向前飞出），所以用 $v_1 = v_2 + v'$。如果写反成 $v_1 = v_2 - v'$，得出的结果物理上不合理（轻的前舱反而比重后舱慢）。画示意图确认每个速度的物理方向。</blockquote>
+
+<h4>PPT E2.12 人车反冲</h4>
+<p>光滑水平面上，车长 L 质量 M，车上站人质量 m，初始静止。人从车一端走到另一端，人和车各自相对地面移动多远？</p>
+
+<p><strong>所用定律</strong>：动量守恒（水平无外力，虽然人走路脚底有摩擦，但那是人与车之间的内力——不影响总动量守恒）。<strong>关键理解</strong>：人走路靠车给人的摩擦力（内力），这个力让人加速、同时让车反向加速——总质心不动。</p>
+
+<strong>解题步骤</strong>：
+<ol>
+  <li>设人相对地面速度为 v，车相对地面速度为 V（反向）：$0 = mv - MV$</li>
+  <li>积分：$\int mv\,dt = \int MV\,dt$ → $mx = MX$</li>
+  <li>几何约束（人相对车走了 L）：$x + X = L$</li>
+  <li>解得：$$X = \frac{m}{M+m}L,\quad x = \frac{M}{M+m}L$$</li>
+</ol>
+
+<p><span class="exp">车退的距离与人的质量成正比：人越重（m 越大），车退得越多。若人极轻 m→0，车几乎不动（X→0），人走 L。若人极重 m→∞，车退 L，人几乎不动。</span></p>
+
+
+<!-- ============================================================ -->
+<!-- 三、功能关系与机械能守恒                                        -->
+<!-- ============================================================ -->
+<h2 id="s87283275">三、功能关系与机械能守恒 <span class="pg-chip" data-page="43">页43</span><span class="pg-chip" data-page="44">页44</span><span class="pg-chip" data-page="45">页45</span><span class="pg-chip" data-page="46">页46</span><span class="pg-chip" data-page="47">页47</span><span class="pg-chip" data-page="48">页48</span><span class="pg-chip" data-page="49">页49</span><span class="pg-chip" data-page="50">页50</span><span class="pg-chip" data-page="51">页51</span><span class="pg-chip" data-page="52">页52</span><span class="pg-chip" data-page="53">页53</span><span class="pg-chip" data-page="54">页54</span><span class="pg-chip" data-page="55">页55</span><span class="pg-chip" data-page="56">页56</span><span class="pg-chip" data-page="57">页57</span><span class="pg-chip" data-page="58">页58</span><span class="pg-chip" data-page="59">页59</span></h2>
+
+
+<!-- ──────────────────────────────────────── -->
+<h3 id="s37747296">功与动能定理 <span class="pg-chip" data-page="43">页43</span><span class="pg-chip" data-page="44">页44</span><span class="pg-chip" data-page="45">页45</span><span class="pg-chip" data-page="46">页46</span><span class="pg-chip" data-page="47">页47</span><span class="pg-chip" data-page="48">页48</span>
+  <span class="tag-must">必考</span></h3>
+
+<div class="hook">推箱子在地板上走——推力做正功，摩擦力做负功。推力让箱子加速，摩擦力让它停下。力和位移的「点积」把力的空间效果量化成一个标量——这就是「功」。</div>
+
+<div class="tldr"><span class="kp">功 $W = \int_a^b \vec{F} \cdot d\vec{r}$</span> 是<span class="exp">力对空间的累积效应</span>（标量，只有正负），而 <span class="kp">$$W_{\text{合}} = \Delta E_k = \frac{1}{2}mv_2^2 - \frac{1}{2}mv_1^2$$</span> 合外力的功 = 动能的增量。这是功与运动状态变化的定量桥梁。</div>
+
+<h4>Why：功和动能定理填补了「力对空间累积」的空白</h4>
+<p>动量定理 --&gt; 「力持续了多久改变多少动量」<br>
+动能定理 --&gt; 「力推了多远改变多少动能」<br>
+两个定理互补——同一道力学题可能需要分方向用动量定理、分能量用动能定理。</p>
+
+<h4>What：功的完整定义</h4>
+<ul>
+  <li><span class="kp">恒力功</span>：$W = F\,|\Delta\vec{r}|\,\cos\theta = \vec{F} \cdot \Delta\vec{r}$</li>
+  <li>$\theta = 0^\circ$：正功最大（力与位移同向）；$0^\circ&lt;\theta&lt;90^\circ$：正功（推着走）</li>
+  <li>$\theta = 90^\circ$：不做功（向心力，瞬时与位移垂直）</li>
+  <li>$90^\circ&lt;\theta&lt;180^\circ$：负功（摩擦力、阻力）</li>
+  <li><span class="kp">变力功</span>：微元积分：
+    $$W_{ab} = \int_a^b \vec{F} \cdot d\vec{r} = \int_a^b $F_x dx + F_y dy + F_z dz$$
+    自然坐标：$W_{ab} = \int_a^b F_t\,ds$
+  </li>
+</ul>
+
+<h4>四个关键注意点</h4>
+<ul>
+  <li>功是<span class="kp">标量</span>——只有正负（+/-），没有方向</li>
+  <li>功是<span class="kp">过程量</span>——与路径有关（保守力例外）</li>
+  <li>功与<span class="kp">参考系</span>有关——位移依赖于参考系选择</li>
+  <li><span class="kp">质点系动能定理</span>：$W_{\text{外}} + W_{\text{内}} = \Delta E_k$——<span class="exp">内力可以改变系统总动能！</span></li>
+</ul>
+
+<blockquote>易错：内力合力为零 ≠ 内力功之和为零。一对作用力与反作用力等大反向，但若两质点的位移不同，这对力的总功可以不为零。典型例子：炸弹爆炸——弹片相互推开，内力做正功，把化学能转化为弹片的动能。用力为零但位移不同 → 功的代数和 ≠ 零。</blockquote>
+
+<div class="checkpoint">
+  <p>人匀速提起 10 kg 箱子到 2 m 高度。求人的拉力和重力各做多少功？合力做了多少功？这验证了什么？</p>
+  <details class="cp-answer"><summary>参考答案</summary>
+  匀速 → $F_{\text{拉}} = mg = 98$ N。$W_{\text{拉}} = 98 \times 2 = 196$ J（正功），$W_G = -mg \times 2 = -196$ J（负功——重力方向与位移相反）。$W_{\text{合}} = 196 + (-196$ = 0\)。合力做零功 ↔ 动能不变（$\Delta E_k = 0$，匀速），验证动能定理。人消耗了生物能，转化为重力势能——但这涉及非保守内力（人体肌肉），动能定理只描述了质点动能变化。
+  </details>
+</div>
+
+
+<!-- ──────────────────────────────────────── -->
+<h3 id="s44100104">动能定理例题：钉入木头 + 链条滑落 <span class="pg-chip" data-page="49">页49</span><span class="pg-chip" data-page="50">页50</span><span class="pg-chip" data-page="51">页51</span>
+  <span class="tag-freq">高频</span></h3>
+
+<div class="hook">一锤子把铁钉打入木板 1 cm。再用同样的力量打第二次——铁钉还能再进 1 cm 吗？直觉可能说「是」，但木板阻力随深度增大，变力做功告诉你的答案是：只多进约 0.41 cm。</div>
+
+<div class="tldr">阻力与深度成正比（$f = kx$）时，变力做功非线性。第一次做功 $W = \frac{1}{2}kx_0^2$，第二次做功相同但积分区间从 $x_0$ 到 $x$——<span class="exp">$x = \sqrt{2}x_0$</span>，增量仅 <span class="exp">$\Delta x \approx 0.414$ cm</span>。</div>
+
+<h4>PPT E1：锤击铁钉（变力做功 + 动能定理）</h4>
+<p>木板对铁钉的阻力与进入深度成正比（$f = kx$）。第一次打入 $x_0 = 1$ cm。同等锤击力下第二次还能打入多深？</p>
+
+<p><strong>所用定律</strong>：动能定理。锤击使钉子获得初动能 $\frac{1}{2}mv^2$，阻力做负功消耗动能直至速度为零。</p>
+
+<strong>解题步骤</strong>：
+<ol>
+  <li>第一次：$\frac{1}{2}mv^2 = \int_0^{x_0} kx\,dx = \frac{1}{2}kx_0^2$</li>
+  <li>第二次：同样初动能，钉子从 $x_0$ 继续深入至 $x$：
+    $$\frac{1}{2}kx_0^2 = \int_{x_0}^x kx\,dx = \frac{1}{2}k$x^2 - x_0^2$$
+  </li>
+  <li>解得 $x^2 = 2x_0^2$，$x = \sqrt{2}x_0$</li>
+  <li>第二次打入深度：$\Delta x = x - x_0 = (\sqrt{2}-1$x_0 \approx 0.414\) cm</li>
+</ol>
+
+<p><span class="exp">物理直觉：阻力随深度线性增大，越深越难打。同样的锤击能量，后面每次打入的深度递减。</span></p>
+
+<h4>PPT E2：链条从桌面滑落（变力做功 + 动能定理联用）</h4>
+<p>链条长 l 质量 m，部分长度 a 下垂桌外，桌面摩擦系数 μ，从静止释放。求全部离开桌面时的速度。</p>
+
+<p><strong>所用定律</strong>：动能定理（有变力功和摩擦力功）。<strong>为什么不只用机械能守恒？</strong>因为有摩擦力（非保守力），机械能不守恒，只能用动能定理。</p>
+
+<strong>解题步骤</strong>：
+<ol>
+  <li>摩擦力功（变力，随桌上链条长度变化）：$W_f = -\int_a^l \frac{\mu mg}{l}(l-x$\,dx = -\frac{\mu mg$l-a$^2}{2l}\)</li>
+  <li>重力功（下垂部分越来越多）：$W_G = \int_a^l \frac{mg}{l}x\,dx = \frac{mg(l^2-a^2$}{2l}\)</li>
+  <li>动能定理（$v_0 = 0$）：$W_G + W_f = \frac{1}{2}mv^2$</li>
+  <li>$v = \sqrt{\frac{g}{l}\left1455L55}\)</li>
+</ol>
+
+<blockquote>易错：摩擦力功的积分变量。链条从初始下垂长度 a 运动到全部离开（下垂 l），桌上链条长度从 l-a 减到 0。积分变量是下垂长度 x，桌上部分对应的正压力为 $\frac{mg}{l}(l-x$\)，不要写错为 $\frac{mg}{l}(a-x$\)。</blockquote>
+
+
+<!-- ──────────────────────────────────────── -->
+<h3 id="s61493354">保守力与势能 <span class="pg-chip" data-page="52">页52</span><span class="pg-chip" data-page="53">页53</span><span class="pg-chip" data-page="54">页54</span><span class="pg-chip" data-page="55">页55</span><span class="pg-chip" data-page="56">页56</span><span class="pg-chip" data-page="57">页57</span>
+  <span class="tag-must">必考</span></h3>
+
+<div class="hook">爬山时，走盘山缓坡还是直上石阶——你出的汗不一样，但重力做的功精确相等。因为重力不管你走了什么路线，它只关心起点和终点的高度差。这就是「保守」的含义。</div>
+
+<div class="tldr"><span class="kp">保守力</span>沿任意闭合路径做功为零 $\oint\vec{F}_{\text{保}} \cdot d\vec{r} = 0$，做功只与<span class="exp">始末位置有关，与具体路径无关</span>。由此可定义<span class="kp">势能</span>：$E_p(a$ = \int_a^{\text{零点}} \vec{F}_{\text{保}} \cdot d\vec{r}\)，保守力做正功 = 势能减少。</div>
+
+<table class="comp-table">
+<caption>保守力 vs 非保守力</caption>
+<tr><th>比较项目</th><th>保守力</th><th>非保守力</th></tr>
+<tr><td>做功与路径</td><td><span class="kp">无关</span>，只取决于始终位置</td><td><span class="kp">有关</span>，路径不同做功不同</td></tr>
+<tr><td>闭合路径积分</td><td>$\oint\vec{F}\cdot d\vec{r} = 0$</td><td>$\oint\vec{F}\cdot d\vec{r} \neq 0$</td></tr>
+<tr><td>可定义势能？</td><td><span class="kp">可以</span></td><td><span class="kp">不能</span></td></tr>
+<tr><td>常见例子</td><td>重力、弹力（弹簧）、万有引力</td><td>摩擦力、爆炸力、空气阻力</td></tr>
+<tr><td>数学背景</td><td>$\vec{F} = -\nabla E_p$（力是势能的负梯度）</td><td>不存在势函数</td></tr>
+</table>
+
+<h4>三种保守力的势能（必须牢记）</h4>
+
+<table class="comp-table">
+<caption>三大保守力与对应势能</caption>
+<tr><th>保守力</th><th>势能表达式</th><th>零势能参考点</th></tr>
+<tr><td>重力（近地面）$F = -mg$</td><td>$E_p = mgh$</td><td>地面 h=0（可任意选）</td></tr>
+<tr><td>弹簧弹力 $F = -kx$</td><td>$E_p = \frac{1}{2}kx^2$</td><td>弹簧原长处 x=0</td></tr>
+<tr><td>万有引力 $F = -\frac{GMm}{r^2}$</td><td>$E_p = -\frac{GMm}{r}$</td><td>无穷远 $r \to \infty$</td></tr>
+</table>
+
+<h4>势能的本质理解</h4>
+<ul>
+  <li><span class="kp">势能是系统属性</span>：重力势能 mgh 属于「物体 + 地球」系统，不能说「物体的势能」。弹簧势能属于「物体 + 弹簧」系统。</li>
+  <li><span class="kp">势能绝对值无意义</span>：只有势能差有意义（与零点选取无关）。「大石头在地上不可怕，在房顶上才可怕」——怕的是势能差。</li>
+  <li>保守力做正功 → 势能减少；保守力做负功 → 势能增加。</li>
+  <li>保守力的功 = 势能的减少量：$W_{\text{保}} = E_{p1} - E_{p2} = -\Delta E_p$</li>
+</ul>
+
+<blockquote>易错：不是所有「力与位置有关」的力都是保守力。摩擦力的大小和方向可以随位置变化，但它做功总与路径有关、不能定义势能。保守力的本质判据是封闭路径积分为零，而非简单看力是否含位置变量。</blockquote>
+
+<div class="checkpoint">
+  <p>判断：$1$ 摩擦力永远不能做正功。$2$ 只有保守力才能做功。$3$ 摩擦力是非保守力，所以摩擦力做的功转化为热。</p>
+  <details class="cp-answer"><summary>参考答案</summary>
+  $1$ 错误——摩擦力可以做正功。例：传送带上的物体被静摩擦力加速前进，静摩擦力对物体做正功。$2$ 错误——任何力都可以做功。$3$ 正确——非保守力做功不存储为势能，而是耗散为热等不可逆形式。但要注意：静摩擦力是保守的吗？不是——静摩擦力不做功（无相对位移），做正功的是动摩擦力吗？也不是——静摩擦力有做功的情况（如汽车加速时地面静摩擦力对轮胎做正功），但静摩擦力的功不存储为势能。
+  </details>
+</div>
+
+
+<!-- ──────────────────────────────────────── -->
+<h3 id="s13464385">机械能守恒定律 <span class="pg-chip" data-page="58">页58</span><span class="pg-chip" data-page="59">页59</span>
+  <span class="tag-must">必考</span></h3>
+
+<div class="hook">一个小球从光滑圆弧面顶端滑下——越滑越快（势能转动能），到达最低点时速度最大，然后沿另一侧弧面上升——越升越慢（动能转回势能）。如果弧面始终光滑，它会升到和出发高度完全相同的位置停下来——能量一分没少。</div>
+
+<div class="tldr"><span class="kp">$$E_k + E_p = \text{常数}$$</span> 当系统满足<span class="exp">所有外力不做功 + 所有非保守内力不做功</span>时，系统的总机械能（动能 + 全部势能）保持不变。动能和势能之间可以互相转化，但总量不变。</div>
+
+<h4>Why：机械能守恒的条件为什么比动量守恒更严？</h4>
+<p>动量守恒：合外力为零即可——内力怎么闹（摩擦、爆炸、弹力）都行。<br>
+机械能守恒：不仅要外力不做功，<span class="kp">连非保守内力也不能做功</span>——内部摩擦、塑性形变都不许出现。<br>
+这就是为什么碰撞中动量总是守恒的（无外力时），而机械能只在完全弹性碰撞中守恒。</p>
+
+<h4>守恒条件的精确表述</h4>
+<p>当 $W_{\text{外}} = 0$ 且 $W_{\text{非保内}} = 0$ 时：
+$$E = \frac{1}{2}mv^2 + mgh + \frac{1}{2}kx^2 - \frac{GMm}{r} = \text{常数}$$
+
+能量转换链：<span class="exp">下落：$mgh \to \frac{1}{2}mv^2$（势能→动能）｜上升：$\frac{1}{2}mv^2 \to mgh$（动能→势能）｜弹簧压缩-释放：$\frac{1}{2}mv^2 \to \frac{1}{2}kx^2 \to \frac{1}{2}mv^2$</span></p>
+
+<blockquote>易错：机械能守恒是对<span class="kp">整个系统</span>、对<span class="kp">整个过程的每一时刻</span>而言的——不是只看初末状态就够了。只比较始末态能量相等不能推出机械能一定守恒（可能中途有非保守力做过功并恰好抵消）。</blockquote>
+
+<h4>PPT E4：光滑木钉上的链条滑落</h4>
+<p>长 2l 的匀质链条平衡悬挂在光滑圆柱形木钉上，从静止滑动。求链条离开木钉时的速度。</p>
+
+<p><strong>所用定律</strong>：机械能守恒（光滑 → 无摩擦 → 无非保守力做功；无其他外力的功）。<strong>为什么不用动量定理？</strong> 链条运动过程中各部分的位移和速度不一致（上面下降、下面上升），质心位置在移动，用能量法处理最自然。</p>
+
+<strong>解题步骤</strong>：
+<ol>
+  <li>线密度 $\lambda$，总质量 $m = 2\lambda l$</li>
+  <li>取 O 点（木钉）为势能零点。初始：链条对称，质心在 O 下方 l/2，$E_{p0} = -2(\lambda l$g \cdot $l/2$ = -\lambda l^2 g\)</li>
+  <li>末态：链条竖直下垂，质心在 O 下方 l，$E_p = -(\lambda\cdot 2l$g \cdot l = -2\lambda l^2 g\)</li>
+  <li>机械能守恒：$E_{p0} = E_p + E_k$ → $-\lambda l^2 g = -2\lambda l^2 g + \frac{1}{2}(2\lambda l$v^2\)</li>
+  <li>解得：$v = \sqrt{lg}$</li>
+</ol>
+
+<div class="checkpoint">
+  <p>质量 m 的小球从半径为 R 的光滑半圆轨道顶端由静止滑下。求：$1$到达最低点的速度；$2$轨道对小球的支持力。</p>
+  <details class="cp-answer"><summary>参考答案</summary>
+  $1$ 机械能守恒（支持力始终垂直于速度不做功）：$mgR = \frac{1}{2}mv^2$ → $v = \sqrt{2gR}$。<br>
+  $2$ 最低点牛二（向心力）：$N - mg = m\frac{v^2}{R}$ → $N = mg + m\frac{2gR}{R} = 3mg$。最低点支持力是重力的 3 倍——这是过山车/荡秋千最底端感到「超重」的物理原因。
+  </details>
+</div>
+
+</article></div><aside class="kn-rail"><div class="kn-rail-title">📑 原始幻灯片对照</div><div class="slide-card" id="slide-p1" data-page="1"><div class="slide-card-label">第1页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p001.jpg" loading="lazy" alt="第1页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Chapter 2<br>Particle Dynamics<br>质点动力学<br>Lecturer：曾淼旺（Marlon）<br>Email: zengmw@dgut.edu.cn</div></details></div>
+<div class="slide-card" id="slide-p2" data-page="2"><div class="slide-card-label">第2页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p002.jpg" loading="lazy" alt="第2页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Contents<br>2.1     Newton’s Laws of Motion<br>牛顿运动定律<br>2.2     Momentum conservation law<br>动量守恒定律<br>2.3    Law of Conservation of   Mechanical <br>Energy<br>机械能守恒定律</div></details></div>
+<div class="slide-card" id="slide-p3" data-page="3"><div class="slide-card-label">第3页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p003.jpg" loading="lazy" alt="第3页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">任何物体都要保持其静止或匀速直线运动状态，直到外力迫使它改变运动状<br>态为止.<br>一、Newton‘s first law牛顿第一定律（Inertial Law惯<br>性定律）<br>,                constant vector<br><br>v<br>0<br><br>F<br>If a body is at rest it will remain at rest, and if it is in <br>motion, it will remain in motion at a constant velocity in a <br>straight line unless it is acted upon by a force.<br>2.1     Newton’s Laws of Motion<br>牛顿运动定律<br>Force<br>Force is the root of changing the motion state of an object 力是改变物体运动状<br>态的根源。</div></details></div>
+<div class="slide-card" id="slide-p4" data-page="4"><div class="slide-card-label">第4页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p004.jpg" loading="lazy" alt="第4页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Any object has the obstinacy 顽固性of keeping the state of motion <br>unchanged ---- inertia. Inertia is one of the most basic properties of <br>matter. The quantity measuring the size of inertia is called mass质量. <br>Inertia is the root 根源of keeping an object in motion.<br>Inertia 惯性<br>If an object in a reference frame remains stationary or <br>moves in a straight line at a uniform speed without being <br>affected by other objects, this reference frame is called an <br>inertial reference frame. 如物体在一参考系中不受其它物体作用，<br>而保持静止或匀速直线运动，这个参考系就称为惯性参考系。<br>Inertial reference frame 惯性参考系</div></details></div>
+<div class="slide-card" id="slide-p5" data-page="5"><div class="slide-card-label">第5页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p005.jpg" loading="lazy" alt="第5页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Inertial reference frame 惯性参考系<br>If in a reference system, Newton's laws are valid, this reference system <br>is called inertial reference frame, or inertial frame for short.牛顿定律成<br>立的参考系，叫惯性参考系，简称惯性系。</div></details></div>
+<div class="slide-card" id="slide-p6" data-page="6"><div class="slide-card-label">第6页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p006.jpg" loading="lazy" alt="第6页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">1、Ground reference frame 地面参考系<br>Because we live on the ground, the ground is the most commonly <br>used inertial frame. However, it can only be said that the ground is <br>an approximate inertial system, rather than a strict inertial system, <br>because the earth has rotational velocity自转角速度：<br>1<br>5<br>1<br>10<br>3.7<br><br><br><br><br><br>s<br>rad<br><br>Due to the rotation of the earth, objects on the earth have normal acceleration.<br>Several practical inertial frames<br>A large number of facts and experiments show that: The earth is not a strict inertial frame.</div></details></div>
+<div class="slide-card" id="slide-p7" data-page="7"><div class="slide-card-label">第7页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p007.jpg" loading="lazy" alt="第7页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">1<br>7<br>2<br>10<br>0.2<br><br><br><br><br><br>s<br>rad<br><br>2、Geocentric reference system 地心参考系<br>地心参考系相对地面参考系严格些，地球绕太阳<br>公转的角速度<br>The angular velocity of the earth around the sun ：</div></details></div>
+<div class="slide-card" id="slide-p8" data-page="8"><div class="slide-card-label">第8页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p008.jpg" loading="lazy" alt="第8页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">3、Heliocentric reference <br>system <br>日心参考系<br>The heliocentric reference system is more <br>strict than the geocentric reference system，<br>但太阳还绕银河中心旋转：2.5亿年转<br>一圈<br>16<br>1<br>3<br>8.0 10<br>rad s<br><br><br><br><br><br><br>4、FK4 reference system <br>FK4参考系<br>The FK4 inertial system is the reference <br>system based on the average stationary <br>configuration of 1535 stars, and is the best <br>inertial system at present</div></details></div>
+<div class="slide-card" id="slide-p9" data-page="9"><div class="slide-card-label">第9页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p009.jpg" loading="lazy" alt="第9页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">※ Newton's second law ：When an object is subjected to an external <br>force, its acceleration is proportional to the external force; Inversely <br>proportional to the mass of the object; The direction of the acceleration is the <br>same as that of the external force F.  物体受到外力作用时，它所获得加速度<br>的大小与合外力的大小成正比；与物体的质量成反比；加速度的方向与合外<br>力F 的方向相同。<br>F<br>ma<br><br>二、Newton‘s second law牛顿第二定律<br>About Force<br>Force is the interaction between objects, which can cause <br>deformation and acceleration of objects.<br>力是物体与物体间的相互作用，这种作用可使物体产生形变，<br>也可使物体获得加速度。</div></details></div>
+<div class="slide-card" id="slide-p10" data-page="10"><div class="slide-card-label">第10页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p010.jpg" loading="lazy" alt="第10页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">10<br>Superposition principle of force力的叠加原理<br>If an object is subjected to several forces at the same time, the resultant <br>acceleration is equal to the vector sum of the accelerations generated when <br>these forces exist alone.若一个物体同时受到几个力作用，则合力产生的加<br>速度，等于这些力单独存在时所产生的加速度之矢量和。<br>The superposition principle of force can not automatically lead to <br>the superposition of motion.<br>力的叠加原理的成立，不能自动地导致运动的叠加。<br>Newton's second law gives the instantaneous determination of force, mass<br>and acceleration quantitative relation牛顿第二定律给出了力、质量、加速<br>度三者间瞬时的定量关系</div></details></div>
+<div class="slide-card" id="slide-p11" data-page="11"><div class="slide-card-label">第11页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p011.jpg" loading="lazy" alt="第11页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">牛顿第二定律——物理规律中的人生智慧<br>惯性与加速度的辩证关系<br>惯性是物体保持原有运动状态的性质，质量越大惯性越大，改变运动状<br>态（产生加速度）越难。<br>比如，大型货轮由于质量大惯性大，启动和停止都需要较长的时间和较<br>大的力来产生加速度。<br>辩证思维：全面分析问题<br>“力”与“质量”共同决定结果，启发我们全面分析问题，不能只关注<br>单一因素。<br>在社会发展中，既要考虑政策的推动（外力），也要注重人民的素质和<br>能力（质量），才能实现可持续发展。</div></details></div>
+<div class="slide-card" id="slide-p12" data-page="12"><div class="slide-card-label">第12页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p012.jpg" loading="lazy" alt="第12页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">哲学启示：外力、质量与人生发展<br>类比分析：人生发展中的“力”与“质量”<br>外力（F）：外部环境的影响<br>外力包括机遇、挑战和社会支持，这些外部因素会影响个人的成长速度<br>和发展方向。<br>例如，良好的教育环境和社会资源为个人提供了更多的学习和发展机会。<br>质量（m）：个人的核心竞争力<br>质量代表个人的能力、知识储备和品德修养，是决定个人能否抓住机遇、<br>克服挑战的关键因素。<br>例如，一个有扎实专业知识和良好品德的人，更容易在社会中获得认可<br>和发展。</div></details></div>
+<div class="slide-card" id="slide-p13" data-page="13"><div class="slide-card-label">第13页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p013.jpg" loading="lazy" alt="第13页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">个人成长公式：人生发展= 机遇×努力/ 阻<br>力<br>加速度（a）：成长的速度与突破<br>加速度体现了个人成长的速度和突破自我的程度，是衡量个人发展的重要指标。<br>例如，通过不断学习和创新，个人可以实现快速成长，突破自身的局限。<br>个人成长公式：人生发展= 机遇×努力/ 阻力<br>寒门学子通过积累知识和品德修养（质量），克服外界阻力，抓住机遇，实现人<br>生的转变。<br>拒绝“躺平”，主动寻求加速度<br>个人应拒绝“躺平”，通过科技创新、终身学习等方式，主动寻求成长的加速度。<br>例如，许多职场人士利用业余时间学习新技能，提升自己的竞争力，实现职业发<br>展</div></details></div>
+<div class="slide-card" id="slide-p14" data-page="14"><div class="slide-card-label">第14页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p014.jpg" loading="lazy" alt="第14页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">提升“加速度”的方法<br>核心竞争力与加速度的关系<br>如何通过提升个人的核心竞争力，如专业技能、创新能力和品德修养，<br>来增加自己的“加速度”。<br>例如，通过参加培训课程、阅读专业书籍等方式，提升自己的专业技<br>能。<br>实现个人成长的策略<br>探讨如何在面对外部环境的变化时，抓住机遇，克服阻力，实现个人<br>的快速成长。<br>例如，积极参加社会实践活动，积累经验，提升自己的综合素质。</div></details></div>
+<div class="slide-card" id="slide-p15" data-page="15"><div class="slide-card-label">第15页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p015.jpg" loading="lazy" alt="第15页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">When object a acts on object B with force F1, object B must also act on <br>object a with force F2. F1 and F2 are equal in size, opposite in direction, <br>and the action line of the force is on the same straight line.当物体A以力F1<br>作用在物体B上时，物体B也必定同时以力F2作用在物体A上，F1和F2大小<br>相等、方向相反、且力的作用线在同一直线上。<br>1<br>2<br>F<br>F<br><br>三、Newton Third Law牛顿第三定律<br>1F<br>2<br>F</div></details></div>
+<div class="slide-card" id="slide-p16" data-page="16"><div class="slide-card-label">第16页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p016.jpg" loading="lazy" alt="第16页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">(2) It is a force of the same nature, but not a pair of equilibrium forces是<br>同一性质的力，但不是一对平衡力．<br>（3）Equal in size, opposite in direction, following a straight line, acting on <br>different objects大小相等，方向相反，沿用一条直线，作用在不同的物体上<br>(1) Characteristics of acting force and reaction force: they <br>exist and disappear at the same time, and they cannot <br>offset each other同时存在、同时消失，不能相互抵消．<br>note</div></details></div>
+<div class="slide-card" id="slide-p17" data-page="17"><div class="slide-card-label">第17页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p017.jpg" loading="lazy" alt="第17页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">（2）When Newton's law is applied to the study of dynamics, can the <br>reference frame be chosen arbitrarily?应用牛顿定律研究动力学问题时，<br>参考系是否可以任意选取？<br>（No，only inertia reference frame惯性参考系）<br>（3）What is the difference between equilibrium forces and acting and <br>reacting forces?平衡力与作用力和反作用力有何不同？<br>（Equilibrium force is two forces acting on the same object, while a force <br>and a reaction force act on two different objects. 平衡力是作用在同一物体<br>上的两个力，而作用力和反作用力是作用在两个不同的物体上。）<br>Question:<br>（1）In kinematics, can the reference system be arbitrarily selected?<br>在运动学中，参考系是否可以任意选取？<br>（Yes）</div></details></div>
+<div class="slide-card" id="slide-p18" data-page="18"><div class="slide-card-label">第18页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p018.jpg" loading="lazy" alt="第18页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">18<br>四、Applications of Newton Law <br>1、Newton's law applies only to inertial frames牛顿定律只适用<br>于惯性系；<br>2、Newton's law only applies to the particle model牛顿定<br>律只适用于质点模型；<br>a<br>m<br>t<br>m<br>F<br><br><br><br><br><br>d<br>dv<br>合外力<br>3、Instantaneous relation瞬时关系；</div></details></div>
+<div class="slide-card" id="slide-p19" data-page="19"><div class="slide-card-label">第19页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p019.jpg" loading="lazy" alt="第19页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">k<br>t<br>m<br>j<br>t<br>m<br>i<br>t<br>m<br>F<br>y<br>x<br><br><br><br><br>d<br>d<br>d<br>d<br>d<br>d<br>zv<br>v<br>v<br><br><br><br>x<br>x<br>ma<br>F <br>y<br>y<br>ma<br>F <br>z<br>z<br>ma<br>F <br>In rectangular <br>coordinate system<br>直角坐标系中<br>4、Newton’s law should be written in coordinate component <br>formula.具体应用时，要写成坐标分量式。</div></details></div>
+<div class="slide-card" id="slide-p20" data-page="20"><div class="slide-card-label">第20页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p020.jpg" loading="lazy" alt="第20页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">is the radius of curvature of the curve at A曲率半径．<br>In natural coordinate system<br>自然坐标系中<br>n<br>ρ<br>m<br>t<br>m<br>a<br>a<br>m<br>a<br>m<br>F<br>ˆ<br>ˆ<br>d<br>d<br>)<br>(<br>2<br>n<br>t<br>v<br>v<br><br><br><br><br><br><br><br><br><br><br>2<br>2<br>t<br>d<br>d<br>d<br>d<br>t<br>s<br>m<br>t<br>m<br>F<br><br><br>　<br>v<br>ρ<br>m<br>F<br>2<br>n<br>v<br><br>a<br>ˆ<br>nˆ<br>A<br></div></details></div>
+<div class="slide-card" id="slide-p21" data-page="21"><div class="slide-card-label">第21页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p021.jpg" loading="lazy" alt="第21页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">21<br>If F=constant<br>a<br>m<br>F<br><br><br>If F=F(v)<br>dt<br>v<br>md<br>v<br>F<br><br><br><br>)<br>(<br>if F=F(r)<br>2<br>2<br>)<br>(<br>dt<br>r<br>d<br>m<br>r<br>F<br><br><br><br>5、Different equation forms should be selected according to <br>the form of force function 根据力函数的形式选用不同的方程<br>形式</div></details></div>
+<div class="slide-card" id="slide-p22" data-page="22"><div class="slide-card-label">第22页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p022.jpg" loading="lazy" alt="第22页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Application of Newton law<br>two types：motion  to  force<br>force to motion<br>F=ma<br>Steps：<br>1. Determine the object, analyze the forces, and draw the forces diagram of the <br>isolated body确定对象，分析受力画隔离体受力图<br>2.Analysis the motion ：加速度必须是相对于惯性系的加速度<br>3.Solve the equations<br>惯<br>物<br>惯<br>物<br><br><br><br><br><br>A<br>A<br>a<br>a<br>a<br><br><br></div></details></div>
+<div class="slide-card" id="slide-p23" data-page="23"><div class="slide-card-label">第23页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p023.jpg" loading="lazy" alt="第23页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">a<br>m<br>F<br>g<br>m<br>1<br>T<br>1<br><br><br>a<br>m<br>F<br>g<br>m<br>2<br>T<br>2<br><br><br><br>g<br>m<br>m<br>m<br>m<br>F<br>2<br>1<br>2<br>1<br>T<br>2<br><br><br>Solution:<br>(1) choose ground as reference, the force is <br>shown in figure:<br>1<br>m<br>2<br>m<br>g<br>m<br>m<br>m<br>m<br>a<br>2<br>1<br>2<br>1<br><br><br><br>1<br>m g<br>T<br>F<br>a<br>y<br>o<br>T<br>F '<br>2<br>m g<br>a<br>y<br>E2.1（1）A thin rope crosses a fixed pulley with smooth bearing, and <br>objects with mass m1 and m2 (m2 ＜m1) are suspended at both ends of the <br>rope, as shown in the figure. If the mass of pulley and rope is negligible and <br>the rope cannot be extended, try to find the acceleration of the object and the <br>rope tension of the hanging pulley.</div></details></div>
+<div class="slide-card" id="slide-p24" data-page="24"><div class="slide-card-label">第24页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p024.jpg" loading="lazy" alt="第24页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">（2）If this setup is placed on the top of the elevator, <br>when the elevator moves upward with acceleration a<br>relative to the ground, calculate the acceleration of the <br>two objects relative to the elevator and the tension张力<br>of the rope．<br>Assume that the accelerations of two objects relative <br>to the ground are         ，<br>，respectively, and the <br>accelerations relative to the elevator is<br>1a<br>ra<br>2a<br>1<br>m<br>2<br>m<br>a<br>ra<br>ra<br>1<br>m g<br>T<br>F<br>T<br>F<br>2<br>m g<br>1a<br>y<br>o<br>2a<br>y<br>o<br>Solution: <br>choose ground as the reference frame<br>2<br>2<br>T<br>2<br>a<br>m<br>F<br>g<br>m<br><br><br><br>a<br>a<br>a<br><br><br>r<br>2<br>1<br>1<br>T<br>1<br>a<br>m<br>F<br>g<br>m<br><br><br>a<br>a<br>a<br><br><br>r<br>1</div></details></div>
+<div class="slide-card" id="slide-p25" data-page="25"><div class="slide-card-label">第25页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p025.jpg" loading="lazy" alt="第25页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">2<br>2<br>T<br>2<br>a<br>m<br>F<br>g<br>m<br><br><br><br>a<br>a<br>a<br><br><br>r<br>2<br>)<br>(<br>2<br>1<br>2<br>1<br>r<br>a<br>g<br>m<br>m<br>m<br>m<br>a<br><br><br><br><br>)<br>(<br>2<br>2<br>1<br>2<br>1<br>T<br>a<br>g<br>m<br>m<br>m<br>m<br>F<br><br><br><br>thus<br>1<br>m<br>2<br>m<br>a<br>ra<br>ra<br>1<br>m g<br>T<br>F<br>T<br>F<br>2<br>m g<br>1a<br>y<br>o<br>2a<br>y<br>o<br>1<br>1<br>T<br>1<br>a<br>m<br>F<br>g<br>m<br><br><br>a<br>a<br>a<br><br><br>r<br>1</div></details></div>
+<div class="slide-card" id="slide-p26" data-page="26"><div class="slide-card-label">第26页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p026.jpg" loading="lazy" alt="第26页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">26<br>例2.2<br>There is a smooth inclined plane斜面inside the elevator, which is <br>fixed on the base plate底座, and the inclination angle of the inclined plane <br>is θ. When the elevator rises vertically with uniform acceleration a1, the <br>object with mass m starts to slide along the slope from the top of the slope, <br>as shown in Figure. Given that the length of the inclined plane is l, find the <br>pressure压力of the object on the inclined plane and the time required for <br>the object from the top to the bottom<br>Solution:<br>Take object m as the research <br>object. It is subjected to the <br>positive pressure N and gravity <br>mg of the inclined plane .<br>Taking the ground as the <br>reference system</div></details></div>
+<div class="slide-card" id="slide-p27" data-page="27"><div class="slide-card-label">第27页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p027.jpg" loading="lazy" alt="第27页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">1<br>2<br>a<br>a<br>a<br><br><br>According to Newton’s law：<br>2<br>1<br>1<br>a<br>sin<br>(<br>sin )<br>cos<br>cos<br>x<br>mg<br>m a<br>a<br>N<br>mg<br>ma<br><br><br><br><br><br><br><br><br> xis：<br>y axis：<br>Suppose the acceleration of the object m relative to the inclined plane is <br>a2, and the direction is downward along the inclined plane, then the <br>acceleration of the object relative to the ground is</div></details></div>
+<div class="slide-card" id="slide-p28" data-page="28"><div class="slide-card-label">第28页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p028.jpg" loading="lazy" alt="第28页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">28<br>Solve the eqations:<br>2<br>1<br>1<br>(<br>)sin<br>(<br>)cos<br>a<br>g<br>a<br>N<br>m g<br>a<br><br><br><br><br><br><br>According to Newton’s third law，the pressure is<br>1<br>(<br>)cos<br>m g<br>a<br><br><br>Acceleration relative to slop:<br>2<br>1<br>(<br>)sin<br>a<br>g<br>a<br><br><br><br>The object m move downward along the slope, it’s a <br>uniformly accelerated motion, thus<br>2<br>2<br>2<br>1<br>1<br>1 (<br>)sin<br>2<br>2<br>l<br>a t<br>g<br>a<br>t<br><br><br><br><br>then<br><br><br>1<br>2<br>g+ <br>sin<br>l<br>t<br>a<br><br></div></details></div>
+<div class="slide-card" id="slide-p29" data-page="29"><div class="slide-card-label">第29页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p029.jpg" loading="lazy" alt="第29页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">2.2 Momentum, Momentum conservation <br>law    动量、动量守恒定律<br>Accumulation effect of force on time力在时间上<br>的积累效应：<br>Translation<br>平动<br>Impulse冲量<br>Momentum changed  <br>动量改变<br>Rotation<br>转动<br>Impulse moment<br>冲量矩<br>Angular momentum changed <br>角动量的改变<br>Accumulation effect of force in space力在空间<br>上的积累效应<br>Work 功<br>Energy changed改变能量<br>Newton‘s law is an instantaneous law 瞬时<br>Force力<br>t<br>t<br>space<br>29</div></details></div>
+<div class="slide-card" id="slide-p30" data-page="30"><div class="slide-card-label">第30页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p030.jpg" loading="lazy" alt="第30页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">2.2.1 Impulse 冲量<br>Impulse of constant force 恒力的冲量<br>t<br>F<br>t<br>t<br>F<br>I<br><br><br><br><br><br><br><br>)<br>(<br>1<br>2<br>Impulse of variable force变力的冲量:<br>dt<br>F<br>I<br>d<br><br><br><br><br>2<br>1<br>t<br>t<br>dt<br>F<br>I<br><br><br>30</div></details></div>
+<div class="slide-card" id="slide-p31" data-page="31"><div class="slide-card-label">第31页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p031.jpg" loading="lazy" alt="第31页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Note<br>1．The direction of impulse is determined by the <br>final result of integration积分, and it can’t be said <br>that the impulse of force is consistent with the <br>direction of force 不能说力的冲量与力的方向一致。<br>2. Component <br>representation<br><br><br>2<br>1<br>d<br>t<br>t<br>y<br>y<br>t<br>F<br>I<br><br><br>2<br>1<br>d<br>t<br>t<br>z<br>z<br>t<br>F<br>I<br><br><br>2<br>1<br>d<br>t<br>t<br>x<br>x<br>t<br>F<br>I<br>3. Graphical <br>representation<br><br><br>)<br>(<br>1<br>1<br>2<br>1<br>2<br>2<br>1<br>t<br>t<br>dt<br>F<br>t<br>t<br>I<br>t<br>t<br><br><br><br><br><br><br>Average force<br>平均力<br>2<br>1<br>2<br>1<br>d<br><br><br><br><br><br><br>t<br>x<br>t<br>x<br>x<br>F<br>t<br>p<br>F<br>t<br>t<br>t<br>31</div></details></div>
+<div class="slide-card" id="slide-p32" data-page="32"><div class="slide-card-label">第32页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p032.jpg" loading="lazy" alt="第32页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">4．The impulse of the resultant force is equal to the sum of the impulse of <br>each component<br>合力的冲量等于各分力冲量之和<br><br><br><br><br><br><br><br><br>2<br>1<br>2<br>1<br>t<br>t<br>t<br>t<br>I<br>dt<br>F<br>dt<br>F<br>I<br><br><br><br><br>合<br>32</div></details></div>
+<div class="slide-card" id="slide-p33" data-page="33"><div class="slide-card-label">第33页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p033.jpg" loading="lazy" alt="第33页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">mg<br>xT<br>y<br>T<br><br>T<br>dt<br>T<br>I<br>t<br>x<br>x<br><br><br>1<br>0<br>dt<br>T<br>I<br>t<br>y<br>y<br><br><br>0<br>By symmetry<br>0<br><br>xI<br>mg<br>Ty <br>mgt<br>mgdt<br>I<br>t<br>y<br><br>0<br>x<br>y<br>I<br>I<br>I<br>mgt<br><br><br><br>0<br><br>合<br>I<br>E2.7 A particle with a mass of M is tied with a rope and does a <br>uniform speed circular motion (conical pendulum圆锥摆) in the <br>horizontal plane. The period is t. what is the impulse of the <br>rope tension T 张力during the one-round motion of the particle? <br>What is the impulse of total force?<br>Solution:<br>Impulse of T<br>Impulse of total force<br>33</div></details></div>
+<div class="slide-card" id="slide-p34" data-page="34"><div class="slide-card-label">第34页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p034.jpg" loading="lazy" alt="第34页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Momentum动量<br>v<br><br>m<br>p <br>2<br>1<br>I<br>m<br>m<br><br><br>v<br>v<br>Impulse冲量<br><br><br>2<br>1<br>d<br>t<br>t<br>t<br>F<br>I<br><br><br>Momentum theorem动量定理<br>In a time interval, the impulse of an external force is equal to the <br>increment of the particle‘s momentum in this time interval．<br>2.2.2 Momentum theorem 动量定理</div></details></div>
+<div class="slide-card" id="slide-p35" data-page="35"><div class="slide-card-label">第35页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p035.jpg" loading="lazy" alt="第35页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">1. If an impulse is applied in a certain direction, the momentum in <br>that direction changes某方向受到冲量，该方向上动量就改变．<br>Note：<br>y<br>y<br>t<br>t<br>y<br>y<br>m<br>m<br>t<br>F<br>I<br>1<br>2<br>2<br>1<br>d<br>v<br>v<br><br><br><br>z<br>z<br>t<br>t<br>z<br>z<br>m<br>m<br>t<br>F<br>I<br>1<br>2<br>2<br>1<br>d<br>v<br>v<br><br><br><br>x<br>x<br>t<br>t<br>x<br>x<br>m<br>m<br>t<br>F<br>I<br>1<br>2<br>2<br>1<br>d<br>v<br>v<br><br><br><br>2．The momentum theorem is derived from Newton's <br>second law, so it only holds for inertial frames动量定理由<br>牛顿第二定律推出，仅对惯性系成立.<br>35</div></details></div>
+<div class="slide-card" id="slide-p36" data-page="36"><div class="slide-card-label">第36页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p036.jpg" loading="lazy" alt="第36页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">1<br>v<br>m<br>2<br>v<br>m<br>v<br>m<br><br>F<br><br>1<br>2<br>1<br>2<br>1<br>2<br>2<br>1<br>d<br>t<br>t<br>m<br>m<br>t<br>t<br>t<br>F<br>F<br>t<br>t<br><br><br><br><br><br>v<br>v<br><br><br><br><br>3. The momentum theorem is very applicable to the <br>problems of impact and collision适用于打击和碰撞问题。<br>note<br>The smaller       ，<br>is larger<br>t<br><br>F<br>when         is certain,<br>p<br><br>In the process of strike or collision, the general impulse is <br>much greater than gravity, so gravity can often be ignored 冲力<br>远大于重力，可忽略重力<br>36</div></details></div>
+<div class="slide-card" id="slide-p37" data-page="37"><div class="slide-card-label">第37页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p037.jpg" loading="lazy" alt="第37页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">E2.8：A basketball with mass m = 0.58kg，it falls from height h=2m at<br>rest. When it hits the ground, it bounces up with the same speed, the<br>contact time with ground is t=0.019s. Find the average force of<br>basketball to the ground.<br>Solution:<br>The speed when the ball reach ground is<br>m/s<br>26<br>.6<br>2<br>80<br>.9<br>2<br>2<br><br><br><br><br><br>gh<br>v<br>2<br>2<br>2 0.58 6.26<br>3.82 10 N<br>0.019<br>mv<br>F<br>mg<br>t<br><br><br><br><br><br><br><br><br>mg<br>F<br>2<br>v<br>1<br>v<br>mv<br>v<br>m<br>mv<br>t<br>mg<br>F<br>2<br>)<br>(<br>)<br>(<br>1<br>2<br><br><br><br><br><br><br>37<br>According to momentum theory：<br>Average force：</div></details></div>
+<div class="slide-card" id="slide-p38" data-page="38"><div class="slide-card-label">第38页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p038.jpg" loading="lazy" alt="第38页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">E2.9 A particle with a mass of m is thrown along the horizontal direction at <br>a speed of 𝒗𝟎from the height of y0, and the maximum height of jumping <br>after collision碰撞with the ground is y0 /2, and the horizontal speed is <br>𝒗𝟎/2, then during the collision, (1) the vertical impulse of the ground to m<br>is? (2) The horizontal impulse of the ground to m is?<br>h<br>2<br>1<br>0<br>0<br>0<br>2<br>(<br>2<br>)<br>2<br>(1<br>2)<br>I<br>mv<br>mv<br>y<br>m<br>g<br>m<br>gy<br>m gy<br><br><br><br><br><br><br>0<br>v<br>2<br>1<br>0<br>0<br>1<br>2<br>2<br>v<br>I<br>mv<br>mv<br>m<br>mv<br>mv<br><br><br><br><br><br><br><br>Solution：<br>38<br>Speed before collision: <br>horizontal  impulse <br>vertical impulse <br>1<br>0<br>2<br>v<br>gy<br><br>Speed after collision: <br>𝑣2 =<br>2𝑔𝑦0<br>2</div></details></div>
+<div class="slide-card" id="slide-p39" data-page="39"><div class="slide-card-label">第39页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p039.jpg" loading="lazy" alt="第39页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">2.2.3 Conservation law of momentum<br>动量守恒定律<br>Conservation law of momentum动量守恒定律：<br>When the net external force on the particle system is zero, the <br>total momentum of the particle system remains constant, or  <br>conserved. 质点系所受合外力为零时，质点系的总动量不变<br>if<br>0 <br>cons tan t<br>iF<br>P<br><br><br><br>，<br>1 1<br>2<br>2<br>mv<br>m v<br>m v<br><br><br>1. The momentum theorem and the conservation law of momentum are only<br>applicable to inertial reference systems 动量定理及动量守恒定律只适用于惯性系。<br>39</div></details></div>
+<div class="slide-card" id="slide-p40" data-page="40"><div class="slide-card-label">第40页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p040.jpg" loading="lazy" alt="第40页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">x<br>z<br>y<br>o<br>'x<br>'z<br>'y<br>s<br>'s<br>'o<br>v<br>'<br>v<br>1<br>m<br>2<br>m<br>E2.11<br>A rocket flies horizontally relative to the inertial system S at a <br>speed of 2500 m·s-1 . Now the rocket is divided into two parts. The mass <br>of the front instrument cabin m1 is 100 kg, the mass of the rear rocket <br>container m2 is 200 kg, and the horizontal speed of the instrument cabin <br>relative to the rocket container is 1000m·s-1. Find the velocity of the <br>instrument cabin and rocket container relative to the inertial system S.<br>40<br>1<br>3<br>s<br>m<br>10<br>5<br>2<br><br><br><br>.<br>v<br>1<br>3<br>s<br>m<br>10<br>0<br>1<br><br><br><br>.<br>v'<br>1v<br>2<br>v<br>kg<br>200<br>2 <br>m<br>kg<br>100<br>1 <br>m<br>Known: <br>Find: <br>Speed of m1 relative to m2:</div></details></div>
+<div class="slide-card" id="slide-p41" data-page="41"><div class="slide-card-label">第41页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p041.jpg" loading="lazy" alt="第41页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Solution:<br>'v<br>v<br>v<br><br><br>2<br>1<br>2<br>2<br>1<br>1<br>2<br>1<br>)<br>(<br>v<br>v<br>v<br>m<br>m<br>m<br>m<br><br><br><br>1<br>3<br>1<br>s<br>m<br>10<br>17<br>3<br><br><br><br>.<br>v<br>1<br>3<br>s<br>m<br>10<br>17<br>2<br><br><br><br>.<br>'<br>m<br>m<br>m<br>v<br>v<br>v<br>2<br>1<br>1<br>2<br><br><br><br>x<br>z<br>y<br>o<br>'x<br>'z<br>'y<br>s<br>'s<br>'o<br>v<br>'<br>v<br>1<br>m<br>2<br>m<br>41<br>Set S is the inertial reference system</div></details></div>
+<div class="slide-card" id="slide-p42" data-page="42"><div class="slide-card-label">第42页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p042.jpg" loading="lazy" alt="第42页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">E2.12 On the smooth horizontal plane, there is a small car with length of L and <br>mass of M. One person with mass of m stands on the car. The person and the car <br>stay still. When a person walks from one end of the car to the other, how far the <br>person and the car have gone relative to the ground?<br>Solution: <br>Assume the speed of man and car <br>relative to ground is v and V, respectively. <br>The momentum of man and car system <br>is conserved, thus<br>L<br>m<br>M<br>M<br>x<br><br><br>L<br>m<br>M<br>m<br>X<br><br><br>42<br>0<br>mv<br>MV<br><br><br>t<br>t<br>0<br>0<br>mvdt<br>MVdt<br><br><br><br>mv<br>MV<br><br>Integral t<br>Assume the path length of man and car <br>relative to ground is x and X, <br>x<br>m<br>MX<br><br>x<br>X<br>L<br><br><br>Total length is L</div></details></div>
+<div class="slide-card" id="slide-p43" data-page="43"><div class="slide-card-label">第43页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p043.jpg" loading="lazy" alt="第43页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">2.3. Work and Energy  功和能<br>Work of constant force恒力：<br>2.3.1. Theorem of kinetic energy动能定理<br>1 . Work 功<br>force on space accumulation力对空间的积累<br>M<br>M<br>60o<br>F<br><br>F<br><br>r<br><br>r<br>F<br>r<br>F<br>A<br><br><br><br><br><br><br><br><br>|<br>|<br>cos<br>Work of variable force变力:<br>differential：<br>r<br>d<br>F<br>dA<br><br><br><br><br>43<br>f<br>f</div></details></div>
+<div class="slide-card" id="slide-p44" data-page="44"><div class="slide-card-label">第44页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p044.jpg" loading="lazy" alt="第44页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Work of variable force变力<br>的功：<br>F<br><br><br>r<br>d<br>a<br>b<br>Work of force on segment ab:<br><br><br><br><br><br>b<br>a<br>r<br>d<br>F<br>dA<br>A<br><br><br>In rectangle coordinate：<br><br><br><br><br>b<br>a<br>z<br>y<br>x<br>dz)<br>F<br>dy<br>F<br>dx<br>(F<br>A<br>In natural coordinate：<br><br><br>b<br>a<br>tds<br>F<br>A<br>44</div></details></div>
+<div class="slide-card" id="slide-p45" data-page="45"><div class="slide-card-label">第45页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p045.jpg" loading="lazy" alt="第45页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Note<br>work is scalar 标量, only + -, no direction<br>The work of the net force is equal to the sum of the work of the <br>components 合力的功等于各分力的功的和<br>静f<br>The work is related to the reference <br>frame.功与参考系有关<br>Work is a process quantity，related to path<br>功是过程量，与路径有关<br>Power 功率:<br>v<br>F<br>dt<br>r<br>d<br>F<br>dt<br>dA<br>P<br><br><br><br><br><br><br><br><br><br>45</div></details></div>
+<div class="slide-card" id="slide-p46" data-page="46"><div class="slide-card-label">第46页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p046.jpg" loading="lazy" alt="第46页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">2. Theorem of kinetic energy 质点动能定理<br>A<br>B<br>1v<br>2v<br>v<br>F<br><br><br><br><br><br><br><br>B<br>A<br>B<br>A<br>AB<br>r<br>d<br>dt<br>v<br>d<br>m<br>r<br>d<br>F<br>A<br><br><br><br><br><br><br><br><br><br>2<br>1<br>2<br>1<br>v<br>v<br>v<br>v<br>mvdv<br>v<br>d<br>v<br>m<br><br><br><br><br><br><br>2<br>1<br>2<br>2<br>2<br>1<br>2<br>1<br>mv<br>mv<br>A<br><br><br><br>kinetic energy 动能：<br>2<br>2<br>1 mv<br>Ek <br>Theorem of kinetic energy动能定理：<br>2<br>2<br>2<br>1<br>1<br>1<br>= 2<br>2<br>k<br>A<br>E<br>mv<br>mv<br><br><br>46</div></details></div>
+<div class="slide-card" id="slide-p47" data-page="47"><div class="slide-card-label">第47页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p047.jpg" loading="lazy" alt="第47页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">3. Particle system kinetic energy theorem<br>质点系的动能定理<br>A system with n particles, for i-th particle:<br>2<br>0<br>2<br>2<br>1<br>2<br>1<br>i<br>i<br>i<br>i<br>i<br>v<br>m<br>v<br>m<br>A<br><br><br>内<br>外<br>i<br>i<br>i<br>A<br>A<br>A<br><br><br>Sum all the particles:<br><br><br><br><br><br><br><br>2<br>0<br>2<br>2<br>1<br>2<br>1<br>i<br>i<br>i<br>i<br>i<br>i<br>v<br>m<br>v<br>m<br>A<br>A<br>内<br>外<br>ki<br>n<br>i<br>k<br>E<br>E<br><br><br>1<br>Be the kinetic energy of particles <br>system<br>let<br><br><br><br><br><br><br>k<br>i<br>i<br>E<br>A<br>A<br>内<br>外<br>--- Particle system kinetic energy <br>theorem 质点系的动能定理<br>47</div></details></div>
+<div class="slide-card" id="slide-p48" data-page="48"><div class="slide-card-label">第48页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p048.jpg" loading="lazy" alt="第48页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Discuss<br>The sum of internal force is zero,  is the sum of work zero?内力和为<br>零,内力功的和是否为零？<br>L<br>f<br>A<br>1<br>1<br><br><br>S<br>f<br>A<br>1<br>2 <br><br><br><br><br>)<br>(<br>1<br>S<br>L<br>f<br>A<br>2<br>1<br>f<br>f<br><br><br><br><br>A<br>B<br>A<br>B<br>S<br>L<br>1f<br><br>2f<br><br>Internal force can change the total kinetic energy of the system 内力<br>做功可以改变系统的总动能<br>For example, when the bomb explodes, the sum of internal forces is <br>zero, but the work done by internal forces is converted into kinetic <br>energy of shrapnel弹片的动能。<br>48<br>Uncertain 不一定为零<br><br><br><br><br><br><br>k<br>i<br>i<br>E<br>A<br>A<br>内<br>外<br>--- Particle system kinetic energy <br>theorem 质点系的动能定理</div></details></div>
+<div class="slide-card" id="slide-p49" data-page="49"><div class="slide-card-label">第49页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p049.jpg" loading="lazy" alt="第49页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">E1: Use a hammer to strike an iron nail 铁钉into a board. Suppose that the <br>resistance of the board to the iron nail is proportional 正比to the depth 深<br>度of the iron nail into the board. If the nail can be drive into 1 cm depth the <br>board for the first time, and then hit the second time (the hammer hit the <br>nail with the same power as the first time), how deep can it be driven for <br>the second time?<br><br><br><br>0<br>0<br>2<br>0<br>2<br>1<br>x kxdx<br>mv<br>A<br>－<br><br><br>x<br>x kxdx<br>0<br>First time<br>Second time<br>cm<br>1<br>0 <br>x<br>Solution：<br>2<br>0<br>2<br>2<br>0<br>2<br>1<br>2<br>1<br>2<br>1<br>kx<br>kx<br>kx<br><br><br><br>0<br>2x<br>x <br>cm<br>x<br>x<br>x<br>414<br>.0<br>0 <br><br><br><br>49</div></details></div>
+<div class="slide-card" id="slide-p50" data-page="50"><div class="slide-card-label">第50页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p050.jpg" loading="lazy" alt="第50页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">E2: As shown in Figure , the chain length is l and the mass is m. It is on the <br>table. Part of chain with length a sags from table(a长度的链条下垂). The <br>sliding friction coefficient滑动摩擦系数between the chain and the table is u. <br>The chain starts to move from rest, then: (1) how much work has the friction <br>done to the chain when all the chain leaves the table? (2) What is the speed <br>when all the chain leaves the table?<br>a<br>l-a<br>x<br>O<br>Solution：<br>(1) The coordinate system is shown in the figure<br><br><br><br><br><br><br><br>l<br>a<br>l<br>a<br>f<br>dx<br>x<br>l<br>l<br>mg<br>r<br>d<br>f<br>A<br>)<br>(<br><br><br><br>l<br>x<br>l<br>mg<br>f<br>/<br>)<br>( <br><br>l<br>a<br>l<br>mg<br>Af<br>2<br>)<br>(<br>2<br><br><br><br><br><br>50<br>Friction on table is <br>Work by friction on table is</div></details></div>
+<div class="slide-card" id="slide-p51" data-page="51"><div class="slide-card-label">第51页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p051.jpg" loading="lazy" alt="第51页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">(2)Apply kinetic theorem to the <br>chain：<br><br><br><br>2<br>0<br>2<br>2<br>1<br>2<br>1<br>mv<br>mv<br>A<br>A<br>A<br>f<br>P＋<br>＝<br>2<br>0<br>2<br>1<br>0<br>mv<br>A<br>A<br>v<br>f<br>P<br><br><br><br>＋<br><br>l<br>a<br>l<br>mg<br>xdx<br>l<br>mg<br>r<br>d<br>G<br>A<br>l<br>a<br>l<br>a<br>G<br>2<br>)<br>(<br>2<br>2 <br><br><br><br><br><br><br><br><br>a<br>l-a<br>x<br>O<br>1<br>2<br>2<br>2<br>2<br>(<br>)<br>(<br>)<br>g<br>v<br>l<br>a<br>l<br>a<br>l<br><br><br><br><br><br><br><br><br><br>51<br>thus</div></details></div>
+<div class="slide-card" id="slide-p52" data-page="52"><div class="slide-card-label">第52页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p052.jpg" loading="lazy" alt="第52页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">2.3.2  Conservative force and Potential Energy<br>保守力和势能<br>1. Conservative force保守力<br>（1）work by gravity  重力的功<br>bz<br>az<br>x<br>y<br>z<br>O<br>r<br><br>g<br>m<br>)<br>,<br>,<br>(<br>a<br>a<br>a<br>z<br>y<br>x<br>a<br>)<br>,<br>,<br>(<br>b<br>b<br>b<br>z<br>y<br>x<br>b<br><br><br><br>b<br>a<br>ab<br>r<br>F<br>A<br><br><br>d<br><br><br>k<br>z<br>jy<br>ix<br>k<br>mg<br>b<br>a<br><br><br><br><br>d<br>d<br>d<br><br><br><br><br><br><br><br>b<br>a<br>b<br>a<br>z<br>z<br>mg<br>z<br>mg<br><br><br><br><br>d<br>The work done by gravity only depends on the starting and ending positions <br>Za and Zb, and is independent of the specific path the particle passes through.<br>52</div></details></div>
+<div class="slide-card" id="slide-p53" data-page="53"><div class="slide-card-label">第53页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p053.jpg" loading="lazy" alt="第53页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">The work done by the conservative force along any closed<br>path is always zero. 保守力沿任意闭合路径做功总为零。<br>Conservative force 保守力：<br>Common conservative force 常见的保守力:<br>universal gravitation万有引力( 或有心力）<br>r<br>r<br>f<br>f<br>ˆ)<br>(<br><br><br>elastic force 弹力<br>x<br>k<br>f<br><br><br><br><br>Gravity重力（或恒力）<br><br><br><br>0<br>r<br>F<br><br><br>d<br>保<br>53</div></details></div>
+<div class="slide-card" id="slide-p54" data-page="54"><div class="slide-card-label">第54页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p054.jpg" loading="lazy" alt="第54页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Common nonconservative force常见的非保守力：<br>Friction摩擦力explosive 爆炸力<br>Nonconservative force 非保守力：<br><br><br><br>0<br>r<br>d<br>f<br><br><br>The force that the work have a relation to the path, which <br>is non-conservative force    <br>作功与路径有关的力为非保守力<br>54</div></details></div>
+<div class="slide-card" id="slide-p55" data-page="55"><div class="slide-card-label">第55页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p055.jpg" loading="lazy" alt="第55页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">2. potential energy 势能<br>The work of the conservative force is equal to the reduction <br>of the potential energy, the potential energy at point a is 保<br>守力的功等于系统势能的减少, a点的势能<br><br><br>)<br>(<br>)<br>(<br>d<br>.<br>零点<br>保<br>a<br>pa<br>r<br>F<br>E<br><br><br>note <br>Potential energy is from the change of position or shape <br>change 势能是由于物体的位置的变化(形变)<br>Potential energy require：<br>①particle system;<br>②work by conservative force<br>55</div></details></div>
+<div class="slide-card" id="slide-p56" data-page="56"><div class="slide-card-label">第56页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p056.jpg" loading="lazy" alt="第56页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">The absolute value of potential energy is meaningless, only the <br>relative value of potential energy is concerned. <br>When calculating the potential energy, the zero potential energy <br>reference point must be specified. However, the potential energy <br>difference is certain, which is independent of the reference point choice.<br>You won't be afraid of a big stone on the <br>ground, <br>but you will be afraid of a big stone on <br>the roof.    <br>This is the potential energy.<br>56</div></details></div>
+<div class="slide-card" id="slide-p57" data-page="57"><div class="slide-card-label">第57页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p057.jpg" loading="lazy" alt="第57页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Several common potential energy<br>Gravity potential energy重力势能: <br>take the ground as the zero point of potential energy<br>mgh<br>h<br>Ep<br><br>)<br>(<br>Attractive Potential Energy万有引力势能：Take infinite distance <br>as potential energy zero poin<br> <br>)<br>(<br>2<br>r<br>GMm<br>dr<br>r<br>GMm<br>r<br>E<br>r<br>p<br><br><br><br><br><br>Elastic potential energy 弹性势能：take the original length of spring <br>as the zero point of potential energy<br> <br>2<br>1<br>)<br>(<br>2<br>0<br>kx<br>kxdx<br>x<br>E<br>x<br>p<br><br><br><br>57</div></details></div>
+<div class="slide-card" id="slide-p58" data-page="58"><div class="slide-card-label">第58页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p058.jpg" loading="lazy" alt="第58页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">2.3.3 Conservation law  of mechanic energy<br>机械能守恒定律<br>0<br><br>非保内<br>A<br>    <br>0<br><br>外<br>A<br>If                        and                                   <br>cons tan t<br>E <br>2<br>1<br>constant<br>2<br>E<br>mgh<br>mv<br><br><br><br>Note<br>The conservation law  is for a system<br>Conservation is for the whole process. not only consider <br>the beginning and end states<br>58</div></details></div>
+<div class="slide-card" id="slide-p59" data-page="59"><div class="slide-card-label">第59页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p059.jpg" loading="lazy" alt="第59页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">E4 A 2l long homogeneous匀质chain is hung balanced on a smooth <br>cylindrical wooden nail光滑圆柱形木钉. If the chain starts to slide <br>from rest, find the speed when the chain leaves the nail (the <br>diameter of the wooden nail can be ignored)<br>l2<br>l<br>O<br>O<br>Solution:<br>Assume the mass per unit length is λ<br>C<br>C<br>The center position at beginning and ending <br>states is C and C′, reference point is O, <br>According to conservation law  of <br>mechanic energy<br><br><br><br><br><br><br>2<br>1<br>2<br>lg<br>2<br>2<br>2<br>2<br>l<br>l gl<br>l<br><br><br><br><br><br><br>v<br>lg<br><br>v<br>59<br>1<br>2 𝜆2𝑙𝑣2<br>Kinetic energy when it leaves nail</div></details></div>
+<div class="slide-card" id="slide-p60" data-page="60"><div class="slide-card-label">第60页</div><img class="slide-img" width="900" height="675" src="slides/ch2_p060.jpg" loading="lazy" alt="第60页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">homework<br>P64  2.58  ,     p100  3.60<br>P130 4.36,     p171,  5.92<br>60</div></details></div></aside></div></div><div id="panel-test" class="tab-panel"><h2 style="text-align:center">章节测试</h2>
+<p style="text-align:center;color:var(--ink-light);font-size:0.95em">20 题</p>
+
+<div id="score-box"><div class="score-num" id="score-num">0</div><div class="score-label">总分</div></div>
+<div id="questions-container"></div>
+<div class="grading-bar no-print"><button onclick="gradeAll()" id="grade-btn">提交批改</button></div></div>
+
+<script>
+window.__epaLightbox = function(src){
+  var lb = document.getElementById('epa-lightbox');
+  if(!lb){ lb = document.createElement('div'); lb.id='epa-lightbox';
+    lb.innerHTML='<img>'; document.body.appendChild(lb);
+    lb.addEventListener('click', function(){ lb.style.display='none'; }); }
+  lb.querySelector('img').src = src; lb.style.display='flex';
+};
+document.addEventListener('click', function(e){
+  var chip = e.target.closest('.pg-chip'); if(!chip) return;
+  var pg = chip.getAttribute('data-page');
+  var card = document.getElementById('slide-p'+pg);
+  if(card){ card.scrollIntoView({behavior:'smooth', block:'center'});
+    card.classList.remove('flash'); void card.offsetWidth; card.classList.add('flash'); }
+});
+// Shrink any display formula too wide for its column so it stays fully visible.
+window.__epaFitFormulas = function __epaFitFormulas(){
+  var list = document.querySelectorAll('.kn-main mjx-container[display="true"]');
+  for(var i=0;i<list.length;i++){
+    var m = list[i], parent = m.parentElement; if(!parent) continue;
+    m.style.fontSize=''; // reset to measure natural width
+    var avail = parent.clientWidth, w = m.scrollWidth;
+    if(avail>0 && w>avail){ m.style.fontSize=(avail/w*0.97*100).toFixed(1)+'%'; }
+  }
+}
+function __epaScheduleFit(){
+  if(window.MathJax && MathJax.startup && MathJax.startup.promise){
+    MathJax.startup.promise.then(__epaFitFormulas);
+  } else { setTimeout(__epaFitFormulas, 900); }
+}
+if(document.readyState!=='loading'){ __epaScheduleFit(); }
+else { document.addEventListener('DOMContentLoaded', __epaScheduleFit); }
+var __epaFitT=null;
+window.addEventListener('resize', function(){ clearTimeout(__epaFitT); __epaFitT=setTimeout(__epaFitFormulas,200); });
+</script>
+<script>
+var Q = [{"kc_id": "kc2.0", "cognitive_level": "comprehension", "difficulty": "basic", "type": "choice", "points": 4, "question": "关于惯性参考系，以下说法正确的是：", "options": ["地面参考系是严格的惯性参考系，因为日常生活中牛顿定律在地面上总是成立", "牛顿第二定律 F=ma 中的加速度 a 必须相对于惯性参考系来测量，地面只是近似惯性系", "任何相对于地面做匀速直线运动的参考系都一定是严格的惯性参考系", "在非惯性参考系中牛顿定律依然可以直接使用，只需选取适当的坐标系即可"], "answer": 0, "explanation": "【题型判断】概念辨析型选择题，考察惯性参考系的定义与内涵。\\n【核心概念】牛顿定律只能在惯性系中成立，F=ma 中的 a 必须相对于惯性系测量。地面只是近似惯性系（地球自转角速度约 7.3×10⁻⁵ rad/s 产生向心加速度），不是严格的。\\n【逐项辨析】A 正确——完整表述了惯性系的定义和地面的近似性质。B 错误——地面是近似惯性系（地球自转），不是严格的。C 错误——首先地面本身不是严格惯性系，所以「相对地面匀速」不能保证是严格惯性系；其次相对非惯性系匀速运动的参考系也可能不是惯性系。D 错误——非惯性系中必须引入惯性力才能使用牛顿定律的形式。\\n【易错点】常见误解：(1) 以为「地面是绝对的惯性系」；(2) 以为「只要参考系匀速运动就是惯性系」——惯性系的判据是牛顿定律在其中成立，而非参考系自身的速度状态。", "pitfall": ""}, {"kc_id": "kc2.1", "cognitive_level": "application", "difficulty": "medium", "type": "calc", "points": 8, "question": "轻绳跨过光滑定滑轮，两端分别悬挂质量 m₁=4kg 和 m₂=2kg 的物体。绳和滑轮质量不计，绳不可伸长。取 g=10m/s²，求：(1)物体的加速度 a；(2)绳中张力 F_T。", "options": [], "answer": -1, "explanation": "【题型判断】典型定滑轮连接体计算题，考察牛顿第二定律的隔离体法应用。\\n【为什么用 F=ma】恒力作用下求瞬时加速度，F=ma 最直接。定滑轮两边绳张力大小相等（光滑滑轮），绳不可伸长给出加速度大小相等的约束。\\n【方程列法】对 m₁（较重，向下加速，取向下为正）：m₁g - F_T = m₁a。对 m₂（较轻，向上加速，取向上为正）：F_T - m₂g = m₂a。\\n【各量计算】两式相加消去 F_T：m₁g - m₂g = (m₁+m₂)a → a = (m₁-m₂)g/(m₁+m₂) = (4-2)×10/(4+2) = 20/6 ≈ 3.33 m/s²。代入求张力：F_T = m₂(g+a) = 2×(10+3.33) = 26.67 N。验算：F_T = 2m₁m₂g/(m₁+m₂) = 2×4×2×10/6 = 160/6 ≈ 26.67 N。\\n【易错点】对 m₂ 列方程时正方向取错是高频错误——若统一取向下为正，m₂ 的方程为 m₂g - F_T = -m₂a（a 为大小，m₂ 加速向上，加速度分量为负），多一个负号极易遗漏。建议每个物体独立选沿其加速度方向为正。", "pitfall": ""}, {"kc_id": "kc2.2", "cognitive_level": "comprehension", "difficulty": "basic", "type": "choice", "points": 4, "question": "书静止在水平桌面上。关于书所受的力及相应的反作用力，下列说法正确的是：", "options": ["书受到的重力和桌面对书的支持力等大反向且共线，因此是一对作用力与反作用力", "书对桌面的压力和桌面对书的支持力是一对作用力与反作用力，它们作用在不同物体上", "书对桌面的压力和桌面对书的支持力等大反向，且都作用在书上，因此书保持平衡", "书受到的重力与书对地球的引力是同一性质的力，作用在同一物体上"], "answer": 2, "explanation": "【题型判断】概念辨析题，考察平衡力与作用力-反作用力的核心区分。\\n【核心区分】平衡力：作用在同一物体上，合力为零，力的性质可以不同。作用力与反作用力：作用在两个不同物体上，不能抵消，力的性质必须相同，同时存在同时消失。\\n【逐项分析】A 错误——重力和支持力都作用在书上（同一物体），是一对平衡力，不是作用力与反作用力。而且性质不同（一个是引力、一个是弹力），不满足「同性质」要求。B 正确——准确描述了作用力与反作用力关系的全部要素：不同物体、等大反向共线、同性质（都是弹力）。C 错误——书对桌面的压力作用在桌上、桌对书的支持力作用在书上，二者作用对象不同，说「都作用在书上」是错的。D 错误——重力（地球对书的引力）和书对地球的引力确实是作用力与反作用力（同性质：都是万有引力），但作用在不同物体上（一个在书、一个在地球），不是作用在同一物体。\\n【易错点】最常见的陷阱：看到两个力「等大反向共线」就判断为作用力与反作用力，忽略了最关键的判据——是否作用在两个不同物体上。", "pitfall": ""}, {"kc_id": "kc2.3", "cognitive_level": "application", "difficulty": "medium", "type": "calc", "points": 8, "question": "质量 m=0.60kg 的篮球从高度 h=1.80m 处由静止自由下落，触地后以相同速率竖直反弹，触地时间 Δt=0.020s。取 g=9.80m/s²。求：(1)篮球触地前瞬间的速度大小；(2)地面对篮球的平均作用力大小。", "options": [], "answer": -1, "explanation": "【题型判断】碰撞类动量定理计算题，篮球落地反弹是 PPT E2.8 的典型变式。\\n【为什么用动量定理】碰撞问题中力在极短时间内剧烈变化，无法也不需要知道每一瞬时的力。动量定理将冲量与动量变化建立整体关系，平均力概念直接可用。\\n【方程列法】取竖直向上为正方向。触地前速度 v₁ = -√(2gh)（向下为负），触地后 v₂ = +√(2gh)（向上为正）。动量定理：(F̄ - mg)Δt = mv₂ - mv₁ = m√(2gh) - (-m√(2gh)) = 2m√(2gh)。注意 mg 也在 Δt 内提供了冲量，从合力的冲量中解出 F̄。\\n【各量计算】(1) v = √(2gh) = √(2×9.80×1.80) = √35.28 = 5.94 m/s。(2) F̄ = 2mv/Δt + mg = 2×0.60×5.94/0.020 + 0.60×9.80 = 356.4 + 5.88 ≈ 362 N（约篮球自重的 61 倍）。\\n【易错点】最常见错误是忘记速度的矢量符号——初末速度大小相等方向相反，动量变化是 2mv 而非 0。另一个错误是忽略重力项 mg（虽然在本题中仅贡献约 1.6%）。严格的动量定理必须包含所有外力。", "pitfall": ""}, {"kc_id": "kc2.4", "cognitive_level": "analysis", "difficulty": "hard", "type": "calc", "points": 10, "question": "一枚火箭在太空中以 v₀=2000m/s 的速度沿水平方向飞行。某时刻火箭分裂为两部分：前部仪器舱 m₁=150kg，后部容器舱 m₂=250kg。分裂后仪器舱相对容器舱以 v'=800m/s 的水平速度向前飞出。假设分裂过程中合外力为零，求分裂后仪器舱和容器舱各自相对惯性系的速度 v₁ 和 v₂。", "options": [], "answer": -1, "explanation": "【题型判断】动量守恒+相对速度约束综合计算题，对应 PPT E2.11 火箭分裂问题。\\n【为什么用动量守恒】分裂由内力驱动完成，太空中合外力为零，动量守恒成立。内力细节复杂但无需知道——守恒律直接关联初末态。\\n【方程列法】(1) 动量守恒（沿水平方向）：(m₁+m₂)v₀ = m₁v₁ + m₂v₂。(2) 相对速度约束：仪器舱在前，相对容器舱向前飞出 → v₁ - v₂ = v' = 800。\\n【各量计算】由约束得 v₁ = v₂ + 800，代入守恒：(150+250)×2000 = 150(v₂+800) + 250v₂ → 800000 = 150v₂ + 120000 + 250v₂ → 400v₂ = 680000 → v₂ = 1700 m/s。v₁ = 1700 + 800 = 2500 m/s。验证：分裂前总动量 = 400×2000 = 800000 kg·m/s；分裂后总动量 = 150×2500 + 250×1700 = 375000 + 425000 = 800000 ✓。\\n【易错点】相对速度约束方程的方向判断——仪器舱在前分裂后应「更快向前」，写 v₁ = v₂ + v' 而非 v₁ = v₂ - v'。若写反，重的容器舱速度会大于原来速度（不合理）。画速度方向示意图可防止方向错误。", "pitfall": ""}, {"kc_id": "kc2.4", "cognitive_level": "application", "difficulty": "medium", "type": "choice", "points": 4, "question": "在光滑水平面上，两个小球发生碰撞。关于碰撞过程，下列说法正确的是：", "options": ["碰撞过程中机械能一定守恒，因为水平面光滑无摩擦", "若碰撞为完全非弹性碰撞，则碰后两球粘在一起，动量不守恒", "碰撞过程中动量一定守恒，因为合外力为零；但机械能是否守恒取决于碰撞是否完全弹性", "碰撞过程中动量一定守恒，因为合外力为零；且机械能也一定守恒，因为无摩擦"], "answer": 3, "explanation": "【题型判断】概念辨析题，考察动量守恒与机械能守恒在碰撞问题中的不同适用条件。\\n【核心区分】动量守恒判据：合外力是否为零。光滑水平面 → 水平合外力为零 → 动量守恒（无论碰撞是完全弹性还是非弹性）。机械能守恒判据：系统内非保守力是否做功。碰撞中即使无外部摩擦，两球接触时的碰撞力若为非保守的（塑性形变不可恢复），机械能仍不守恒。\\n【逐项分析】A（选项1）错误——光滑只保证无外部摩擦力，不保证碰撞内力是保守的。B（选项2）错误——完全非弹性碰撞中动量依然守恒（合外力为零），只是机械能有损失。C（选项3）正确——全面区分了两类守恒的条件：动量守恒看合外力，机械能守恒看碰撞性质。D（选项4）错误——无摩擦 ≠ 机械能守恒，碰撞本身的形变力可能是非保守的。\\n【易错点】将「光滑」等同于「机械能守恒」——光滑仅排除了外部摩擦，不排除碰撞时内部的非弹性形变造成的能量损耗。动量守恒只看外力，与碰撞性质无关。", "pitfall": ""}, {"kc_id": "kc2.5", "cognitive_level": "application", "difficulty": "medium", "type": "calc", "points": 8, "question": "质量 m=2.0kg 的质点在变力 F(x)=3x²（F 单位为 N，x 单位为 m）作用下沿 x 轴从 x=0 运动到 x=2.0m。质点初速度 v₀=1.0m/s。求：(1)变力 F 在此过程中做的功；(2)质点在 x=2.0m 处的速度。", "options": [], "answer": -1, "explanation": "【题型判断】变力做功+动能定理综合计算题。\\n【为什么用动能定理】力随位置变化 F=F(x)，这是「力对空间累积」的典型场景。先用功的积分计算变力做功，再用动能定理求末速度。\\n【方程列法】(1) 变力做功：W = ∫₀² F(x)dx = ∫₀² 3x² dx。(2) 动能定理：W = ½mv² - ½mv₀²。\\n【各量计算】(1) W = ∫₀² 3x² dx = 3·[x³/3]₀² = [x³]₀² = 8 - 0 = 8.0 J。(2) 8.0 = ½×2.0×v² - ½×2.0×1.0² → 8.0 = v² - 1.0 → v² = 9.0 → v = 3.0 m/s。\\n【易错点】(1) 积分上下限不要写反——从初位置到末位置。(2) 动能定理中是末动能减初动能，不要搞反。(3) 速度取正号是因为力和初速度都沿正 x 方向，末速度自然也沿正方向。若初速度方向与力相反，则需要考虑减速的情况。", "pitfall": ""}, {"kc_id": "kc2.5", "cognitive_level": "analysis", "difficulty": "hard", "type": "calc", "points": 10, "question": "用锤子将铁钉打入木板。木板对铁钉的阻力与铁钉进入深度成正比：f=kx。第一次锤击将铁钉打入 x₀=1.5cm。若每次锤击给铁钉的初动能相同，求：(1)第二次锤击后铁钉总共进入的深度；(2)第二次锤击比第一次多打入多少？（结果保留三位有效数字）", "options": [], "answer": -1, "explanation": "【题型判断】变力做功+动能定理综合题，对应 PPT E1 锤击铁钉问题。\\n【为什么用动能定理】锤击赋予初动能，阻力做负功消耗动能——这是动能定理的标准范式。阻力 f=kx 随深度线性增大，是变力做功，需要积分。\\n【方程列法】第一次：½mv² = ∫₀^{x₀} kx dx = ½k x₀²。第二次：同等初动能 ½k x₀² = ∫_{x₀}^{x} kx dx = ½k(x² - x₀²)。由此得 x² - x₀² = x₀² → x² = 2x₀² → x = √2 x₀。\\n【各量计算】(1) x = √2 × 1.5 = 1.5 × 1.4142... = 2.1213... ≈ 2.12 cm。(2) Δx = x - x₀ = 2.12 - 1.5 = 0.62 cm。（注意：0.621 cm 保留三位有效数字为 0.621 cm 或 6.21×10⁻¹ cm）\\n【易错点】(1) 第二次锤击的积分下限是 x₀ 而非 0——钉子已经深入 x₀，阻力从 x₀ 开始重新做功。(2) 不要线性外推——每次打入深度递减是变力做功的非线性特性，绝非每次打入相同距离。", "pitfall": ""}, {"kc_id": "kc2.6", "cognitive_level": "comprehension", "difficulty": "basic", "type": "choice", "points": 4, "question": "关于保守力、非保守力和势能，下列说法正确的是：", "options": ["保守力做功与路径无关，所以重力、弹力、摩擦力都是保守力", "保守力沿任意闭合路径做功为零，这意味着物体沿闭合路径运动一圈后合外力做功一定为零", "万有引力势能 E_p=-GMm/r 表明：两质点距离越远势能越小，无穷远处势能最小", "保守力沿任意闭合路径的功为零，闭合路径的环量为零是保守力的充要条件"], "answer": 3, "explanation": "【题型判断】概念辨析题，考察保守力的定义判据、与势能的关系。\\n【逐项分析】A（选项1）错误——摩擦力是与路径有关的非保守力，不能与重力、弹力并列。B（选项2）错误——保守力沿闭合路径做功为零 ≠ 合外力对物体沿闭合路径做功为零。如果合外力中包含非保守力（如摩擦力），闭合路径的总功不一定为零。C（选项3）错误——万有引力势能 E_p = -GMm/r，r 越大（距离越远），-GMm/r 的绝对值越小（负值越接近零），势能实际上越大（从 -100 J 变到 -10 J 是增加了 90 J）。无穷远处 E_p=0 是最大值而非最小值。D（选项4）正确——闭合路径积分为零（∮F·dr=0）既是保守力的定义式，也是其充要条件。\\n【易错点】(1) 混淆「保守力沿闭合路径做功为零」与「任何力沿闭合路径做功为零」。(2) 万有引力势能为负值，r↑→|E_p|↓→E_p 实际在增大（趋向于零），不要被负号迷惑。", "pitfall": ""}, {"kc_id": "kc2.6", "cognitive_level": "knowledge", "difficulty": "basic", "type": "tf", "points": 3, "question": "弹簧的弹性势能表达式为 E_p=½kx²，其中 x 是弹簧的伸长量或压缩量，零点取在弹簧原长处。弹簧一端固定、另一端连接物体做简谐振动时，弹性势能属于该物体。", "options": [], "answer": 1, "explanation": "【题型判断】概念判断题，考察势能的系统属性。\\n【为什么错误】势能来源于保守内力的相互作用，是系统共有的属性。弹性力是弹簧与物体之间的相互作用力，弹性势能属于「物体+弹簧」系统，就像重力势能属于「物体+地球」系统一样。说「弹性势能属于物体本身」在概念上不准确。\\n【PPT原文】势能的两个前提条件：①必须涉及质点系统；②必须是保守力做功。单独一个质点无所谓「势能」。\\n【易错点】教材中常简化为「物体的弹性势能」，但这是表述上的简化。在概念辨析题中必须明确——势能是系统的，不是单个物体的。", "pitfall": ""}, {"kc_id": "kc2.7", "cognitive_level": "application", "difficulty": "medium", "type": "calc", "points": 8, "question": "质量 m=0.50kg 的小球从半径 R=1.6m 的光滑四分之一圆弧轨道顶端（A 点）由静止释放，滑到最低点（B 点）。取 g=10m/s²。求：(1)小球到达 B 点时的速度大小；(2)B 点处轨道对小球的支持力。", "options": [], "answer": -1, "explanation": "【题型判断】机械能守恒+向心力综合计算题，圆弧面下滑的经典问题。\\n【为什么用机械能守恒】光滑轨道 → 无摩擦 → 无非保守力做功。支持力始终垂直于速度（沿径向），不做功。只有重力（保守力）做功 → 机械能守恒。\\n【方程列法】(1) 机械能守恒（取 B 点为势能零点）：mgR = ½mv_B²。(2) B 点向心力方程（自然坐标）：N - mg = mv_B²/R。\\n【各量计算】(1) v_B = √(2gR) = √(2×10×1.6) = √32 = 4√2 ≈ 5.66 m/s。(2) N = mg + mv_B²/R = 0.50×10 + 0.50×32/1.6 = 5.0 + 10.0 = 15.0 N。N/mg = 15/5 = 3——验证圆弧最低点支持力为重力 3 倍的经典结论。\\n【易错点】(1) 不要用运动学 v²=2as 并代 a=g——圆弧上的加速度不是 g，加速度大小和方向都在变化。(2) 向心力方程中 N-mg=mv²/R，不是 N=mv²/R——重力也在径向有分量（最低点竖直向下，与向心方向相反），不要遗漏。", "pitfall": ""}, {"kc_id": "kc2.7", "cognitive_level": "analysis", "difficulty": "hard", "type": "calc", "points": 10, "question": "长 L=2.0m、质量 m=4.0kg 的匀质链条，初始有 a=0.50m 的长度下垂在光滑桌面边缘外，其余平放桌面上。桌面与链条间的滑动摩擦系数 μ=0.20。链条从静止开始滑落。取 g=10m/s²。求：(1)链条全部离开桌面瞬间的速度；(2)若桌面光滑（μ=0），此时速度又为多少？", "options": [], "answer": -1, "explanation": "【题型判断】变力做功+动能定理综合应用题，对应 PPT E2 链条从桌面滑落问题。\\n【为什么用动能定理】摩擦力是非保守力，机械能不守恒，必须用动能定理。重力和摩擦力都随链条位置变化——下垂长度 x 增加，桌上部分 L-x 减少——都需要变力做功积分。\\n【方程列法】以下垂长度 x 为变量。(1) 摩擦力功：W_f = -∫_a^L μ(mg/L)(L-x)dx = -μmg(L-a)²/(2L)。(2) 重力功：W_G = ∫_a^L (mg/L)x dx = mg(L²-a²)/(2L)。(3) 动能定理（v₀=0）：W_G + W_f = ½mv²。\\n【各量计算】(1) μ=0.20：W_G = 4×10×(4-0.25)/(2×2) = 40×3.75/4 = 37.5 J。W_f = -0.20×4×10×(1.5)²/(2×2) = -8×2.25/4 = -4.5 J。½×4×v² = 37.5-4.5 = 33.0 → v = √16.5 ≈ 4.06 m/s。(2) μ=0 时 W_f=0：v = √(2×37.5/4) = √18.75 ≈ 4.33 m/s。摩擦力导致的能量损耗为 4.5 J，约占总势能变化的 12%。\\n【易错点】摩擦力功的积分变量：下垂长度 x 增加时，桌上链条长度为 L-x，正压力为 (mg/L)(L-x)，摩擦力 f=μ(mg/L)(L-x)。不要误写为 μ(mg/L)x。积分下限为初始下垂长度 a，上限为 L（全部离开）。", "pitfall": ""}, {"kc_id": "kc2.3", "cognitive_level": "knowledge", "difficulty": "basic", "type": "tf", "points": 3, "question": "冲量 I=∫Fdt 是矢量。对于恒力，冲量的方向与力的方向相同。对于变力，冲量的方向也一定与变力在每一时刻的方向相同。", "options": [], "answer": 1, "explanation": "【题型判断】概念判断题，考察冲量方向与力方向的关系。\\n【为什么错误】对于恒力，I=FΔt 方向确实与力一致。但变力冲量是力矢量对时间的积分 I=∫F(t)dt——若力方向在过程中变化（例如匀速圆周运动中向心力方向不断旋转），积分结果取决于各时刻力矢量的矢量和，可能与任一时刻的力方向都不同。一个极端的例子：匀速圆周运动一周，向心力冲量为零（各时刻的力矢量对称分布，矢量和为零），但每一时刻的力方向都不为零。\\n【PPT 依据】PPT 第 31 页明确标注：「冲量的方向由积分的最終結果來決定，不能說力的沖量與力方向一致」。\\n【易错点】将恒力情况下的结论不加区分地推广到变力，忽略了矢量积分的特征——积分后的方向是所有时刻力方向的加权综合结果。", "pitfall": ""}, {"kc_id": "kc2.1", "cognitive_level": "comprehension", "difficulty": "medium", "type": "choice", "points": 4, "question": "关于牛顿第二定律 F=ma，以下理解正确的是：", "options": ["力是产生加速度的原因，加速度的方向始终与合外力方向相同", "质量越大的物体受到的作用力越大，因为 F=ma 中 m 越大 F 越大", "加速度的方向由速度的方向决定，物体向哪个方向运动，加速度就指向哪个方向", "F=ma 在任何参考系中都成立，只要选取合适的坐标系即可"], "answer": 1, "explanation": "【题型判断】概念辨析题，考察牛顿第二定律的因果关系、矢量性和适用范围。\\n【逐项分析】A 正确——F=ma 中力是因、加速度是果，a 的方向始终与 F_合的方向一致（矢量等式）。B 错误——因果关系颠倒。m 大不意味着 F 大，质量是物体的属性（惯性量度），不是被力决定的。准确理解：同样的力作用下，m 越大 a 越小。C 错误——加速度方向由合外力方向决定，而非速度方向。例如刹车时速度向前但加速度向后（摩擦力方向向后），物体做减速运动。D 错误——F=ma 只在惯性系中成立，非惯性系需引入惯性力修正。\\n【易错点】(1) 因果关系混淆：F 决定 a，而非反过来。不能说「m 大所以 F 大」。(2) 将速度方向与加速度方向混为一谈——减速运动中 v 和 a 方向相反，这是最常见的物理直觉陷阱。", "pitfall": ""}, {"kc_id": "kc2.7", "cognitive_level": "analysis", "difficulty": "hard", "type": "short", "points": 8, "question": "质量 m=2.0kg 的滑块从倾角 θ=30° 的光滑斜面顶端由静止释放，斜面高 h=2.5m。取 g=10m/s²。(1)用牛顿第二定律求滑块沿斜面下滑的加速度大小；(2)用机械能守恒定律求滑块到达斜面底端的速度；(3)说明为什么两种方法得到的速度应当一致，以及什么情况下只能用其中一种方法。", "options": [], "answer": -1, "explanation": "【题型判断】综合分析题，考察同一问题用不同方法（牛二 vs 能量法）求解的对比与适用边界。\\n【为什么两方法都可用】光滑斜面 → 只有重力（保守力）做功 → 机械能守恒 + 牛二都可解。两种方法从不同角度（瞬时关系 vs 过程关系）描述同一物理规律。\\n【方程列法】(1) 牛二（沿斜面）：mg sinθ = ma → a = g sinθ。(2) 机械能守恒（底端为势能零点）：mgh = ½mv²。\\n【各量计算】(1) a = 10×sin30° = 10×0.5 = 5.0 m/s²。(2) v = √(2gh) = √(2×10×2.5) = √50 = 5√2 ≈ 7.07 m/s。验证一致性：用运动学 v²=2as，斜面长 s=h/sinθ=2.5/0.5=5.0 m，v²=2×5×5=50 → v=√50=7.07 m/s ✓。\\n【方法对比】(3) 光滑时两法都可用。有摩擦时牛二仍可用（a=g sinθ-μg cosθ），但机械能守恒不能用（摩擦是非保守力，消耗机械能）。结论：牛二是微分瞬时关系，普适性更强；机械能守恒是积分守恒关系，限制更严格（必须只有保守力做功），但解题更简洁。\\n【易错点】混合使用时注意一致性——牛二给出的 a 沿斜面，运动学求 v 需要用斜面长度 s=h/sinθ 而非 h，否则 v²=2ah 是错的。", "pitfall": ""}, {"kc_id": "kc2.4", "cognitive_level": "apply", "difficulty": "medium", "type": "calc", "points": 8, "question": "在碰撞实验中，质量为 m 的小球从张角 θ 处落下，与静止的质量为 M 的蹄状物发生完全非弹性碰撞。求两物到达最高处的张角 φ。", "options": [], "answer": -1, "explanation": "分三个过程：(1) 小球下落至最低点——机械能守恒：½mv₁² = mgl(1-cosθ)，v₁ = √[2gl(1-cosθ)]。(2) 碰撞——动量守恒（机械能不守恒！完全非弹性碰撞）：mv₁ = (m+M)v₂，v₂ = mv₁/(m+M)。(3) 碰后一起摆至最高点——机械能守恒：½(m+M)v₂² = (m+M)gl(1-cosφ)。\n\n联立得 cosφ = 1 - [m/(m+M)]²(1-cosθ)。\n\n关键点：碰撞过程中机械能不守恒（完全非弹性碰撞发热），但动量守恒。三个过程分段处理、各用其律。", "pitfall": "最常见的错误是在碰撞阶段错误地使用机械能守恒。完全非弹性碰撞（碰后粘连）机械能一定不守恒！正确做法：碰撞段只用动量守恒，碰前碰后两段分别用机械能守恒。"}, {"kc_id": "kc2.7", "cognitive_level": "apply", "difficulty": "medium", "type": "calc", "points": 10, "question": "半径 R = 1 m 的光滑 1/4 圆弧轨道底端连接粗糙水平面。质量 m 的小球从顶端静止滑下至最低点，与另一静止的等质量小球发生完全非弹性碰撞，之后在粗糙水平面运动 s = 1 m 后静止。求摩擦系数 μ。取 g = 10 m/s²。", "options": [], "answer": -1, "explanation": "分三段：(1)下滑（机械能守恒）：mgR = ½mv₀²，v₀ = √(2gR) = √20 ≈ 4.47 m/s。(2)碰撞（动量守恒）：mv₀ = 2mv，v = v₀/2 = √5 ≈ 2.24 m/s。(3)水平面运动（动能定理）：-μ·2mg·s = 0 - ½·2m·v²，μ = v²/(2gs) = 5/20 = 0.25。\n\n验证：碰撞前动能 Ek₀ = ½mv₀² = 10m J；碰撞后动能 Ek = ½·2m·v² = 5m J；碰撞损失一半动能（完全非弹性碰撞）。", "pitfall": "碰撞后质量变为 2m（两个等质量小球粘合），摩擦力的正压力也是 2mg——不要忘记质量加倍。另外摩擦系数 μ = R/(4s) = 1/4 = 0.25 是漂亮的无量纲比值。"}, {"kc_id": "kc2.3", "cognitive_level": "apply", "difficulty": "medium", "type": "choice", "points": 3, "question": "关于动量定理和动能定理，下列说法正确的是：", "options": ["动量定理是矢量方程，因此只能用于一维问题", "碰撞问题中动能定理可以替代动量定理", "动量定理将力对时间的累积效应与动量变化联系起来", "动能定理在任何参考系中都给出相同的功"], "answer": 2, "explanation": "动量定理 ∫Fdt = Δp 建立的是力对时间的累积（冲量）与动量变化之间的联系。矢量方程意味着它可以分解到三个独立方向分别使用——这恰好说明它可用于二维/三维问题，而非「只能用于一维」。\n\n碰撞问题中动量守恒是普适的（系统合外力=0即可），动能定理在非弹性碰撞中不能直接用于系统（机械能不守恒）。功是参考系相关的——在不同惯性系中力做的功不同。", "pitfall": "D 选项是常见陷阱——功确实与参考系有关。设想在匀速运动的火车上推箱子，以地面为参考系和以火车为参考系，力做的功不同。"}, {"kc_id": "kc2.7", "cognitive_level": "understand", "difficulty": "basic", "type": "choice", "points": 3, "question": "在下列关于机械能守恒的判断中，正确的是：", "options": ["只要系统不受外力，机械能就守恒", "只有保守力做功时，系统的机械能守恒", "完全非弹性碰撞中机械能守恒", "有摩擦力存在时机械能一定不守恒"], "answer": 1, "explanation": "机械能守恒的条件是「只有保守力做功」（或非保守力做功为零）。系统不受外力但可能有内部非保守力（如爆炸）——动量守恒但机械能不守恒。完全非弹性碰撞机械能一定不守恒（发热损失）。静摩擦力不做功时可以有机机械能守恒（如纯滚动中静摩擦力不做功）。", "pitfall": ""}, {"kc_id": "kc2.2", "cognitive_level": "understand", "difficulty": "basic", "type": "tf", "points": 2, "question": "一匹马拉着车在水平地面上匀速前进。马对车的拉力大于车对马的拉力，所以车才能前进。", "options": [], "answer": 1, "explanation": "错误。根据牛顿第三定律，马对车的拉力与车对马的拉力大小始终相等、方向相反。车之所以能前进，不是因为马对车的拉力「大于」车对马的拉力（这两个力大小永远相等），而是因为地对马的摩擦力（向前）大于地对车的摩擦力（向后）——整体来看，马和车组成的系统受地面水平合外力向前，所以加速前进。\n\n这是平衡力与作用力反作用力混淆的典型例子。", "pitfall": ""}];
+var LABELS = {"page_title": "章节测试", "section": {"choice": "一、选择题", "multi": "二、多选题", "tf": "三、判断题", "fill": "四、填空题", "short": "五、简答题", "calc": "六、计算题", "code": "七、代码题", "essay": "八、问答题", "comprehensive": "九、综合题"}, "section_order": ["choice", "multi", "tf", "fill", "short", "calc", "code", "essay", "comprehensive"], "points_suffix": "分", "true_label": "正确", "false_label": "错误", "placeholder": "在此作答...", "code_placeholder": "在此编写代码...", "pitfall_prefix": "易错提醒：", "correct_label": "正确", "wrong_label": "错误", "partial_label": "部分正确", "answer_prefix": "正确答案：", "reference_label": "参考答案", "graded_label": "已批改", "grade_button": "提交批改", "score_label": "总分", "duration_prefix": "满分 100 分 | 建议 ", "duration_suffix": " 分钟 | 选择答案后点击提交批改"};
+
+// ─── Answer normalization (robust to how the JSON was authored) ──────
+// tf / choice answers may arrive as int index, boolean, letter ("A"),
+// or label string ("正确"/"错误"/"对"/"错"). All are coerced to an
+// option index so grading never silently fails on a type mismatch.
+
+function tfAnswerIndex(ans) {
+  // option 0 = true_label (正确), option 1 = false_label (错误)
+  if (typeof ans === 'boolean') return ans ? 0 : 1;
+  if (typeof ans === 'number') return ans === 0 ? 0 : 1;
+  var s = ('' + ans).trim().toLowerCase();
+  var truthy = ['0', 't', 'true', '正确', '对', '是', 'yes', 'y', '√', '✓'];
+  var falsy  = ['1', 'f', 'false', '错误', '错', '否', 'no', 'n', '×', 'x'];
+  if (truthy.indexOf(s) !== -1) return 0;
+  if (falsy.indexOf(s) !== -1) return 1;
+  return ans ? 0 : 1;
+}
+
+function choiceAnswerIndex(ans, options) {
+  if (typeof ans === 'number') return ans;
+  var s = ('' + ans).trim();
+  if (/^[A-Za-z]$/.test(s)) return s.toUpperCase().charCodeAt(0) - 65;
+  if (/^\d+$/.test(s)) return parseInt(s, 10);
+  if (options) {
+    for (var i = 0; i < options.length; i++) {
+      if (('' + options[i]).trim() === s) return i;
+    }
+  }
+  return parseInt(s, 10);
+}
+
+function multiAnswerSet(ans, options) {
+  var arr = Array.isArray(ans) ? ans : [ans];
+  var set = {};
+  for (var i = 0; i < arr.length; i++) {
+    set[choiceAnswerIndex(arr[i], options)] = true;
+  }
+  return set;
+}
+
+// Normalize free text for fill-in-the-blank comparison: trim, lowercase,
+// drop surrounding whitespace and common punctuation, unify full/half width.
+function normText(s) {
+  s = ('' + s).trim().toLowerCase();
+  s = s.replace(/[\s　]+/g, '');
+  s = s.replace(/[.,;:!?。，、；：！？“”"'（）()【】\[\]<>《》]/g, '');
+  // full-width ASCII -> half-width
+  s = s.replace(/[！-～]/g, function (c) {
+    return String.fromCharCode(c.charCodeAt(0) - 0xfee0);
+  });
+  return s;
+}
+
+// How many blanks does a fill question have? Count underscore / ＿ runs.
+function fillBlankCount(question) {
+  var m = ('' + question).match(/(_{2,}|＿+)/g);
+  return m ? m.length : 0;
+}
+
+// Coerce a fill `answer` into an array (one entry per blank) of accepted
+// answer lists. Handles: string, [synonyms], [[blank1 syns],[blank2 syns]].
+function fillBlankAnswers(ans, nBlanks) {
+  if (nBlanks < 1) nBlanks = 1;
+  if (!Array.isArray(ans)) return padBlanks([[ans]], nBlanks);
+  if (ans.length && Array.isArray(ans[0])) return padBlanks(ans, nBlanks);
+  // flat array of strings
+  if (nBlanks === 1) return [ans];                 // synonyms for one blank
+  if (ans.length === nBlanks) {                    // one answer per blank
+    return ans.map(function (a) { return [a]; });
+  }
+  return padBlanks([ans], nBlanks);                // ambiguous -> all on blank 1
+}
+
+function padBlanks(arr, n) {
+  var out = arr.slice(0, n);
+  while (out.length < n) out.push(['']);
+  return out;
+}
+
+// ─── Build ───────────────────────────────────────────────────────────
+
+function build() {
+  var container = document.getElementById('questions-container');
+  if (!container) { console.error('ExamPass: questions-container not found'); return; }
+
+  // Stable-sort questions by section order so headings group correctly
+  // regardless of input order.
+  var order = LABELS.section_order || [];
+  Q.forEach(function (q, i) { q._i = i; });
+  Q.sort(function (a, b) {
+    var oa = order.indexOf(a.type); if (oa === -1) oa = 99;
+    var ob = order.indexOf(b.type); if (ob === -1) ob = 99;
+    return oa - ob || a._i - b._i;
+  });
+
+  var h = '';
+  var sec = '';
+  var titles = LABELS.section;
+
+  for (var i = 0; i < Q.length; i++) {
+    var q = Q[i];
+    if (q.type !== sec) {
+      sec = q.type;
+      if (titles[q.type]) h += '<h3>' + titles[q.type] + '</h3>';
+    }
+
+    var qid = 'q' + i;
+    h += '<div class="q-card" id="card-' + qid + '">';
+    h += '<div class="q-num">' + (i + 1) + '. (' + q.points + ' ' + LABELS.points_suffix + ')</div>';
+
+    if (q.type === 'fill') {
+      h += '<div class="q-text">' + renderFill(q, qid) + '</div>';
+    } else {
+      h += '<div class="q-text">' + q.question + '</div>';
+    }
+
+    if (q.type === 'choice') {
+      var opts = q.options || [];
+      for (var j = 0; j < opts.length; j++) {
+        h += '<label class="option" id="opt-' + qid + '-' + j + '" onclick="sel(\'' + qid + '\',' + j + ')">';
+        h += '<input type="radio" name="' + qid + '" value="' + j + '">' + String.fromCharCode(65 + j) + '. ' + opts[j] + '</label>';
+      }
+    } else if (q.type === 'multi') {
+      var mopts = q.options || [];
+      for (var k = 0; k < mopts.length; k++) {
+        h += '<label class="option" id="opt-' + qid + '-' + k + '" onclick="toggle(\'' + qid + '\',' + k + ')">';
+        h += '<input type="checkbox" name="' + qid + '" value="' + k + '">' + String.fromCharCode(65 + k) + '. ' + mopts[k] + '</label>';
+      }
+    } else if (q.type === 'tf') {
+      h += '<label class="option" id="opt-' + qid + '-0" onclick="sel(\'' + qid + '\',0)">';
+      h += '<input type="radio" name="' + qid + '" value="0">' + LABELS.true_label + '</label>';
+      h += '<label class="option" id="opt-' + qid + '-1" onclick="sel(\'' + qid + '\',1)">';
+      h += '<input type="radio" name="' + qid + '" value="1">' + LABELS.false_label + '</label>';
+    } else if (q.type === 'fill') {
+      // inputs already rendered inline inside q-text
+    } else if (q.type === 'code') {
+      h += '<textarea class="q-textarea q-code" id="text-' + qid + '" placeholder="' + (LABELS.code_placeholder || LABELS.placeholder) + '" rows="8" spellcheck="false"></textarea>';
+    } else {
+      h += '<textarea class="q-textarea" id="text-' + qid + '" placeholder="' + LABELS.placeholder + '" rows="3"></textarea>';
+    }
+
+    h += '<div class="result" id="result-' + qid + '">';
+    h += '<span class="badge" id="badge-' + qid + '"></span><span id="correct-' + qid + '"></span>';
+    h += '<div class="explanation">' + (q.explanation || '') + '</div>';
+    if (q.pitfall) {
+      h += '<div class="pitfall">' + LABELS.pitfall_prefix + q.pitfall + '</div>';
+    }
+    h += '</div></div>';
+  }
+
+  container.innerHTML = h;
+
+  if (window.MathJax && MathJax.typesetPromise) {
+    MathJax.typesetPromise([container]).catch(function (err) {
+      console.error('MathJax typeset error:', err);
+    });
+  }
+}
+
+// Render fill question text with inline <input> boxes replacing blanks.
+function renderFill(q, qid) {
+  var nBlanks = fillBlankCount(q.question);
+  var k = 0;
+  var html = ('' + q.question).replace(/(_{2,}|＿+)/g, function () {
+    var inp = '<input type="text" class="fill-input" id="fill-' + qid + '-' + k + '" autocomplete="off" spellcheck="false">';
+    k++;
+    return inp;
+  });
+  if (k === 0) {
+    // No markers in text -> append boxes based on answer shape
+    var n = fillBlankAnswers(q.answer, 1).length;
+    var ans = q.answer;
+    if (Array.isArray(ans)) n = Array.isArray(ans[0]) ? ans.length : (ans.length || 1);
+    if (n < 1) n = 1;
+    html += '<div class="fill-row">';
+    for (var b = 0; b < n; b++) {
+      if (n > 1) html += '<span class="fill-tag">' + (b + 1) + '.</span>';
+      html += '<input type="text" class="fill-input" id="fill-' + qid + '-' + b + '" autocomplete="off" spellcheck="false">';
+    }
+    html += '</div>';
+  }
+  return html;
+}
+
+document.addEventListener('DOMContentLoaded', build);
+if (document.readyState === 'interactive' || document.readyState === 'complete') {
+  build();
+}
+
+// ─── Selection handlers ──────────────────────────────────────────────
+
+function sel(qid, idx) {
+  var prefix = 'opt-' + qid + '-';
+  var all = document.querySelectorAll('[id^="' + prefix + '"]');
+  for (var i = 0; i < all.length; i++) all[i].classList.remove('selected');
+  var target = document.getElementById('opt-' + qid + '-' + idx);
+  if (target) target.classList.add('selected');
+  var radio = document.querySelector('input[name="' + qid + '"][value="' + idx + '"]');
+  if (radio) radio.checked = true;
+}
+
+function toggle(qid, idx) {
+  var box = document.querySelector('input[name="' + qid + '"][value="' + idx + '"]');
+  var label = document.getElementById('opt-' + qid + '-' + idx);
+  if (!box) return;
+  box.checked = !box.checked;
+  if (label) label.classList.toggle('selected', box.checked);
+}
+
+// ─── Grading ─────────────────────────────────────────────────────────
+
+function gradeAll() {
+  var score = 0;
+  for (var i = 0; i < Q.length; i++) {
+    var q = Q[i];
+    var qid = 'q' + i;
+    var card = document.getElementById('card-' + qid);
+    var result = document.getElementById('result-' + qid);
+    var badge = document.getElementById('badge-' + qid);
+    var correctEl = document.getElementById('correct-' + qid);
+    if (!card || !result) continue;
+
+    result.style.display = 'block';
+
+    if (q.type === 'choice' || q.type === 'tf') {
+      score += gradeSingle(q, qid, card, badge, correctEl);
+    } else if (q.type === 'multi') {
+      score += gradeMulti(q, qid, card, badge, correctEl);
+    } else if (q.type === 'fill') {
+      score += gradeFill(q, qid, card, badge, correctEl);
+    } else {
+      card.classList.add('correct');
+      badge.className = 'badge badge-ref';
+      badge.textContent = LABELS.reference_label;
+    }
+  }
+
+  var sb = document.getElementById('score-box');
+  if (sb) {
+    sb.style.display = 'block';
+    document.getElementById('score-num').textContent = roundScore(score);
+    sb.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  var opts = document.querySelectorAll('.option');
+  for (var a = 0; a < opts.length; a++) opts[a].style.pointerEvents = 'none';
+  var tas = document.querySelectorAll('.q-textarea');
+  for (var b = 0; b < tas.length; b++) tas[b].disabled = true;
+  var fis = document.querySelectorAll('.fill-input');
+  for (var c = 0; c < fis.length; c++) fis[c].disabled = true;
+
+  var btn = document.getElementById('grade-btn');
+  if (btn) { btn.disabled = true; btn.textContent = LABELS.graded_label; }
+
+  if (window.MathJax && MathJax.typesetPromise) {
+    MathJax.typesetPromise().catch(function (err) {
+      console.error('MathJax typeset error:', err);
+    });
+  }
+}
+
+function roundScore(s) {
+  return Math.round(s * 10) / 10;
+}
+
+function gradeSingle(q, qid, card, badge, correctEl) {
+  var ansIdx = q.type === 'tf' ? tfAnswerIndex(q.answer) : choiceAnswerIndex(q.answer, q.options);
+  var radio = document.querySelector('input[name="' + qid + '"]:checked');
+  if (radio && parseInt(radio.value, 10) === ansIdx) {
+    card.classList.add('correct');
+    badge.className = 'badge badge-ok';
+    badge.textContent = LABELS.correct_label;
+    correctEl.innerHTML = '';
+    var ok = document.getElementById('opt-' + qid + '-' + ansIdx);
+    if (ok) ok.classList.add('correct-answer');
+    return q.points;
+  }
+  card.classList.add('wrong');
+  badge.className = 'badge badge-no';
+  badge.textContent = LABELS.wrong_label;
+  var ansText = q.type === 'choice'
+    ? String.fromCharCode(65 + ansIdx) + '. ' + (q.options ? q.options[ansIdx] : '')
+    : (ansIdx === 0 ? LABELS.true_label : LABELS.false_label);
+  correctEl.innerHTML = LABELS.answer_prefix + ansText;
+  if (radio) {
+    var wrongOpt = document.getElementById('opt-' + qid + '-' + radio.value);
+    if (wrongOpt) wrongOpt.classList.add('wrong-answer');
+  }
+  var corr = document.getElementById('opt-' + qid + '-' + ansIdx);
+  if (corr) corr.classList.add('correct-answer');
+  return 0;
+}
+
+function gradeMulti(q, qid, card, badge, correctEl) {
+  var want = multiAnswerSet(q.answer, q.options);
+  var wantKeys = Object.keys(want).map(Number);
+  var checked = document.querySelectorAll('input[name="' + qid + '"]:checked');
+  var picked = [];
+  for (var i = 0; i < checked.length; i++) picked.push(parseInt(checked[i].value, 10));
+
+  var anyWrong = false, hitCorrect = 0;
+  for (var p = 0; p < picked.length; p++) {
+    if (want[picked[p]]) hitCorrect++;
+    else anyWrong = true;
+  }
+
+  // reveal correct / wrong option markers
+  var mopts = q.options || [];
+  for (var j = 0; j < mopts.length; j++) {
+    var el = document.getElementById('opt-' + qid + '-' + j);
+    if (!el) continue;
+    if (want[j]) el.classList.add('correct-answer');
+    else if (picked.indexOf(j) !== -1) el.classList.add('wrong-answer');
+  }
+
+  var earned;
+  if (!anyWrong && hitCorrect === wantKeys.length && picked.length === wantKeys.length) {
+    earned = q.points;
+    card.classList.add('correct');
+    badge.className = 'badge badge-ok';
+    badge.textContent = LABELS.correct_label;
+    correctEl.innerHTML = '';
+  } else if (!anyWrong && hitCorrect > 0) {
+    // 少选不错选 -> partial credit
+    earned = roundScore(q.points * hitCorrect / wantKeys.length);
+    card.classList.add('partial');
+    badge.className = 'badge badge-partial';
+    badge.textContent = LABELS.partial_label;
+    correctEl.innerHTML = LABELS.answer_prefix + multiAnswerText(wantKeys, mopts);
+  } else {
+    earned = 0;
+    card.classList.add('wrong');
+    badge.className = 'badge badge-no';
+    badge.textContent = LABELS.wrong_label;
+    correctEl.innerHTML = LABELS.answer_prefix + multiAnswerText(wantKeys, mopts);
+  }
+  return earned;
+}
+
+function multiAnswerText(keys, options) {
+  return keys.sort(function (a, b) { return a - b; }).map(function (k) {
+    return String.fromCharCode(65 + k) + '. ' + (options ? options[k] : '');
+  }).join('  ');
+}
+
+function gradeFill(q, qid, card, badge, correctEl) {
+  var nBlanks = fillBlankCount(q.question);
+  var blanks = fillBlankAnswers(q.answer, nBlanks);
+  var n = blanks.length;
+  var hit = 0;
+  var displays = [];
+
+  for (var b = 0; b < n; b++) {
+    var inp = document.getElementById('fill-' + qid + '-' + b);
+    var accepted = blanks[b] || [''];
+    var user = inp ? normText(inp.value) : '';
+    var ok = false;
+    for (var a = 0; a < accepted.length; a++) {
+      if (accepted[a] !== '' && normText(accepted[a]) === user && user !== '') { ok = true; break; }
+    }
+    if (inp) inp.classList.add(ok ? 'fill-ok' : 'fill-no');
+    if (ok) hit++;
+    displays.push((n > 1 ? (b + 1) + '. ' : '') + accepted.filter(function (x) { return x !== ''; }).join(' / '));
+  }
+
+  var earned = roundScore(q.points * hit / n);
+  correctEl.innerHTML = LABELS.answer_prefix + displays.join('   ');
+
+  if (hit === n) {
+    card.classList.add('correct');
+    badge.className = 'badge badge-ok';
+    badge.textContent = LABELS.correct_label;
+  } else if (hit > 0) {
+    card.classList.add('partial');
+    badge.className = 'badge badge-partial';
+    badge.textContent = LABELS.partial_label;
+  } else {
+    card.classList.add('wrong');
+    badge.className = 'badge badge-no';
+    badge.textContent = LABELS.wrong_label;
+  }
+  return earned;
+}
+
+</script>
+<script>
+document.addEventListener('click', function(e){
+  var btn = e.target.closest('#epa-tabs .tab-btn'); if(!btn) return;
+  var tab = btn.getAttribute('data-tab');
+  document.querySelectorAll('#epa-tabs .tab-btn').forEach(function(b){ b.classList.toggle('active', b===btn); });
+  document.querySelectorAll('.tab-panel').forEach(function(p){
+    p.classList.toggle('active', p.id === 'panel-' + tab); });
+  // The test panel is display:none on load, so build()'s MathJax typeset ran
+  // on hidden content (collapsing formula question cards to 0 height). Re-run
+  // build() the first time the panel is visible so it renders + typesets at the
+  // real size. Guarded so user answers aren't wiped on later switches.
+  if(tab === 'test' && !window.__epaTestBuilt){
+    window.__epaTestBuilt = true;
+    if(typeof build === 'function'){ try { build(); } catch(err){} }
+  }
+  if(window.__epaFitFormulas) setTimeout(window.__epaFitFormulas, 50);
+  window.scrollTo(0, 0);
+});
+</script>
+</body>
+</html>

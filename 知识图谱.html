@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\(', '\)']],
+    displayMath: [['$$', '$$'], ['\[', '\]']]
+  }
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>University Physics (A1) - 知识图谱</title>
+<style>
+/* === ExamPass Knowledge Graph Styles === */
+
+/* ── Research-grade color palette ──
+   Muted, distinguishable, not too bright nor dark.
+   Each chapter gets one branch color; all descendants share it. */
+:root {
+  --bg: #faf8f5;
+  --ink: #2e2e2e;
+  --ink-light: #8a8a8a;
+  --divider: #e2ded8;
+  --bp-0: #6b8ba4;   /* steel blue-gray */
+  --bp-1: #7d9b7d;   /* sage green */
+  --bp-2: #b88b64;   /* warm bronze */
+  --bp-3: #8e6b7e;   /* dusty mauve */
+  --bp-4: #5f919b;   /* slate teal */
+  --bp-5: #9b8a6e;   /* khaki */
+  --bp-6: #7b7599;   /* lavender gray */
+  --bp-7: #7b967b;   /* olive */
+  --node-radius: 7px;
+  --highlight: #f0e8c0;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Microsoft YaHei", "Noto Sans SC", "SimSun", sans-serif;
+  font-size: 14px; line-height: 1.65; color: var(--ink);
+  background: var(--bg); overflow: hidden;
+}
+
+/* ── Header ── */
+#graph-header {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 8px 20px; background: var(--bg);
+  border-bottom: 1px solid var(--divider);
+  flex-shrink: 0;
+}
+.header-left { display: flex; align-items: baseline; gap: 10px; }
+.header-brand { font-size: 1.1em; font-weight: 700; color: #1a1a2e; letter-spacing: 0.3px; }
+.header-sep { color: var(--divider); }
+.header-title { font-size: 0.95em; color: var(--ink-light); }
+.header-right { display: flex; gap: 8px; align-items: center; }
+#search-input {
+  width: 180px; padding: 4px 10px; border: 1px solid var(--divider);
+  border-radius: 4px; font-size: 0.85em; background: #fff; outline: none;
+}
+#search-input:focus { border-color: #aaa; }
+#reset-btn {
+  background: none; border: 1px solid var(--divider); border-radius: 4px;
+  padding: 4px 10px; cursor: pointer; font-size: 1.1em; color: var(--ink-light);
+}
+#reset-btn:hover { background: #f0ede5; }
+
+/* ── Viewport (split layout) ── */
+#graph-viewport {
+  display: flex;
+  height: calc(100vh - 90px);
+  overflow: hidden;
+}
+
+/* ── Tree panel (left) ── */
+#tree-panel {
+  flex: 0 0 33%;
+  min-width: 340px;
+  overflow: auto;
+  border-right: 1px solid var(--divider);
+  position: relative;
+}
+#graph-canvas {
+  position: relative;
+  transform-origin: top left;
+  min-height: 100%;
+}
+#connections-layer {
+  position: absolute; top: 0; left: 0;
+  pointer-events: none; z-index: 0;
+}
+
+/* ── Nodes ── */
+.gn {
+  position: absolute;
+  width: 148px;
+  box-sizing: border-box;
+  background: #fff;
+  border: 1px solid var(--divider);
+  border-left: 4px solid var(--divider);
+  border-radius: var(--node-radius);
+  padding: 7px 10px;
+  cursor: pointer;
+  transition: box-shadow 0.15s, border-color 0.15s, background 0.15s;
+  user-select: none;
+  z-index: 2;
+}
+.gn:hover { box-shadow: 0 2px 10px rgba(0,0,0,0.07); }
+.gn:active { box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+.gn:focus-visible { outline: 2px solid #7b97ab; outline-offset: 2px; }
+
+/* selected node highlight */
+.gn.selected {
+  box-shadow: 0 0 0 2px var(--bp-0);
+  z-index: 3;
+}
+
+.gn-label { font-weight: 600; color: var(--ink); font-size: 0.95em; display: block; line-height: 1.5; }
+
+.gn.collapsed { opacity: 0.5; }
+.gn.collapsed::after {
+  content: '+'; position: absolute; right: 7px; top: 50%;
+  transform: translateY(-50%); font-size: 1em; color: var(--ink-light);
+}
+
+.gn.has-notes::after {
+  content: '📝'; position: absolute; right: 7px; top: 6px;
+  font-size: 0.7em; opacity: 0.6;
+}
+.gn.collapsed.has-notes::after { content: '+'; right: 7px; top: 50%; transform: translateY(-50%); font-size: 1em; }
+
+.gn.search-hit { box-shadow: 0 0 0 3px var(--highlight); }
+.gn.search-dim { opacity: 0.22; }
+
+/* Branch colors — cascade from chapter through all descendants */
+.gn[data-branch="0"] { border-left-color: var(--bp-0); }
+.gn[data-branch="1"] { border-left-color: var(--bp-1); }
+.gn[data-branch="2"] { border-left-color: var(--bp-2); }
+.gn[data-branch="3"] { border-left-color: var(--bp-3); }
+.gn[data-branch="4"] { border-left-color: var(--bp-4); }
+.gn[data-branch="5"] { border-left-color: var(--bp-5); }
+.gn[data-branch="6"] { border-left-color: var(--bp-6); }
+.gn[data-branch="7"] { border-left-color: var(--bp-7); }
+
+/* light tinted background per branch */
+.gn[data-branch="0"] { background: linear-gradient(135deg, #fff 0%, #f0f4f7 100%); }
+.gn[data-branch="1"] { background: linear-gradient(135deg, #fff 0%, #f0f5f0 100%); }
+.gn[data-branch="2"] { background: linear-gradient(135deg, #fff 0%, #f8f3ee 100%); }
+.gn[data-branch="3"] { background: linear-gradient(135deg, #fff 0%, #f7f0f3 100%); }
+.gn[data-branch="4"] { background: linear-gradient(135deg, #fff 0%, #eff5f6 100%); }
+.gn[data-branch="5"] { background: linear-gradient(135deg, #fff 0%, #f7f4ef 100%); }
+.gn[data-branch="6"] { background: linear-gradient(135deg, #fff 0%, #f2f1f7 100%); }
+.gn[data-branch="7"] { background: linear-gradient(135deg, #fff 0%, #f1f5f0 100%); }
+
+/* Intermediate / leaf depth styles */
+.gn-lv0 { width: 180px; padding: 10px 14px; }
+.gn-lv0 .gn-label { font-size: 1.05em; }
+.gn-lv1 { width: 168px; padding: 8px 12px; }
+.gn-lv1 .gn-label { font-size: 0.98em; }
+.gn-lv2 { width: 156px; }
+.gn-lv3 .gn-label { font-size: 0.92em; }
+
+/* ── Notes panel (right, ~67% width, wide horizontal layout) ── */
+#notes-panel {
+  flex: 1;
+  overflow-y: auto;
+  padding: 28px 32px;
+  background: #fefdfb;
+  display: flex; flex-direction: column;
+}
+
+#np-placeholder {
+  color: #c4bdb0; text-align: center; margin-top: 140px;
+  font-size: 1em; line-height: 2;
+}
+
+#np-content { display: none; flex-direction: column; flex: 1; }
+
+#np-title {
+  font-weight: 700; font-size: 1.3em; margin-bottom: 16px;
+  padding-bottom: 10px; border-bottom: 1px solid var(--divider);
+  color: var(--ink);
+}
+
+.np-toolbar {
+  display: flex; gap: 8px; margin-bottom: 12px; align-items: center;
+}
+.np-toolbar button {
+  background: #fff; border: 1px solid var(--divider); border-radius: 4px;
+  padding: 5px 12px; cursor: pointer; font-size: 0.9em; color: var(--ink-light);
+}
+.np-toolbar button:hover { background: #f0ede5; color: var(--ink); }
+.np-toolbar button.active { background: #e8e2d6; color: var(--ink); }
+.np-toolbar .np-hint {
+  font-size: 0.82em; color: #c4bdb0; margin-left: auto;
+}
+
+#np-body {
+  flex: 1;
+  min-height: 140px;
+  outline: none;
+  line-height: 1.85;
+  font-size: 0.95em;
+  color: var(--ink);
+  padding: 10px 0;
+}
+#np-body:empty:before {
+  content: attr(data-ph);
+  color: #c4bdb0;
+}
+
+#np-images {
+  margin-top: 16px;
+  display: flex; flex-wrap: wrap; gap: 10px;
+}
+#np-images .ge-img-wrap { position: relative; }
+#np-images .ge-img-wrap img {
+  max-width: 320px; max-height: 240px; border-radius: 4px;
+  border: 1px solid var(--divider);
+}
+.ge-img-del {
+  position: absolute; top: 3px; right: 3px;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: rgba(0,0,0,0.45); color: #fff; border: none;
+  font-size: 12px; line-height: 20px; cursor: pointer; text-align: center;
+}
+.ge-img-del:hover { background: rgba(200,0,0,0.65); }
+
+/* ── Connections (SVG bezier paths) ── */
+.conn-path { fill: none; stroke-width: 1.5; opacity: 0.45; }
+.conn-path[data-branch="0"] { stroke: var(--bp-0); }
+.conn-path[data-branch="1"] { stroke: var(--bp-1); }
+.conn-path[data-branch="2"] { stroke: var(--bp-2); }
+.conn-path[data-branch="3"] { stroke: var(--bp-3); }
+.conn-path[data-branch="4"] { stroke: var(--bp-4); }
+.conn-path[data-branch="5"] { stroke: var(--bp-5); }
+.conn-path[data-branch="6"] { stroke: var(--bp-6); }
+.conn-path[data-branch="7"] { stroke: var(--bp-7); }
+
+/* ── Tooltip ── */
+#tooltip {
+  position: fixed; z-index: 200;
+  max-width: 300px; padding: 8px 12px;
+  background: #3e3e3e; color: #f5f0e8;
+  border-radius: 6px; font-size: 0.85em; line-height: 1.5;
+  pointer-events: none; opacity: 0; transition: opacity 0.12s;
+}
+#tooltip.tooltip-show { opacity: 1; }
+
+/* ── Zoom bar ── */
+#zoom-bar {
+  position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 6px;
+  background: #fff; border: 1px solid var(--divider);
+  border-radius: 20px; padding: 4px 12px; z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+#zoom-bar button {
+  background: none; border: none; font-size: 1.2em; cursor: pointer;
+  width: 28px; height: 28px; border-radius: 50%; color: var(--ink-light);
+}
+#zoom-bar button:hover { background: #f0ede5; color: var(--ink); }
+#zoom-slider { width: 100px; accent-color: #999; }
+#zoom-label { font-size: 0.85em; color: var(--ink-light); min-width: 36px; text-align: center; }
+
+/* ── Toast ── */
+#toast {
+  position: fixed; bottom: 64px; left: 50%; transform: translateX(-50%);
+  padding: 6px 16px; border-radius: 6px; font-size: 0.85em;
+  background: #3e3e3e; color: #f5f0e8; opacity: 0; transition: opacity 0.3s;
+  pointer-events: none; z-index: 300;
+}
+#toast.toast-show { opacity: 1; }
+
+/* ── Focus-visible ── */
+#search-input:focus-visible { border-color: #7b97ab; }
+#zoom-bar button:focus-visible { outline: 2px solid #7b97ab; outline-offset: 1px; }
+#reset-btn:focus-visible { outline: 2px solid #7b97ab; outline-offset: 1px; }
+
+/* ── Resize handle ── */
+#resize-handle {
+  width: 6px;
+  cursor: col-resize;
+  background: transparent;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+  transition: background 0.15s;
+}
+#resize-handle:hover,
+#resize-handle.dragging {
+  background: #7b97ab;
+}
+#resize-handle::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 2px; height: 32px;
+  background: #ccc;
+  border-radius: 1px;
+}
+#resize-handle:hover::after {
+  background: #fff;
+}
+
+/* ── Responsive: stack on narrow screens ── */
+@media (max-width: 860px) {
+  #graph-viewport { flex-direction: column; height: auto; overflow: visible; }
+  #tree-panel { flex: none; height: 55vh; border-right: none; border-bottom: 1px solid var(--divider); min-width: 0; width: 100% !important; }
+  #notes-panel { flex: none; min-height: 45vh; width: 100% !important; }
+  #resize-handle { display: none; }
+  #graph-header { flex-wrap: wrap; gap: 8px; padding: 8px 12px; }
+  #search-input { width: 120px; }
+}
+@media (max-width: 480px) {
+  #tree-panel { height: 45vh; }
+  #notes-panel { min-height: 55vh; padding: 16px; }
+  .gn-lv0 { width: 150px; }
+  .gn-lv0 .gn-label { font-size: 0.92em; }
+  #zoom-bar { bottom: 8px; padding: 2px 8px; }
+  #zoom-slider { width: 70px; }
+}
+
+</style>
+</head>
+<body>
+
+<header id="graph-header">
+  <div class="header-left">
+    <span class="header-brand">ExamPass Assistant</span>
+    <span class="header-sep">|</span>
+    <span class="header-title" id="header-title">University Physics (A1) - 知识图谱</span>
+  </div>
+  <div class="header-right">
+    <input type="text" id="search-input" placeholder="搜索知识点..." />
+    <button id="reset-btn" title="重置视图">↺</button>
+  </div>
+</header>
+
+<div id="graph-viewport">
+  <div id="tree-panel">
+    <div id="graph-canvas"></div>
+    <svg id="connections-layer"></svg>
+  </div>
+  <div id="resize-handle" title="拖拽调整左右宽度"></div>
+  <div id="notes-panel">
+    <div id="np-placeholder">← 点击左侧叶节点<br/>查看或编辑笔记</div>
+    <div id="np-content">
+      <div id="np-title"></div>
+      <div class="np-toolbar">
+        <button id="np-bold" title="加粗 (Ctrl+B)"><b>B</b></button>
+        <span class="np-hint">Ctrl+V 粘贴图片</span>
+      </div>
+      <div id="np-body" contenteditable="true" data-ph="在此记笔记…支持 Ctrl+B 加粗、Ctrl+V 粘贴图片"></div>
+      <div id="np-images"></div>
+    </div>
+  </div>
+</div>
+
+<div id="zoom-bar">
+  <button id="zoom-out">−</button>
+  <input type="range" id="zoom-slider" min="50" max="200" value="100" step="10" />
+  <button id="zoom-in">+</button>
+  <span id="zoom-label">100%</span>
+</div>
+
+<div id="tooltip" class="tooltip-hidden"></div>
+<div id="toast"></div>
+
+<script>
+const TREE_DATA = {"title": "University Physics (A1)", "nodes": [{"id": "n1", "label": "Chapter 1 Force and Motion", "summary": "8 KCs", "children": [{"id": "n2", "label": "Vectors & Units", "summary": "概念 · 必考", "is_hub": false, "children": []}, {"id": "n3", "label": "Particle & Reference Frame", "summary": "概念 · 必考 · pre: Vectors & Units", "is_hub": false, "children": []}, {"id": "n4", "label": "Position Vector & Displacement", "summary": "概念 · 必考 · pre: Particle & Reference Frame", "is_hub": false, "children": []}, {"id": "n5", "label": "Velocity (average & instantaneous)", "summary": "过程 · 必考 · pre: Position Vector & Displacement · HUB", "is_hub": true, "children": []}, {"id": "n6", "label": "Acceleration (average & instantaneous)", "summary": "过程 · 必考 · pre: Velocity (average & instantaneous) · HUB", "is_hub": true, "children": []}, {"id": "n7", "label": "Circular Motion & Curvilinear Motion", "summary": "原理 · 必考 · pre: Acceleration (average & instantaneous)", "is_hub": false, "children": []}, {"id": "n8", "label": "Projectile Motion", "summary": "过程 · 必考 · pre: Acceleration (average & instantaneous)", "is_hub": false, "children": []}, {"id": "n9", "label": "Relative Motion & Common Forces", "summary": "概念 · 重点 · pre: Velocity (average & instantaneous)", "is_hub": false, "children": []}]}, {"id": "n10", "label": "Chapter 2 Particle Dynamics", "summary": "9 KCs", "children": [{"id": "n11", "label": "Newton's First Law & Inertia", "summary": "原理 · 必考 · pre: Acceleration (average & instantaneous)", "is_hub": false, "children": []}, {"id": "n12", "label": "Inertial Reference Frames", "summary": "概念 · 重点 · pre: Newton's First Law & Inertia", "is_hub": false, "children": []}, {"id": "n13", "label": "Newton's Second Law F=ma", "summary": "原理 · 必考 · pre: Newton's First Law & Inertia · HUB", "is_hub": true, "children": []}, {"id": "n14", "label": "Newton's Third Law", "summary": "原理 · 必考 · pre: Newton's First Law & Inertia", "is_hub": false, "children": []}, {"id": "n15", "label": "Momentum & Impulse", "summary": "概念 · 必考 · pre: Newton's Second Law F=ma · HUB", "is_hub": true, "children": []}, {"id": "n16", "label": "Conservation of Momentum", "summary": "原理 · 必考 · pre: Momentum & Impulse · HUB", "is_hub": true, "children": []}, {"id": "n17", "label": "Work & Kinetic Energy Theorem", "summary": "过程 · 必考 · pre: Newton's Second Law F=ma", "is_hub": false, "children": []}, {"id": "n18", "label": "Potential Energy & Conservative Forces", "summary": "概念 · 必考 · pre: Work & Kinetic Energy Theorem", "is_hub": false, "children": []}, {"id": "n19", "label": "Conservation of Mechanical Energy", "summary": "原理 · 必考 · pre: Work & Kinetic Energy Theorem, Potential Energy & Conservative Forces · HUB", "is_hub": true, "children": []}]}, {"id": "n20", "label": "Chapter 3 Rotation of Rigid Body", "summary": "6 KCs", "children": [{"id": "n21", "label": "Rigid Body & Types of Motion", "summary": "概念 · 必考 · pre: Circular Motion & Curvilinear Motion", "is_hub": false, "children": []}, {"id": "n22", "label": "Angular Kinematics (ω, α)", "summary": "过程 · 必考 · pre: Rigid Body & Types of Motion", "is_hub": false, "children": []}, {"id": "n23", "label": "Moment of Inertia", "summary": "概念 · 必考 · pre: Angular Kinematics (ω, α) · HUB", "is_hub": true, "children": []}, {"id": "n24", "label": "Rotational Law (M = Iα)", "summary": "原理 · 必考 · pre: Angular Kinematics (ω, α), Moment of Inertia · HUB", "is_hub": true, "children": []}, {"id": "n25", "label": "Angular Momentum & Conservation", "summary": "原理 · 必考 · pre: Rotational Law (M = Iα) · HUB", "is_hub": true, "children": []}, {"id": "n26", "label": "Rotational Work & Kinetic Energy", "summary": "过程 · 重点 · pre: Rotational Law (M = Iα), Work & Kinetic Energy Theorem", "is_hub": false, "children": []}]}, {"id": "n27", "label": "Chapter 4 Special Relativity", "summary": "7 KCs", "children": [{"id": "n28", "label": "Classical Spacetime & Galilean Transform", "summary": "概念 · 重点 · pre: Relative Motion & Common Forces", "is_hub": false, "children": []}, {"id": "n29", "label": "Two Postulates of Special Relativity", "summary": "原理 · 必考 · pre: Classical Spacetime & Galilean Transform · HUB", "is_hub": true, "children": []}, {"id": "n30", "label": "Lorentz Transformation", "summary": "过程 · 必考 · pre: Two Postulates of Special Relativity", "is_hub": false, "children": []}, {"id": "n31", "label": "Simultaneity & Time Dilation", "summary": "原理 · 必考 · pre: Lorentz Transformation · HUB", "is_hub": true, "children": []}, {"id": "n32", "label": "Length Contraction", "summary": "原理 · 必考 · pre: Lorentz Transformation", "is_hub": false, "children": []}, {"id": "n33", "label": "Relativistic Velocity Addition", "summary": "过程 · 重点 · pre: Lorentz Transformation", "is_hub": false, "children": []}, {"id": "n34", "label": "Mass-Energy Relation E=mc²", "summary": "原理 · 必考 · pre: Two Postulates of Special Relativity · HUB", "is_hub": true, "children": []}]}, {"id": "n35", "label": "Chapter 5 Mechanical Vibration", "summary": "5 KCs", "children": [{"id": "n36", "label": "Simple Harmonic Motion Equation", "summary": "过程 · 必考 · pre: Acceleration (average & instantaneous), Newton's Second Law F=ma · HUB", "is_hub": true, "children": []}, {"id": "n37", "label": "Amplitude, Period, Frequency, Phase", "summary": "概念 · 必考 · pre: Simple Harmonic Motion Equation", "is_hub": false, "children": []}, {"id": "n38", "label": "Energy of SHM", "summary": "原理 · 必考 · pre: Simple Harmonic Motion Equation, Conservation of Mechanical Energy", "is_hub": false, "children": []}, {"id": "n39", "label": "Superposition of SHM (beats, Lissajous)", "summary": "概念 · 重点 · pre: Amplitude, Period, Frequency, Phase", "is_hub": false, "children": []}, {"id": "n40", "label": "Damped & Forced Vibration, Resonance", "summary": "概念 · 重点 · pre: Simple Harmonic Motion Equation", "is_hub": false, "children": []}]}, {"id": "n41", "label": "Chapter 6 Mechanical Wave", "summary": "8 KCs", "children": [{"id": "n42", "label": "Wave Generation & Types (transverse/longitudinal)", "summary": "概念 · 必考 · pre: Simple Harmonic Motion Equation", "is_hub": false, "children": []}, {"id": "n43", "label": "Wave Speed, Wavelength, Period: u=λf", "summary": "概念 · 必考 · pre: Wave Generation & Types (transverse/longitudinal) · HUB", "is_hub": true, "children": []}, {"id": "n44", "label": "Wave Function y=Acos[ω(t-x/u)+φ]", "summary": "过程 · 必考 · pre: Wave Speed, Wavelength, Period: u=λf, Simple Harmonic Motion Equation · HUB", "is_hub": true, "children": []}, {"id": "n45", "label": "Wave Energy & Intensity", "summary": "概念 · 重点 · pre: Wave Function y=Acos[ω(t-x/u)+φ]", "is_hub": false, "children": []}, {"id": "n46", "label": "Huygens Principle & Wave Diffraction", "summary": "原理 · 重点 · pre: Wave Speed, Wavelength, Period: u=λf", "is_hub": false, "children": []}, {"id": "n47", "label": "Wave Interference", "summary": "原理 · 必考 · pre: Wave Function y=Acos[ω(t-x/u)+φ] · HUB", "is_hub": true, "children": []}, {"id": "n48", "label": "Standing Waves", "summary": "原理 · 必考 · pre: Wave Interference", "is_hub": false, "children": []}, {"id": "n49", "label": "Doppler Effect", "summary": "过程 · 必考 · pre: Wave Speed, Wavelength, Period: u=λf", "is_hub": false, "children": []}]}, {"id": "n50", "label": "Chapter 7 Kinetic Theory of Ideal Gas", "summary": "7 KCs", "children": [{"id": "n51", "label": "Equilibrium State & Thermodynamic Temperature", "summary": "概念 · 必考", "is_hub": false, "children": []}, {"id": "n52", "label": "Ideal Gas State Equation pV=νRT", "summary": "过程 · 必考 · pre: Equilibrium State & Thermodynamic Temperature · HUB", "is_hub": true, "children": []}, {"id": "n53", "label": "Microscopic Model & Pressure Formula", "summary": "原理 · 必考 · pre: Ideal Gas State Equation pV=νRT · HUB", "is_hub": true, "children": []}, {"id": "n54", "label": "Temperature & Molecular Kinetic Energy", "summary": "原理 · 必考 · pre: Microscopic Model & Pressure Formula", "is_hub": false, "children": []}, {"id": "n55", "label": "Equipartition Theorem & Internal Energy", "summary": "原理 · 必考 · pre: Temperature & Molecular Kinetic Energy · HUB", "is_hub": true, "children": []}, {"id": "n56", "label": "Maxwell Speed Distribution", "summary": "概念 · 重点 · pre: Temperature & Molecular Kinetic Energy", "is_hub": false, "children": []}, {"id": "n57", "label": "Mean Free Path & Collision Frequency", "summary": "概念 · 重点 · pre: Maxwell Speed Distribution", "is_hub": false, "children": []}]}, {"id": "n58", "label": "Chapter 8 Thermodynamics", "summary": "6 KCs", "children": [{"id": "n59", "label": "Work, Heat & Internal Energy", "summary": "概念 · 必考 · pre: Equipartition Theorem & Internal Energy, Work & Kinetic Energy Theorem", "is_hub": false, "children": []}, {"id": "n60", "label": "First Law of Thermodynamics ΔE=Q+A", "summary": "原理 · 必考 · pre: Work, Heat & Internal Energy · HUB", "is_hub": true, "children": []}, {"id": "n61", "label": "Quasi-static Processes (isochoric/isobaric/isothermal/adiabatic)", "summary": "过程 · 必考 · pre: First Law of Thermodynamics ΔE=Q+A, Ideal Gas State Equation pV=νRT · HUB", "is_hub": true, "children": []}, {"id": "n62", "label": "Second Law of Thermodynamics", "summary": "原理 · 必考 · pre: First Law of Thermodynamics ΔE=Q+A · HUB", "is_hub": true, "children": []}, {"id": "n63", "label": "Carnot Cycle & Efficiency η=1-T₂/T₁", "summary": "过程 · 必考 · pre: Quasi-static Processes (isochoric/isobaric/isothermal/adiabatic), Second Law of Thermodynamics", "is_hub": false, "children": []}, {"id": "n64", "label": "Entropy & Entropy Increase Principle", "summary": "概念 · 重点 · pre: Second Law of Thermodynamics", "is_hub": false, "children": []}]}]};
+</script>
+<script>
+// === ExamPass Knowledge Graph Engine ===
+
+// Keep in sync with CSS --bp-* variables.
+var BRANCH_COLORS = [
+  '#6b8ba4', '#7d9b7d', '#b88b64', '#8e6b7e',
+  '#5f919b', '#9b8a6e', '#7b7599', '#7b967b'
+];
+
+var STORAGE_KEY = 'graph_settings';
+var NODE_W = 156;
+var COL_W = 230;     // column step (node + gap); no inline note cards needed
+var ROW_GAP = 14;
+var OFFSET_X = 28;
+var OFFSET_Y = 28;
+
+// ─── Tree model ────────────────────────────────────────────
+
+function walkTree(nodes, branch, depth, callback) {
+  for (var i = 0; i < nodes.length; i++) {
+    var node = nodes[i];
+    var leaf = !node.children || node.children.length === 0;
+    callback(node, branch, depth, leaf);
+    if (node.children && node.children.length > 0) {
+      walkTree(node.children, branch, depth + 1, callback);
+    }
+  }
+}
+
+function assignBranchColors(nodes) {
+  for (var i = 0; i < nodes.length; i++) {
+    walkTree([nodes[i]], i % BRANCH_COLORS.length, 0, function(n, branch) {
+      n._branch = branch;
+    });
+  }
+}
+
+function isLeafNode(node) {
+  return !node.children || node.children.length === 0;
+}
+
+function walkVisible(nodes, cb, depth) {
+  depth = depth || 0;
+  for (var i = 0; i < nodes.length; i++) {
+    var n = nodes[i];
+    n._depth = depth;
+    cb(n, depth);
+    if (!n._collapsed && n.children && n.children.length > 0) {
+      walkVisible(n.children, cb, depth + 1);
+    }
+  }
+}
+
+// ─── localStorage ──────────────────────────────────────────
+
+function loadNotes(nodeId) {
+  try { return localStorage.getItem('graph_' + nodeId + '_notes') || ''; }
+  catch(e) { return ''; }
+}
+
+function saveNotes(nodeId, html) {
+  try {
+    if (html) localStorage.setItem('graph_' + nodeId + '_notes', html);
+    else localStorage.removeItem('graph_' + nodeId + '_notes');
+    localStorage.setItem('graph_' + nodeId + '_updated', new Date().toISOString());
+  } catch(e) {
+    if (e.name === 'QuotaExceededError') showToast('存储空间不足，请清理旧笔记');
+  }
+}
+
+function loadImages(nodeId) {
+  try {
+    var raw = localStorage.getItem('graph_' + nodeId + '_images');
+    return raw ? JSON.parse(raw) : [];
+  } catch(e) { return []; }
+}
+
+function saveImages(nodeId, images) {
+  try {
+    if (images.length > 0) localStorage.setItem('graph_' + nodeId + '_images', JSON.stringify(images));
+    else localStorage.removeItem('graph_' + nodeId + '_images');
+  } catch(e) {
+    if (e.name === 'QuotaExceededError') showToast('图片过大，请清理部分旧图片');
+  }
+}
+
+function loadSettings() {
+  try { var raw = localStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : {}; }
+  catch(e) { return {}; }
+}
+
+function saveSettings(s) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch(e) {}
+}
+
+// ─── State ─────────────────────────────────────────────────
+
+var treeData = null;
+var settings = loadSettings();
+var selectedNodeId = null;
+
+// DOM refs
+var graphCanvas, treePanel, notesPanel, npPlaceholder, npContent, npTitle;
+var npBody, npImages, connectionsLayer, tooltip, toast;
+var zoomSlider, zoomLabel, headerTitle;
+
+function cacheDomRefs() {
+  graphCanvas = document.getElementById('graph-canvas');
+  treePanel = document.getElementById('tree-panel');
+  notesPanel = document.getElementById('notes-panel');
+  npPlaceholder = document.getElementById('np-placeholder');
+  npContent = document.getElementById('np-content');
+  npTitle = document.getElementById('np-title');
+  npBody = document.getElementById('np-body');
+  npImages = document.getElementById('np-images');
+  connectionsLayer = document.getElementById('connections-layer');
+  tooltip = document.getElementById('tooltip');
+  toast = document.getElementById('toast');
+  zoomSlider = document.getElementById('zoom-slider');
+  zoomLabel = document.getElementById('zoom-label');
+  headerTitle = document.getElementById('header-title');
+}
+
+// ─── Notes panel (right) ───────────────────────────────────
+
+function selectNode(node) {
+  // save previous
+  saveCurrentNotes();
+
+  // clear old selection highlight
+  var prev = document.querySelector('.gn.selected');
+  if (prev) prev.classList.remove('selected');
+
+  selectedNodeId = node.id;
+  node._el.classList.add('selected');
+
+  // populate panel
+  npPlaceholder.style.display = 'none';
+  npContent.style.display = 'flex';
+  npTitle.textContent = node.label;
+  npBody.innerHTML = loadNotes(node.id);
+  renderNotesImages(node.id);
+
+  // scroll node into view
+  node._el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function saveCurrentNotes() {
+  if (!selectedNodeId) return;
+  var html = npBody.innerHTML;
+  saveNotes(selectedNodeId, html);
+  // refresh the node's has-notes marker
+  var el = document.querySelector('.gn[data-id="' + selectedNodeId + '"]');
+  if (el) {
+    if (html || loadImages(selectedNodeId).length > 0) el.classList.add('has-notes');
+    else el.classList.remove('has-notes');
+  }
+}
+
+function renderNotesImages(nodeId) {
+  npImages.innerHTML = '';
+  var images = loadImages(nodeId);
+  for (var i = 0; i < images.length; i++) {
+    npImages.appendChild(createImageElement(images[i], nodeId));
+  }
+}
+
+function createImageElement(src, nodeId) {
+  var wrap = document.createElement('div');
+  wrap.className = 'ge-img-wrap';
+  var img = document.createElement('img');
+  img.src = src; img.alt = '笔记图片';
+  wrap.appendChild(img);
+  var del = document.createElement('button');
+  del.className = 'ge-img-del'; del.textContent = '✕';
+  del.addEventListener('click', function(e) {
+    e.stopPropagation();
+    var images = loadImages(nodeId);
+    var idx = images.indexOf(src);
+    if (idx !== -1) { images.splice(idx, 1); saveImages(nodeId, images); }
+    wrap.remove();
+    if (!npBody.innerHTML && images.length === 0) {
+      var el = document.querySelector('.gn[data-id="' + nodeId + '"]');
+      if (el) el.classList.remove('has-notes');
+    }
+  });
+  wrap.appendChild(del);
+  return wrap;
+}
+
+// ─── Toolbar ───────────────────────────────────────────────
+
+function initToolbar() {
+  document.getElementById('np-bold').addEventListener('click', function() {
+    document.execCommand('bold');
+    npBody.focus();
+    this.classList.toggle('active');
+  });
+}
+
+// ─── Rendering ─────────────────────────────────────────────
+
+function render(tree) {
+  treeData = tree;
+  if (!tree.nodes || tree.nodes.length === 0) {
+    graphCanvas.innerHTML =
+      '<div style="padding:60px;text-align:center;color:#999;">课程内容为空，无法生成知识图谱</div>';
+    return;
+  }
+
+  assignBranchColors(tree.nodes);
+  applyCollapsed(tree.nodes, settings.collapsed || []);
+  applyRenamesData(tree.nodes);
+
+  graphCanvas.innerHTML = '';
+  graphCanvas.style.transformOrigin = 'top left';
+
+  walkVisible(tree.nodes, function(node) {
+    var el = renderNode(node);
+    el.style.position = 'absolute';
+    el.style.visibility = 'hidden';
+    el.style.left = '0';
+    el.style.top = '0';
+    graphCanvas.appendChild(el);
+    node._el = el;
+  });
+
+  graphCanvas.appendChild(connectionsLayer);
+
+  measureNodes();
+  layoutTree(tree.nodes);
+  applyPositions();
+  drawConnections();
+
+  var zoom = settings.zoom || 1;
+  graphCanvas.style.transform = 'scale(' + zoom + ')';
+  zoomSlider.value = Math.round(zoom * 100);
+  zoomLabel.textContent = Math.round(zoom * 100) + '%';
+
+  headerTitle.textContent = (tree.title || '课程') + ' — 知识图谱';
+
+  // Restore selection
+  if (selectedNodeId) {
+    var el = document.querySelector('.gn[data-id="' + selectedNodeId + '"]');
+    if (el) el.classList.add('selected');
+  }
+
+  // Reselect if notes exist for current node
+  if (selectedNodeId && npBody) {
+    npBody.innerHTML = loadNotes(selectedNodeId);
+    renderNotesImages(selectedNodeId);
+  }
+}
+
+function renderNode(node) {
+  var el = document.createElement('div');
+  el.className = 'gn gn-lv' + (node._depth || 0);
+  el.dataset.id = node.id;
+  el.dataset.branch = node._branch;
+  el.dataset.depth = node._depth;
+
+  var label = document.createElement('span');
+  label.className = 'gn-label';
+  label.textContent = node.label;
+  el.appendChild(label);
+
+  if (loadNotes(node.id) || loadImages(node.id).length > 0) {
+    el.classList.add('has-notes');
+  }
+  if (node._collapsed) el.classList.add('collapsed');
+
+  if (node.summary) {
+    el.addEventListener('mouseenter', function(e) { showTooltip(e, node.summary); });
+    el.addEventListener('mouseleave', hideTooltip);
+    el.addEventListener('mousemove', moveTooltip);
+  }
+
+  el.addEventListener('click', function(e) {
+    e.stopPropagation();
+    if (isLeafNode(node)) {
+      selectNode(node);
+    } else {
+      toggleCollapse(node);
+    }
+  });
+
+  el.addEventListener('dblclick', function(e) {
+    e.stopPropagation();
+    renameNode(node, label);
+  });
+
+  return el;
+}
+
+// ─── Layout (tidy tree, absolute positioning) ──────────────
+
+function measureNodes() {
+  walkVisible(treeData.nodes, function(node) {
+    if (node._el) node._h = node._el.offsetHeight;
+  });
+}
+
+function layoutTree(nodes) {
+  var cursorY = OFFSET_Y;
+  function place(node) {
+    node._x = OFFSET_X + node._depth * COL_W;
+    var kids = (!node._collapsed && node.children && node.children.length > 0) ? node.children : [];
+    var nodeH = node._h || 34;
+    if (kids.length === 0) {
+      node._top = cursorY;
+      node._y = cursorY + nodeH / 2;
+      cursorY += nodeH + ROW_GAP;
+    } else {
+      for (var i = 0; i < kids.length; i++) place(kids[i]);
+      node._y = (kids[0]._y + kids[kids.length - 1]._y) / 2;
+      node._top = node._y - nodeH / 2;
+    }
+  }
+  for (var i = 0; i < nodes.length; i++) place(nodes[i]);
+  return cursorY;
+}
+
+function applyPositions() {
+  var maxX = 0, maxY = 0;
+  walkVisible(treeData.nodes, function(node) {
+    node._el.style.left = node._x + 'px';
+    node._el.style.top = node._top + 'px';
+    node._el.style.visibility = 'visible';
+    var r = node._x + NODE_W;
+    var b = node._top + (node._h || 34);
+    if (r > maxX) maxX = r;
+    if (b > maxY) maxY = b;
+  });
+  graphCanvas.style.width = (maxX + 40) + 'px';
+  graphCanvas.style.height = (maxY + 60) + 'px';
+}
+
+function relayout() {
+  if (!treeData) return;
+  saveCurrentNotes();
+  measureNodes();
+  layoutTree(treeData.nodes);
+  applyPositions();
+  drawConnections();
+}
+
+// ─── Connections (SVG bezier, parent→child only; no dependency lines) ──
+
+function collectEdges(nodes, acc) {
+  for (var i = 0; i < nodes.length; i++) {
+    var p = nodes[i];
+    if (!p._collapsed && p.children && p.children.length > 0) {
+      for (var j = 0; j < p.children.length; j++) {
+        acc.push({ p: p, c: p.children[j] });
+      }
+      collectEdges(p.children, acc);
+    }
+  }
+}
+
+function drawConnections() {
+  var w = parseFloat(graphCanvas.style.width) || graphCanvas.scrollWidth;
+  var h = parseFloat(graphCanvas.style.height) || graphCanvas.scrollHeight;
+  connectionsLayer.style.width = w + 'px';
+  connectionsLayer.style.height = h + 'px';
+  connectionsLayer.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
+
+  var edges = [];
+  collectEdges(treeData.nodes, edges);
+
+  var html = '';
+  for (var i = 0; i < edges.length; i++) {
+    var p = edges[i].p, c = edges[i].c;
+    var x1 = p._x + NODE_W, y1 = p._y;
+    var x2 = c._x, y2 = c._y;
+    var cx1 = x1 + (x2 - x1) * 0.4;
+    var cx2 = x1 + (x2 - x1) * 0.6;
+    html += '<path class="conn-path" data-branch="' + p._branch +
+      '" stroke="' + BRANCH_COLORS[p._branch] + '"' +
+      ' d="M' + x1 + ',' + y1 + ' C' + cx1 + ',' + y1 + ' ' + cx2 + ',' + y2 + ' ' + x2 + ',' + y2 + '" />';
+  }
+  connectionsLayer.innerHTML = html;
+}
+
+// ─── Collapse / Expand ─────────────────────────────────────
+
+function applyCollapsed(nodes, collapsedIds) {
+  for (var i = 0; i < nodes.length; i++) {
+    var node = nodes[i];
+    node._collapsed = collapsedIds.indexOf(node.id) !== -1;
+    if (node.children && node.children.length > 0) {
+      applyCollapsed(node.children, collapsedIds);
+    }
+  }
+}
+
+function toggleCollapse(node) {
+  node._collapsed = !node._collapsed;
+  var collapsed = settings.collapsed || [];
+  if (node._collapsed) {
+    if (collapsed.indexOf(node.id) === -1) collapsed.push(node.id);
+  } else {
+    var idx = collapsed.indexOf(node.id);
+    if (idx !== -1) collapsed.splice(idx, 1);
+  }
+  settings.collapsed = collapsed;
+  saveSettings(settings);
+  saveCurrentNotes();
+  render(treeData);
+}
+
+// ─── Rename ────────────────────────────────────────────────
+
+function renameNode(node, labelEl) {
+  var oldLabel = node.label;
+  var input = document.createElement('input');
+  input.type = 'text'; input.value = oldLabel;
+  input.style.cssText = 'font-weight:600;font-size:0.9em;width:100%;border:1px solid #ccc;border-radius:4px;padding:2px 6px;box-sizing:border-box;';
+  input.addEventListener('click', function(e) { e.stopPropagation(); });
+  input.addEventListener('blur', function() { finishRename(node, input.value.trim() || oldLabel); });
+  input.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+    if (e.key === 'Escape') { input.value = oldLabel; input.blur(); }
+  });
+  labelEl.replaceWith(input);
+  input.focus(); input.select();
+}
+
+function finishRename(node, newLabel) {
+  node.label = newLabel;
+  settings.renamed = settings.renamed || {};
+  settings.renamed[node.id] = newLabel;
+  saveSettings(settings);
+  saveCurrentNotes();
+  render(treeData);
+}
+
+function applyRenamesData(nodes) {
+  var renamed = settings.renamed || {};
+  walkTree(nodes, 0, 0, function(n) {
+    if (renamed[n.id] != null) n.label = renamed[n.id];
+  });
+}
+
+// ─── Tooltip ───────────────────────────────────────────────
+
+function showTooltip(e, text) {
+  tooltip.textContent = text;
+  tooltip.classList.add('tooltip-show');
+  moveTooltip(e);
+}
+
+function moveTooltip(e) {
+  var x = e.clientX + 14, y = e.clientY + 14;
+  if (x + 300 > window.innerWidth) x = e.clientX - 310;
+  if (y + 80 > window.innerHeight) y = e.clientY - 90;
+  tooltip.style.left = x + 'px';
+  tooltip.style.top = y + 'px';
+}
+
+function hideTooltip() { tooltip.classList.remove('tooltip-show'); }
+
+// ─── Toast ─────────────────────────────────────────────────
+
+var toastTimer = null;
+function showToast(msg) {
+  toast.textContent = msg;
+  toast.classList.add('toast-show');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(function() { toast.classList.remove('toast-show'); }, 2200);
+}
+
+// ─── Image paste ───────────────────────────────────────────
+
+function handlePaste(e) {
+  var items = e.clipboardData && e.clipboardData.items;
+  if (!items) return;
+  for (var i = 0; i < items.length; i++) {
+    if (items[i].type.indexOf('image') !== -1) {
+      e.preventDefault();
+      var blob = items[i].getAsFile();
+      compressImage(blob, function(dataUrl) {
+        if (!selectedNodeId) return;
+        var images = loadImages(selectedNodeId);
+        images.push(dataUrl);
+        saveImages(selectedNodeId, images);
+        npImages.appendChild(createImageElement(dataUrl, selectedNodeId));
+        var el = document.querySelector('.gn[data-id="' + selectedNodeId + '"]');
+        if (el) el.classList.add('has-notes');
+      });
+      return;
+    }
+  }
+}
+
+function compressImage(blob, callback) {
+  var img = new Image();
+  var url = URL.createObjectURL(blob);
+  img.onload = function() {
+    URL.revokeObjectURL(url);
+    var canvas = document.createElement('canvas');
+    var maxW = 800, w = img.width, h = img.height;
+    if (w > maxW) { h = h * (maxW / w); w = maxW; }
+    canvas.width = w; canvas.height = h;
+    var ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, w, h);
+    callback(canvas.toDataURL('image/jpeg', 0.7));
+  };
+  img.onerror = function() {
+    URL.revokeObjectURL(url);
+    showToast('图片加载失败，请重试');
+  };
+  img.src = url;
+}
+
+// ─── Search ────────────────────────────────────────────────
+
+var searchTimer = null;
+function doSearch() {
+  var query = (document.getElementById('search-input') || {}).value;
+  if (!query) query = '';
+  query = query.trim().toLowerCase();
+  var allNodes = document.querySelectorAll('.gn');
+  var firstHit = null;
+  for (var i = 0; i < allNodes.length; i++) allNodes[i].classList.remove('search-hit', 'search-dim');
+  if (!query) return;
+  for (var i = 0; i < allNodes.length; i++) {
+    var el = allNodes[i];
+    var label = (el.querySelector('.gn-label') || {}).textContent || '';
+    if (label.toLowerCase().indexOf(query) !== -1) {
+      el.classList.add('search-hit');
+      if (!firstHit) firstHit = el;
+    } else {
+      el.classList.add('search-dim');
+    }
+  }
+  if (firstHit) firstHit.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// ─── Zoom ──────────────────────────────────────────────────
+
+function initZoom() {
+  var slider = zoomSlider;
+  var label = zoomLabel;
+  var outBtn = document.getElementById('zoom-out');
+  var inBtn = document.getElementById('zoom-in');
+  var zoom = settings.zoom || 1;
+  function applyZoom(z) {
+    zoom = Math.max(0.5, Math.min(2, z));
+    if (graphCanvas) graphCanvas.style.transform = 'scale(' + zoom + ')';
+    slider.value = Math.round(zoom * 100);
+    label.textContent = Math.round(zoom * 100) + '%';
+    settings.zoom = zoom;
+    saveSettings(settings);
+  }
+  slider.addEventListener('input', function() { applyZoom(this.value / 100); });
+  if (outBtn) outBtn.addEventListener('click', function() { applyZoom(zoom - 0.1); });
+  if (inBtn) inBtn.addEventListener('click', function() { applyZoom(zoom + 0.1); });
+
+  // Narrow-screen zoom: fit tree on mobile
+  document.getElementById('reset-btn').addEventListener('click', function() {
+    settings.collapsed = [];
+    settings.renamed = {};
+    saveSettings(settings);
+    document.getElementById('search-input').value = '';
+    doSearch();
+    applyZoom(1);
+    saveCurrentNotes();
+    render(treeData);
+    npPlaceholder.style.display = 'block';
+    npContent.style.display = 'none';
+    selectedNodeId = null;
+  });
+}
+
+// ─── Init ──────────────────────────────────────────────────
+
+// ─── Resize handle ────────────────────────────────────────
+
+function initResizeHandle() {
+  var handle = document.getElementById('resize-handle');
+  if (!handle) return;
+
+  var isDragging = false;
+  var startX = 0;
+  var startWidth = 0;
+
+  function onMouseDown(e) {
+    e.preventDefault();
+    isDragging = true;
+    startX = e.clientX;
+    startWidth = treePanel.offsetWidth;
+    handle.classList.add('dragging');
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+  }
+
+  function onMouseMove(e) {
+    if (!isDragging) return;
+    var dx = e.clientX - startX;
+    var newWidth = Math.max(240, Math.min(window.innerWidth * 0.7, startWidth + dx));
+    treePanel.style.flex = 'none';
+    treePanel.style.width = newWidth + 'px';
+    treePanel.style.minWidth = '0';
+    settings.treeRatio = newWidth / (treePanel.parentElement.offsetWidth - 6);
+  }
+
+  function onMouseUp() {
+    if (!isDragging) return;
+    isDragging = false;
+    handle.classList.remove('dragging');
+    document.body.style.cursor = '';
+    document.body.style.userSelect = '';
+    saveSettings(settings);
+    if (treeData) { measureNodes(); layoutTree(treeData.nodes); applyPositions(); drawConnections(); }
+  }
+
+  handle.addEventListener('mousedown', onMouseDown);
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+
+  handle.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    isDragging = true;
+    startX = e.touches[0].clientX;
+    startWidth = treePanel.offsetWidth;
+    handle.classList.add('dragging');
+  }, {passive: false});
+  document.addEventListener('touchmove', function(e) {
+    if (!isDragging) return;
+    var dx = e.touches[0].clientX - startX;
+    var newWidth = Math.max(240, Math.min(window.innerWidth * 0.7, startWidth + dx));
+    treePanel.style.flex = 'none';
+    treePanel.style.width = newWidth + 'px';
+    treePanel.style.minWidth = '0';
+  }, {passive: false});
+  document.addEventListener('touchend', onMouseUp);
+}
+
+function applyStoredRatio() {
+  if (settings.treeRatio && window.innerWidth > 860) {
+    treePanel.style.flex = 'none';
+    var total = treePanel.parentElement.offsetWidth - 6;
+    treePanel.style.width = Math.round(total * settings.treeRatio) + 'px';
+    treePanel.style.minWidth = '0';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  cacheDomRefs();
+  initToolbar();
+  initZoom();
+  initResizeHandle();
+
+  // Notes auto-save
+  npBody.addEventListener('blur', function() { saveCurrentNotes(); });
+  npBody.addEventListener('paste', handlePaste);
+
+  // Search
+  var si = document.getElementById('search-input');
+  if (si) {
+    si.addEventListener('input', function() {
+      if (searchTimer) clearTimeout(searchTimer);
+      searchTimer = setTimeout(doSearch, 200);
+    });
+    si.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') { si.value = ''; doSearch(); }
+    });
+  }
+
+  if (typeof TREE_DATA === 'undefined') {
+    graphCanvas.innerHTML =
+      '<div style="padding:60px;text-align:center;color:#999;">未找到知识图谱数据</div>';
+    return;
+  }
+  render(TREE_DATA);
+  applyStoredRatio();
+
+  var resizeTimer = null;
+  window.addEventListener('resize', function() {
+    if (resizeTimer) clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function() {
+      drawConnections();
+      if (window.innerWidth <= 860) {
+        treePanel.style.flex = '';
+        treePanel.style.width = '';
+        treePanel.style.minWidth = '';
+      } else {
+        applyStoredRatio();
+      }
+      if (treeData) { measureNodes(); layoutTree(treeData.nodes); applyPositions(); drawConnections(); }
+    }, 300);
+  });
+});
+
+</script>
+</body>
+</html>

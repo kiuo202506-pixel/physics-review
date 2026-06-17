@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Chapter 4 Special Relativity 狭义相对论</title>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\(', '\)']],
+    displayMath: [['$$', '$$'], ['\[', '\]']]
+  }
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"></script>
+<style>
+/* === ExamPass Shared Styles === */
+/* Paper-like warm background, clean typography, responsive */
+
+:root {
+  --paper: #fdf6e3;
+  --paper-dark: #f5ecd7;
+  --ink: #2c2c2c;
+  --ink-light: #555;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --divider: #d6c8a8;
+  --card-bg: #fef9ef;
+  --card-border: #e8dcc8;
+  --correct: #22c55e;
+  --correct-bg: #f0fdf4;
+  --wrong: #ef4444;
+  --wrong-bg: #fef2f2;
+  --tag-bg: #fef3c7;
+  --tag-text: #92400e;
+  --radius: 6px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: "Microsoft YaHei", "Noto Sans SC", "SimSun", sans-serif;
+  font-size: 12pt; line-height: 1.75; color: var(--ink);
+  max-width: 860px; margin: auto; padding: 24px 20px 60px;
+  background: var(--paper);
+}
+
+@media print {
+  body { font-size: 10.5pt; background: #fff; }
+  .no-print { display: none !important; }
+  h1, h2, h3 { page-break-after: avoid; }
+}
+
+/* ── Header ── */
+#exampass-header {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 6px 0; margin-bottom: 0;
+}
+.header-brand { font-size: 1.2em; font-weight: 700; color: #1a1a2e; letter-spacing: 0.3px; }
+.header-url  { font-size: 0.78em; color: #999; }
+.header-divider { border: none; border-top: 2px solid var(--divider); margin: 4px 0 20px 0; }
+
+/* ── Typography ── */
+h1 { font-size: 1.55em; text-align: center; border-bottom: 2px solid var(--divider); padding-bottom: 8px; margin-top: 0; }
+h2 { font-size: 1.25em; border-bottom: 1px solid var(--divider); padding-bottom: 4px; margin-top: 28px; }
+h3 { font-size: 1.08em; margin-top: 20px; color: var(--ink); }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── Tables ── */
+table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 0.95em; }
+td, th { border: 1px solid var(--card-border); padding: 5px 9px; text-align: left; }
+th { background: var(--paper-dark); font-weight: 700; }
+
+/* ── Knowledge point vs explanation ── */
+.kp { font-weight: 700; color: var(--ink); }           /* key point: bold dark */
+.exp { font-weight: 400; color: var(--ink-light); }    /* explanation: lighter */
+.exp em, .exp strong { color: var(--ink); }             /* emphasis inside explanation */
+
+/* ── Block elements ── */
+blockquote {
+  border-left: 3px solid #c0392b; background: #fef9ef;
+  padding: 6px 14px; margin: 10px 0; font-size: 0.95em;
+}
+/* Modern monospace stack — avoids the ugly Courier New fallback on Windows. */
+:root {
+  --mono: "Cascadia Code", "JetBrains Mono", "Fira Code", "Source Code Pro",
+          Consolas, "SF Mono", Menlo, "DejaVu Sans Mono", monospace;
+}
+code {
+  font-family: var(--mono);
+  background: #eee8d8; color: #8a4b1e;
+  padding: 1px 5px; border-radius: 4px; font-size: 0.9em;
+}
+pre {
+  font-family: var(--mono);
+  background: #2d2a26; color: #ece6da;
+  padding: 14px 16px; border-radius: var(--radius);
+  overflow-x: auto; line-height: 1.6; font-size: 0.9em;
+  border: 1px solid #3d3934; tab-size: 2;
+}
+pre code {
+  background: none; color: inherit; padding: 0; font-size: 1em; border-radius: 0;
+}
+
+/* ── Long display formulas: scroll inside their column, never overflow ── */
+mjx-container[display="true"] {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* ── TOC ── */
+div.toc {
+  background: var(--card-bg); padding: 14px 18px;
+  border: 1px solid var(--card-border); border-radius: var(--radius); margin-bottom: 22px;
+}
+div.toc ul { padding-left: 18px; }
+div.toc li { margin: 3px 0; font-size: 0.95em; }
+
+/* ── Priority tags ── */
+.tag-must   { background: #fee2e2; color: #991b1b; padding: 1px 6px; border-radius: 3px; font-size: 0.82em; font-weight: 600; }
+.tag-key    { background: #fef3c7; color: #92400e; padding: 1px 6px; border-radius: 3px; font-size: 0.82em; font-weight: 600; }
+.tag-freq   { background: #dbeafe; color: #1e40af; padding: 1px 6px; border-radius: 3px; font-size: 0.82em; font-weight: 600; }
+.tag-info   { background: #f0fdf4; color: #166534; padding: 1px 6px; border-radius: 3px; font-size: 0.82em; font-weight: 600; }
+
+/* ── Checkpoint self-test ── */
+.checkpoint {
+  background: #eff6ff; border: 1px solid #bfdbfe; border-radius: var(--radius);
+  padding: 10px 16px; margin: 18px 0;
+  font-size: 0.95em;
+}
+.checkpoint::before {
+  content: '🧠 自测：';
+  font-weight: 700; color: #1e40af;
+}
+.checkpoint .cp-answer { margin-top: 10px; border-top: 1px dashed #bfdbfe; padding-top: 8px; }
+.checkpoint .cp-answer summary {
+  cursor: pointer; color: #1e40af; font-weight: 600; user-select: none;
+  list-style: none;
+}
+.checkpoint .cp-answer summary::before { content: '💡 '; }
+.checkpoint .cp-answer summary::-webkit-details-marker { display: none; }
+.checkpoint .cp-answer[open] summary { margin-bottom: 6px; }
+.checkpoint .cp-answer ol, .checkpoint .cp-answer p { font-weight: 400; color: var(--ink); }
+
+/* ── TL;DR summary ── */
+.tldr {
+  background: #fefce8; border-left: 3px solid #eab308;
+  padding: 8px 14px; margin: 10px 0;
+  font-weight: 600; font-size: 0.95em;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  body { max-width: 100%; padding: 12px 10px 40px; font-size: 11pt; }
+  h1 { font-size: 1.3em; }
+  h2 { font-size: 1.12em; }
+  table { font-size: 0.85em; }
+  td, th { padding: 4px 6px; }
+  pre { font-size: 0.85em; padding: 6px; }
+}
+@media (max-width: 400px) {
+  body { padding: 8px 6px 32px; font-size: 10.5pt; }
+}
+
+/* === Interactive Test Styles === */
+
+/* ── Score box ── */
+#score-box {
+  display: none; background: var(--paper-dark); color: var(--ink);
+  padding: 16px 20px; border-radius: var(--radius); margin: 14px 0;
+  text-align: center; border: 1px solid var(--card-border);
+}
+#score-box .score-num { font-size: 2.2em; font-weight: 700; }
+#score-box .score-label { font-size: 0.85em; color: var(--ink-light); }
+
+/* ── Question card ── */
+.q-card {
+  background: var(--card-bg); border: 1px solid var(--card-border);
+  border-radius: var(--radius); padding: 12px 14px; margin: 10px 0;
+  transition: all 0.15s;
+}
+.q-card.correct { border-left: 3px solid var(--correct); background: #f7fdf4; }
+.q-card.wrong   { border-left: 3px solid var(--wrong); background: #fef9f9; }
+
+.q-num  { font-weight: 700; font-size: 0.98em; margin-bottom: 4px; }
+.q-text { margin-bottom: 8px; font-size: 0.98em; }
+
+/* ── Options (compact) ── */
+.option {
+  display: block; padding: 4px 10px; margin: 3px 0;
+  border: 1px solid var(--card-border); border-radius: 4px;
+  cursor: pointer; transition: all 0.12s; font-size: 0.93em;
+  background: #fefcf5;
+}
+.option:hover            { background: #f0ede0; }
+.option input            { margin-right: 6px; }
+.option.selected         { border-color: var(--accent); background: #eff6ff; }
+.option.correct-answer   { border-color: var(--correct); background: var(--correct-bg); }
+.option.wrong-answer     { border-color: var(--wrong); background: var(--wrong-bg); }
+
+/* ── Textareas (compact) ── */
+.q-textarea {
+  width: 100%; min-height: 56px; border: 1px solid var(--card-border);
+  border-radius: 4px; padding: 6px 10px; font-family: inherit;
+  font-size: 0.93em; background: #fefcf5; resize: vertical;
+}
+.q-textarea:focus { outline: none; border-color: var(--accent); }
+.q-code {
+  font-family: "Consolas", "Monaco", "Courier New", monospace;
+  font-size: 0.88em; line-height: 1.5; background: #1e1e2e; color: #e0e0e0;
+  tab-size: 4; white-space: pre;
+}
+.q-code:focus { border-color: var(--accent); }
+
+/* ── Partial-credit badge ── */
+.badge-partial { background: #fef3c7; color: #92400e; }
+.q-card.partial { border-color: #f59e0b; }
+
+/* ── Result after grading ── */
+.result {
+  display: none; margin-top: 8px; padding: 8px 12px;
+  background: #fefcf5; border: 1px solid var(--card-border);
+  border-radius: 4px; font-size: 0.9em; line-height: 1.6;
+}
+.result .badge {
+  display: inline-block; padding: 1px 9px; border-radius: 3px;
+  font-weight: 700; font-size: 0.82em; margin-right: 6px;
+}
+.badge-ok  { background: var(--correct-bg); color: #166534; }
+.badge-no  { background: var(--wrong-bg); color: #991b1b; }
+.badge-ref { background: #dbeafe; color: #1e40af; }
+
+.result .explanation { margin-top: 4px; color: var(--ink); }
+.result .pitfall { color: #b45309; margin-top: 3px; font-size: 0.9em; }
+
+/* ── Grading button ── */
+.grading-bar { text-align: center; margin: 20px 0; }
+.grading-bar button {
+  font-size: 1em; padding: 8px 32px; background: var(--accent);
+  color: #fff; border: none; border-radius: var(--radius);
+  cursor: pointer; font-weight: 600; letter-spacing: 0.3px;
+}
+.grading-bar button:hover     { background: var(--accent-hover); }
+.grading-bar button:disabled  { background: #bbb; cursor: not-allowed; }
+
+
+/* ── Notion-style slide cross-reference layout ── */
+/* Override base.css body max-width (860px); fill the viewport edge-to-edge,
+   capped only on ultra-wide screens for readability. */
+body { max-width: 2400px; width: 96vw; padding-left: 2vw; padding-right: 2vw; }
+.kn-layout { display: flex; gap: 36px; align-items: flex-start; width: 100%; margin: 0 auto; }
+.kn-main { flex: 1 1 auto; min-width: 0; overflow-x: clip; }
+.kn-main mjx-container[display="true"] { max-width: 100%; overflow-x: auto; overflow-y: hidden; }
+.kn-rail { flex: 0 0 32%; max-width: 520px; min-width: 300px; position: sticky; top: 12px;
+  align-self: flex-start; max-height: calc(100vh - 30px); overflow-y: auto; padding-right: 4px; }
+.kn-rail-title { font-weight: 700; color: var(--ink-light); font-size: 0.9em; margin-bottom: 10px;
+  padding-bottom: 6px; border-bottom: 1px solid var(--divider); }
+.slide-card { border: 1px solid var(--card-border); border-radius: var(--radius);
+  background: var(--card-bg); padding: 8px; margin-bottom: 14px; }
+.slide-card-label { font-size: 0.78em; color: var(--ink-light); margin-bottom: 6px; }
+.slide-img { width: 100%; height: auto; border-radius: 4px; cursor: zoom-in; display: block;
+  border: 1px solid var(--divider); background: #fff; }
+.slide-text { margin-top: 6px; font-size: 0.85em; }
+.slide-text summary { cursor: pointer; color: var(--accent); user-select: none; }
+.slide-text-body { margin-top: 6px; color: var(--ink-light); line-height: 1.6;
+  max-height: 220px; overflow-y: auto; padding: 6px 8px; background: #fff;
+  border-radius: 4px; border: 1px solid var(--divider); }
+/* heading-side page chips */
+.pg-chip { display: inline-block; font-size: 0.72em; font-weight: 600; color: var(--accent);
+  background: #eff4ff; border: 1px solid #cfe0ff; border-radius: 10px; padding: 0 7px;
+  margin-left: 6px; cursor: pointer; vertical-align: middle; }
+.pg-chip:hover { background: #dbe8ff; }
+.slide-card.flash { animation: slideflash 1.2s ease; }
+@keyframes slideflash { 0%,100%{box-shadow:none;} 30%{box-shadow:0 0 0 3px var(--accent);} }
+/* lightbox */
+#epa-lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.82); display: none;
+  align-items: center; justify-content: center; z-index: 9999; cursor: zoom-out; }
+#epa-lightbox img { max-width: 94vw; max-height: 94vh; border-radius: 6px; }
+/* Tablet / narrow desktop: keep two columns but rebalance + tighten margins */
+@media (max-width: 1280px) {
+  body { width: 98vw; padding-left: 1vw; padding-right: 1vw; }
+  .kn-layout { gap: 24px; }
+  .kn-main { flex: 1 1 54%; }
+  .kn-rail { flex: 1 1 46%; }
+}
+/* Mobile: stack the rail below the notes */
+@media (max-width: 900px) {
+  body { width: 100%; padding-left: 12px; padding-right: 12px; }
+  /* align-items:stretch is critical — in a COLUMN flex, flex-start would size
+     children to max-content (overflowing the viewport). */
+  .kn-layout { flex-direction: column; align-items: stretch; gap: 16px; }
+  .kn-main { flex: none; width: 100%; }
+  .kn-rail { position: static; flex: none; max-width: 100%; width: 100%; min-width: 0; max-height: none; }
+}
+
+
+/* ── Combined page: top tab bar (清单 | 题目) ── */
+#epa-tabs { display: flex; gap: 0; justify-content: center; margin: 6px auto 22px;
+  max-width: 520px; border: 1px solid var(--divider); border-radius: 10px; overflow: hidden; }
+#epa-tabs .tab-btn { flex: 1; padding: 10px 18px; cursor: pointer; border: none;
+  background: var(--paper-dark); color: var(--ink-light); font-size: 1.02em; font-weight: 600;
+  font-family: inherit; transition: background .15s, color .15s; }
+#epa-tabs .tab-btn + .tab-btn { border-left: 1px solid var(--divider); }
+#epa-tabs .tab-btn.active { background: var(--accent); color: #fff; }
+#epa-tabs .tab-btn:not(.active):hover { background: #efe7d3; color: var(--ink); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+/* keep the test readable/centered even though the body is wide for the rail */
+#panel-test { max-width: 980px; margin: 0 auto; }
+@media print { #epa-tabs { display: none; } .tab-panel { display: block !important; } }
+
+</style>
+</head>
+<body>
+
+<header id="exampass-header">
+  <div class="header-left"><span class="header-brand">ExamPass Assistant</span></div>
+  <div class="header-right"><span class="header-url">github.com/WUBING2023/ExamPass-Assistant</span></div>
+</header>
+<hr class="header-divider">
+
+<h1>Chapter 4 Special Relativity 狭义相对论</h1><div id="epa-tabs" class="no-print"><button class="tab-btn active" data-tab="kn">📖 知识清单</button><button class="tab-btn" data-tab="test">📝 章节测试</button></div><div id="panel-kn" class="tab-panel active"><div class="kn-layout"><div class="kn-main"><h1></h1>
+<div class="toc">
+<h2>目录</h2>
+<ul>
+<li><a href="#s72059134">Why：为什么要推翻经典时空观？</a></li>
+<li><a href="#s84860848">What：狭义相对论的核心内容</a></li>
+<li><a href="#s67248993">一、从经典时空到相对论</a></li>
+  <li><a href="#s49318582">经典绝对时空观与伽利略变换 核心</a></li>
+  <li><a href="#s33103665">狭义相对论的两条基本假设 必考</a></li>
+  <li><a href="#s65767393">γ 因子——解读所有相对论公式的钥匙 必考</a></li>
+<li><a href="#s14625914">二、洛伦兹变换与时空效应</a></li>
+  <li><a href="#s55672932">洛伦兹变换 必考</a></li>
+  <li><a href="#s39621791">同时性的相对性与时间膨胀 必考</a></li>
+  <li><a href="#s73518240">长度收缩——动尺变短 必考</a></li>
+  <li><a href="#s60742272">相对论速度叠加——不超光速 核心</a></li>
+<li><a href="#s77127474">三、相对论动力学：E = mc²</a></li>
+  <li><a href="#s85564630">相对论质量、动量与质能关系 必考</a></li>
+<li><a href="#s70379499">核心对比总结</a></li>
+<li><a href="#s28052119">How：相对论运动学解题流程</a></li>
+</ul>
+</div>
+<h1>Chapter 4: Special Relativity<span class="sub">狭义相对论 -- 当光速不变时，时空不再绝对</span></h1>
+
+<!-- ===== Hook ===== -->
+<div class="hook-story">
+<p>想象你站在地面上，一列火车以 0.5c 疾驰而过。车厢正中央的灯同时向车头和车尾射出两束光。车上的乘客看到光同时到达两端 -- 但地面上的你却看到光先到达了车尾。</p>
+<p style="margin-top:.6rem"><span class="kp">同一件事，两个观察者看到的时间顺序不同。</span>这不是错觉，而是宇宙的真实规则。爱因斯坦在 1905 年用这个思想实验改写了人类对时空的所有直觉。</p>
+<p style="margin-top:.6rem;color:var$--text2$">更震撼的实验事实：宇宙线产生的 μ 子以 0.998c 从天而降。按经典物理，它静止寿命只有 2.2×10<sup>-6</sup> s，飞不到 700 米就该衰变了。但它确实飞了 10 km 到达地面 -- <span class="exp">因为高速运动让它「活得更久」</span>。这每天都在大气层中发生的现象，就是相对论的时间膨胀。</p>
+</div>
+
+<!-- ===== TL;DR ===== -->
+<div class="tldr">
+狭义相对论建立在两条基石之上：<span class="kp">物理定律在所有惯性系中形式相同</span>（相对性原理）；<span class="kp">真空中光速 c = 3×10⁸ m/s 对所有惯性系观测者都一样</span>（光速不变原理）。由此导出的后果：同时性是相对的、运动时钟变慢（Δt = γΔt₀，动钟变慢）、运动物体在运动方向上缩短（L = L₀/γ，动尺变短）、速度叠加有分母约束从不超光速、质量随速度增大（m = γm₀）、E = mc²。一切效应的核心是 <span class="kp">γ = 1/√$1 − v²/c²$</span> —— v ≪ c 时 γ ≈ 1 回到经典世界，v → c 时 γ → ∞ 进入极端相对论。
+</div>
+
+<!-- ===== Why ===== -->
+<h2 id="s72059134">Why：为什么要推翻经典时空观？</h2>
+
+<p>在 19 世纪末，经典物理学大厦似乎已经完美：牛顿力学、麦克斯韦电磁学、热力学三大体系相互独立又彼此融洽。但有一个裂缝：<span class="exp">麦克斯韦方程组预言的光速 c = 3×10⁸ m/s 究竟是相对哪个参考系的？</span></p>
+
+<p>如果光速遵从伽利略速度叠加（v' = v − u），那么测量到的光速应该随地球运动方向而变化。但 Michelson-Morley 实验反复证明：<span class="kp">无论你怎么测、往哪个方向测，光速始终是 c，与地球运动无关。</span>这是一个与经典直觉剧烈冲突的判决性实验结果。</p>
+
+<p>爱因斯坦的选择不是修补旧理论，而是重新定义时空本身。他把「光速不变」这令人困惑的实验事实直接升格为公理，然后问：如果光速确实对所有观察者都一样，那时间、空间、同时性必须是什么样子的？答案就是狭义相对论。</p>
+
+<!-- ===== What ===== -->
+<h2 id="s84860848">What：狭义相对论的核心内容</h2>
+
+<!-- ========== H2: 一、从经典时空到相对论 ========== -->
+<h2 id="s67248993">一、从经典时空到相对论</h2>
+
+<h3 id="s49318582"><span class="pg-chip" data-page="3">页3</span><span class="pg-chip" data-page="4">页4</span><span class="pg-chip" data-page="5">页5</span><span class="pg-chip" data-page="6">页6</span><span class="pg-chip" data-page="7">页7</span><span class="pg-chip" data-page="8">页8</span>经典绝对时空观与伽利略变换 <span class="tag-key">核心</span></h3>
+
+<p>在牛顿力学中，时空是绝对且彼此独立的背景舞台。经典时空观的三大支柱：</p>
+<ul style="margin-left:1.5rem;margin-top:.5rem">
+  <li><span class="kp">绝对同时性</span> -- S 系中两事件同时发生（t₂ − t₁ = 0），在 S' 系中也同时（t'₂ − t'₁ = 0）。同时与参考系无关。</li>
+  <li><span class="kp">绝对时间间隔</span> -- Δt' = Δt，全宇宙的钟滴答同步。无论谁测同一段时间，结果都一样。</li>
+  <li><span class="kp">绝对空间间隔</span> -- Δd' = Δd，尺子长度与谁测量无关。空间与时间彼此独立，互不相关。</li>
+</ul>
+
+<p>设惯性系 S' 相对 S 沿 +x 轴以速度 u 匀速运动，t = t' = 0 时两原点重合。<span class="kp">伽利略变换</span>给出：</p>
+<p>$$x' = x - ut,\quad y' = y,\quad z' = z,\quad t' = t$$</p>
+<p>其中 u 是 <span class="exp">两参考系的相对速度</span>。t' = t 这一条就是「时间绝对」的数学表达。对其求导得到速度叠加 v' = v − u，加速度不变 a' = a——这正是牛顿第二定律 F = ma 在所有惯性系中形式相同的原因。</p>
+
+<p>但麻烦来了：<span class="exp">麦克斯韦方程组在伽利略变换下不保持形式不变</span>；更致命的是，Michelson-Morley 实验证明光速与参考系无关，但伽利略变换却预言光速应为 c ± u -- <span class="kp">直接矛盾</span>。物理学需要新的时空观。</p>
+
+<blockquote>易错：伽利略变换中 t' = t 意味着「同时性在所有惯性系中都是绝对的」——这是我们日常直觉的来源，但在高速世界是完全错误的。记住相对速度 u 的符号方向：S' 沿 +x 相对 S 运动，S→S' 用 x' = x − ut；S'→S 用 x = x' + ut'。代错符号会让整个结果反向。</blockquote>
+
+<div class="checkpoint">经典时空观下，「同时」「时间间隔」「空间间隔」三者各自是绝对的还是相对的？
+<details class="cp-answer"><summary>参考答案</summary>
+三者全部<strong>绝对</strong>，且与参考系选择无关，时间与空间彼此独立——这就是「绝对时空观」。狭义相对论将彻底推翻这一点。
+</details></div>
+
+<h3 id="s33103665"><span class="pg-chip" data-page="9">页9</span><span class="pg-chip" data-page="10">页10</span><span class="pg-chip" data-page="11">页11</span>狭义相对论的两条基本假设 <span class="tag-must">必考</span></h3>
+
+<p>1905 年，爱因斯坦提出两条假设，彻底重塑了物理学的时空根基：</p>
+
+<p><span class="kp">1. 相对性原理</span>（Principle of Relativity）<br>
+物理定律在所有惯性参考系中具有相同的数学形式。所有惯性系都是等价的。<br>
+<span class="exp">这是伽利略相对性原理的推广——从「力学定律」推广到「所有物理定律」（包括电磁学、光学）。没有任何惯性系是特殊的，不存在「绝对静止」参考系。</span></p>
+
+<p><span class="kp">2. 光速不变原理</span>（Principle of Invariance of Light Speed）<br>
+真空中的光速 c = 3×10⁸ m/s 在所有惯性系中都是相同的，与光源和观察者之间的相对运动无关。<br>
+<span class="exp">这意味着不管你以多快的速度追光，光对你来说永远是 c。你以 0.9c 追光，你测到的光速仍然是 c，不是 0.1c。这是反直觉的核心。</span></p>
+
+<blockquote>易错：别把「相对性原理」和「光速不变原理」搞混。相对性原理是「定律形式相同」——不限于力学、推广到所有物理；光速不变是「光速数值相同」——无论光源和观察者怎么运动。两者独立，缺一不可。另外，光速不变不是说「光速恒为 c」就结束了，而是光速在任何惯性系中都一样——这个「都」字是关键。</blockquote>
+
+<div class="checkpoint">光速不变原理和伽利略速度叠加规则冲突在哪里？爱因斯坦是如何解决这个矛盾的？
+<details class="cp-answer"><summary>参考答案</summary>
+按伽利略规则，观测者以速度 u 运动时测到的光速应为 c ± u，但光速不变原理要求始终为 c。爱因斯坦的解决方案是：不是改光速，而是改时空——时间不再是绝对的，长度不再是绝对的。洛伦兹变换取代伽利略变换，保证光速在任何惯性系中都是 c。
+</details></div>
+
+<h3 id="s65767393"><span class="pg-chip" data-page="16">页16</span><span class="pg-chip" data-page="17">页17</span><span class="pg-chip" data-page="18">页18</span>γ 因子——解读所有相对论公式的钥匙 <span class="tag-must">必考</span></h3>
+
+<p>在所有相对论公式中，有一个因子重复出现——它就是 <span class="kp">洛伦兹因子 γ（Lorentz factor）</span>：</p>
+<p>$$\gamma = \frac{1}{\sqrt{1 - v^2/c^2}}$$</p>
+
+<p>其中 v 是 <span class="exp">两个参考系的相对速度</span>，c 是光速。γ 决定了相对论效应有多强。理解 γ 的行为 = 理解整个相对论。</p>
+
+<p style="margin-top:1rem"><span class="exp">γ 的物理直觉：</span></p>
+<ul style="margin-left:1.5rem">
+  <li><span class="kp">v ≪ c（日常速度）</span>→ γ ≈ 1，所有相对论效应几乎消失，回到牛顿世界。汽车 100 km/h ≈ 0.000000093c → γ ≈ 1.000000000000004</li>
+  <li><span class="kp">v = 0.6c</span> → γ = 1/√$1−0.36$ = 1/√0.64 = 1.25</li>
+  <li><span class="kp">v = 0.8c</span> → γ = 1/√$1−0.64$ = 1/√0.36 = 5/3 ≈ 1.667</li>
+  <li><span class="kp">v = 0.99c</span> → γ = 1/√0.0199 ≈ 7.09，效应已非常显著</li>
+  <li><span class="kp">v = 0.998c（μ 子的速度）</span> → γ ≈ 15.8，寿命延长近 16 倍</li>
+  <li><span class="kp">v → c</span> → γ → ∞，时间无限膨胀、长度缩为零——<span class="exp">有质量物体永远不可能达到光速</span></li>
+</ul>
+
+<p style="margin-top:1rem"><span class="exp">γ ≥ 1 恒成立</span> —— 这是解读所有相对论公式的关键：</p>
+<ul style="margin-left:1.5rem">
+  <li>时间膨胀：Δt = <span class="kp">γ</span> Δt₀ → Δt ≥ Δt₀，「动钟变慢」意味着运动参考系测出的时间间隔<span class="exp">更大</span></li>
+  <li>长度收缩：L = L₀ / <span class="kp">γ</span> → L ≤ L₀，运动物体在运动方向上<span class="exp">变短</span></li>
+  <li>相对论质量：m = <span class="kp">γ</span> m₀ → m ≥ m₀，物体越运动质量越大</li>
+</ul>
+
+<blockquote>易错：很多同学记混 Δt 和 L 的公式方向——Δt = γΔt₀（乘 γ，时间间隔变大），L = L₀/γ（除 γ，长度变小）。记忆诀窍：带着「动」的那个量（动钟、动尺）是「被压缩」的一方——动钟走慢意味着同样的变化需要更长的间隔读数（乘 γ）；动尺变短意味着长度值变小（除 γ）。γ 永远 ≥ 1，所以乘它的变大、除它的变小。</blockquote>
+
+<div class="checkpoint">当 v = 0.8c 时，γ 是多少？解释为什么 v = 0.99c 时 γ 急剧增大而 v = 0.01c 时 γ 几乎等于 1。
+<details class="cp-answer"><summary>参考答案</summary>
+v = 0.8c：γ = 1/√$1−0.64$ = 1/0.6 = 5/3 ≈ 1.667。<br>
+v = 0.99c：γ = 1/√$1−0.9801$ = 1/√0.0199 ≈ 7.09。<br>
+v = 0.01c：γ = 1/√$1−0.0001$ = 1/√0.9999 ≈ 1.00005 ≈ 1。<br>
+根源：v²/c² 在 v 较小时非常小，分母 √$1−v²/c²$ ≈ 1；当 v 接近 c 时，分母接近 0，γ 急剧增大（以 1/√$1−v²/c²$ 的形式发散）。
+</details></div>
+
+<!-- ========== H2: 二、洛伦兹变换与时空效应 ========== -->
+<h2 id="s14625914">二、洛伦兹变换与时空效应</h2>
+
+<h3 id="s55672932"><span class="pg-chip" data-page="14">页14</span><span class="pg-chip" data-page="15">页15</span><span class="pg-chip" data-page="16">页16</span><span class="pg-chip" data-page="17">页17</span><span class="pg-chip" data-page="18">页18</span>洛伦兹变换 <span class="tag-must">必考</span></h3>
+
+<p>当光速不变和相对性原理同时成立时，连接两个惯性系的不是伽利略变换，而是 <span class="kp">洛伦兹变换</span>：</p>
+
+<p>正变换（S → S'，S' 相对 S 以速度 u 沿 +x 运动）：</p>
+<p>$$x' = \gamma$x - ut$,\quad y' = y,\quad z' = z,\quad t' = \gamma\left$t - \frac{u}{c^2}x\right$$</p>
+
+<p>逆变换（S' → S，只需把 u 换成 −u）：</p>
+<p>$$x = \gamma$x' + ut'$,\quad y = y',\quad z = z',\quad t = \gamma\left$t' + \frac{u}{c^2}x'\right$$</p>
+
+<p><span class="exp">这意味着什么？</span></p>
+<ul style="margin-left:1.5rem">
+  <li><span class="kp">时间和空间不再独立</span>——t' 依赖于 x，x' 依赖于 t。时空是统一的四维整体。</li>
+  <li><span class="kp">当 u ≪ c 时</span>，γ → 1 且 u/c² → 0，洛伦兹变换退化为伽利略变换：x' = x − ut，t' = t。相对论包含经典力学为低速特例。</li>
+  <li><span class="kp">u ≥ c 时 γ → ∞ 或虚数</span>——意味着任何物体速度不能超过 c。光速是宇宙的绝对速度上限。</li>
+  <li>洛伦兹变换的设计保证了光速不变：如果 S 中光速为 c，代入变换后 S' 中也是 c。</li>
+</ul>
+
+<table>
+<tr><th>对比维度</th><th>伽利略变换</th><th>洛伦兹变换</th></tr>
+<tr><td>坐标 x'</td><td>x' = x − ut</td><td>x' = γ$x − ut$</td></tr>
+<tr><td>时间 t'</td><td>t' = t（独立于空间）</td><td>t' = γ$t − ux/c²$（与空间耦合）</td></tr>
+<tr><td>速度叠加</td><td>v' = v − u（无上限）</td><td>v' = $v − u$/$1 − uv/c²$（上限 c）</td></tr>
+<tr><td>适用范围</td><td>v ≪ c 的低速世界</td><td>所有 v &lt; c 的运动</td></tr>
+<tr><td>时空关系</td><td>时空独立</td><td>时空统一</td></tr>
+<tr><td>速度上限</td><td>无</td><td>c（光速）</td></tr>
+</table>
+
+<blockquote>易错：洛伦兹变换的正逆变换中，符号变化规则——正变换是 x' = γ$x − ut$，t' = γ$t − ux/c²$；逆变换把 u 改成 −u：x = γ$x' + ut'$，t = γ$t' + ux'/c²$。不要在使用 u 符号和一撇的归属上搞混。另外 γ 的分母是 √$1 − u²/c²$，不是 1 − u/c！</blockquote>
+
+<div class="checkpoint">已知 S' 相对 S 以 0.8c 沿 +x 运动。S 中一事件坐标为 $x=0, t=1 s$，求 S' 中的坐标（x', t'）。
+<details class="cp-answer"><summary>参考答案</summary>
+γ = 1/√$1−0.8²$ = 1/√0.36 = 1/0.6 = 5/3 ≈ 1.667<br>
+x' = γ$x − ut$ = $5/3$$0 − 0.8c×1$ = −$4/3$c ≈ −4×10⁸ m<br>
+t' = γ$t − ux/c²$ = $5/3$$1 − 0.8c×0/c²$ = 5/3 ≈ 1.667 s<br>
+在 S 系中该事件在原点发生（x=0），在 S' 系中它在负方向 −$4/3$c 处发生——时空坐标互相转化！
+</details></div>
+
+<h3 id="s39621791"><span class="pg-chip" data-page="10">页10</span><span class="pg-chip" data-page="11">页11</span><span class="pg-chip" data-page="12">页12</span><span class="pg-chip" data-page="28">页28</span><span class="pg-chip" data-page="29">页29</span><span class="pg-chip" data-page="30">页30</span><span class="pg-chip" data-page="31">页31</span><span class="pg-chip" data-page="32">页32</span>同时性的相对性与时间膨胀 <span class="tag-must">必考</span></h3>
+
+<h4>爱因斯坦火车——同时性不是绝对的</h4>
+
+<div class="hook-story">
+<p>一列火车以速度 u 匀速行驶（S' 系）。车厢正中间 O 处有一盏灯。当 O 与地面上的观测者重合时（t = t' = 0），灯发出闪光。</p>
+<p style="margin-top:.4rem"><span class="kp">S' 系（火车上）</span>：光以相同速度 c 向两端传播，A 和 B 到 O 距离相等 → 光同时到达车头 A 和车尾 B → 两事件<span class="exp">同时</span>发生。</p>
+<p style="margin-top:.4rem"><span class="kp">S 系（地面）</span>：光速对地面也是 c！但 B（车尾）迎着光运动（光源向它靠近）、A（车头）远离光运动（光源离它远去）→ 光<span class="exp">先到达 B 后到达 A</span> → 两事件<span class="exp">不同时</span>！</p>
+<p style="margin-top:.6rem"><span class="kp">结论：同时性是相对的。</span>在一个惯性系中异地同时发生的两个事件，在另一个惯性系中一般不同时。</p>
+</div>
+
+<p>从洛伦兹变换看：若 S 系中异地同时（Δx ≠ 0，Δt = 0），则</p>
+<p>$$\Delta t' = \gamma\left$\Delta t - \frac{u}{c^2}\Delta x\right$ = -\gamma\frac{u}{c^2}\Delta x \neq 0$$</p>
+
+<p><span class="exp">只有同时且同地（Δx=0 且 Δt=0）的事件，在所有惯性系中才都同时。</span></p>
+
+<blockquote>易错：虽然同时性是相对的，但因果关系不会颠倒。如果事件 A 是事件 B 的原因，信号传递速度 ≤ c，则在任何惯性系中 A 都先于 B 发生。数学上因为 |Δx/Δt| ≤ c &lt; c/$u/c$ = c²/u，所以 Δt' 的符号与 Δt 始终相同。因果不倒，时间不倒流。</blockquote>
+
+<h4>时间膨胀——动钟变慢</h4>
+
+<p>设 S' 系中同一位置（Δx' = 0）发生两个事件，时间间隔为 Δt₀。这个在 <span class="kp">同一位置</span> 测得的时间间隔称为 <span class="kp">固有时（proper time）Δτ</span>——事件发生地的钟测出的时间间隔。</p>
+
+<p>在 S 系中测得的时间间隔 Δt 为：</p>
+<p>$$\Delta t = \frac{\Delta t_0}{\sqrt{1 - u^2/c^2}} = \gamma \Delta t_0$$</p>
+
+<p><span class="exp">因为 γ ≥ 1，所以 Δt ≥ Δt₀——运动参考系测出的时间间隔</span><span class="kp">大于</span><span class="exp">固有时。</span>这就是「动钟变慢」：对地面观察者来说，运动物体上的钟走得慢。固有时间隔是最短的时间间隔。</p>
+
+<p style="margin-top:.8rem"><span class="kp">μ 子验证（实验事实！）</span>：</p>
+<ul style="margin-left:1.5rem">
+  <li>μ 子静止寿命 τ₀ = 2.2×10⁻⁶ s（在 μ 子自身参考系中是固有时）</li>
+  <li>以 v = 0.998c 飞行：γ = 1/√$1−0.998²$ ≈ 15.8</li>
+  <li>地面测得的寿命：Δt = γτ₀ ≈ 15.8 × 2.2×10⁻⁶ = 3.5×10⁻⁵ s</li>
+  <li>能飞行的距离：s = vΔt = 0.998 × 3×10⁸ × 3.5×10⁻⁵ ≈ 10,420 m > 8000 m</li>
+  <li><span class="exp">μ 子能到达地面！</span> 地面实际测到 μ 子流率约 500 m⁻²/s，完美验证了时间膨胀。</li>
+</ul>
+
+<p style="margin-top:.8rem"><span class="kp">半人马座 α 星之旅</span>：飞船以 0.999c 飞向 4.3 光年外的半人马座 α 星。</p>
+<ul style="margin-left:1.5rem">
+  <li>地球测的旅程时间：Δt = 4.3 ly / 0.999c ≈ 4.55 年（出发和到达不在同一地点 → 不是固有时）</li>
+  <li>飞船测的旅程时间（固有时）：Δt₀ = Δt/γ = 4.55 × √$1−0.999²$ ≈ 0.203 年 ≈ 74 天</li>
+  <li><span class="exp">时间膨胀让在有生之年进行星际航行成为可能！</span></li>
+</ul>
+
+<blockquote>易错：<br>
+① 固有时 Δt₀ 是在两事件<span class="exp">同一地点</span>发生的那个参考系中测得的时间间隔，不是「静止的钟」——是和事件一起静止的钟。判断方法：问自己「这两个事件在哪个参考系中是同一地点发生的？」<br>
+② Δt = γΔt₀，γ ≥ 1 所以 Δt ≥ Δt₀ —— 运动参考系测出的时间间隔更<strong>大</strong>。不要把「动钟变慢」理解成数值也变小了！动钟走慢意味着跑一圈的间隔读数被拉长 → 数值更大。<br>
+③ 时间膨胀是相对的——S 系的人觉得 S' 的钟慢了，S' 系的人也觉得自己看到 S 的钟慢了。这看起来矛盾，但因为在不同参考系中「同时」本身就不同，所以逻辑自洽。<br>
+④ 时间膨胀和长度收缩不能同时用于同一个对象——哪个量在哪个系是「原」的，就决定用哪个公式。
+</blockquote>
+
+<div class="checkpoint">飞船以 0.6c 飞行，船上钟测得某过程历时 10 s。地面观察者测得这个过程历时多久？哪个是固有时？
+<details class="cp-answer"><summary>参考答案</summary>
+过程发生在飞船上同一地点，故船上的 10 s 是<strong>固有时</strong> Δt₀。<br>
+γ = 1/√$1−0.36$ = 1/0.8 = 1.25。<br>
+地面测得 Δt = γΔt₀ = 1.25 × 10 = 12.5 s，比固有时长——地面看到飞船上的过程变慢了。
+</details></div>
+
+<div class="checkpoint">μ 子实验中，为什么按经典力学算 μ 子到不了地面（只能飞约 660 m），按相对论算却能到？
+<details class="cp-answer"><summary>参考答案</summary>
+经典力学认为 μ 子寿命固定为 2.2×10⁻⁶ s，飞行距离 = 0.998c × 2.2×10⁻⁶ ≈ 660 m &lt; 8000 m，到不了地面。<br>
+相对论中，地面系测得 μ 子寿命被 γ ≈ 15.8 放大：Δt = γτ₀ = 3.5×10⁻⁵ s，飞行距离 ≈ 10420 m > 8000 m，能到达地面。实验测到地面 μ 子流率，完美验证时间膨胀。
+</details></div>
+
+<h3 id="s73518240"><span class="pg-chip" data-page="23">页23</span><span class="pg-chip" data-page="24">页24</span><span class="pg-chip" data-page="25">页25</span>长度收缩——动尺变短 <span class="tag-must">必考</span></h3>
+
+<p>一根杆静止在 S' 系中沿 x' 轴放置，其 <span class="kp">固有长度（proper length）</span> L₀ = x'₂ − x'₁ 是在杆静止的参考系中测得的长度——这是杆最长的长度。</p>
+
+<p>在 S 系中测量这根运动的杆，必须 <span class="exp">同时</span> 记录杆两端的位置（Δt = 0）：</p>
+<p>$$L = L_0\sqrt{1 - u^2/c^2} = \frac{L_0}{\gamma}$$</p>
+
+<p><span class="exp">因为 γ ≥ 1，所以 L ≤ L₀——固有长度最长，运动物体在运动方向上缩短了。</span></p>
+
+<p><span class="kp">关键限制：长度收缩只在运动方向上发生！</span>垂直于运动方向（y、z）的长度不变。这意味着：</p>
+<ul style="margin-left:1.5rem">
+  <li>一根斜放的杆，只有 x 分量收缩，y 分量不收缩 → 角度也变了！</li>
+  <li>运动物体的体积会变化，密度会变化</li>
+  <li>一个球以接近光速运动时，看起来像被压扁的椭球（在运动方向上变扁），但垂直于运动方向看起来仍然是圆的</li>
+</ul>
+
+<p>μ 子的故事也可以用长度收缩来解读：在 μ 子自身的参考系中，它寿命还是 τ₀，但迎面冲来的 8000 m 大气层被压缩为 L = 8000/γ ≈ 507 m，μ 子只需飞 507 m，当然能到达地面。时间膨胀和长度收缩是同一物理现象的两种表述方式。</p>
+
+<blockquote>易错：<br>
+① 固有长度 L₀ 是物体静止参考系中测的长度，它最长。运动长度 L = L₀/γ 总是更短。<br>
+② 长度收缩<span class="exp">只在运动方向</span>，不是三维都缩！y 和 z 方向不变。一根斜杆的角度在不同参考系中会不同。<br>
+③ 测量运动物体的长度必须<span class="exp">同时</span>记录两端位置——这是操作定义。但在另一参考系中「同时」本身就不同，所以测出的长度也不同。长度收缩的根源正是同时性的相对性。<br>
+④ 时间是「乘 γ 放大」（Δt = γΔt₀），长度是「除 γ 缩小」（L = L₀/γ）——两者方向相反，别套混！
+</blockquote>
+
+<div class="checkpoint">固有长度 1 m 的尺子沿长度方向以 0.8c 运动，地面测得它多长？
+<details class="cp-answer"><summary>参考答案</summary>
+γ = 1/√$1−0.64$ = 1/0.6 = 5/3。<br>
+L = L₀/γ = 1 / $5/3$ = 0.6 m。比固有长度短了 40%。
+</details></div>
+
+<div class="checkpoint">一根 1 米长的杆静止在 S' 中，与 x' 轴成 30°。S 系中测量杆与 x 轴成 45°，求 S' 相对 S 的速度 u 和 S 系中杆的长度。
+<details class="cp-answer"><summary>参考答案</summary>
+y 方向无收缩：tan30° = Δy'/Δx'，tan45° = Δy/Δx = Δy'/Δx。<br>
+故 Δx/Δx' = tan30°/tan45° = 0.577。<br>
+由长度收缩：Δx = Δx'√$1−u²/c²$ → √$1−u²/c²$ = 0.577 → u = 0.816c。<br>
+杆在 S 系中长度：L = L₀·$sin30°/sin45°$ = 1×$0.5/0.707$ = 0.707 m。
+</details></div>
+
+<h3 id="s60742272"><span class="pg-chip" data-page="40">页40</span><span class="pg-chip" data-page="41">页41</span><span class="pg-chip" data-page="42">页42</span><span class="pg-chip" data-page="43">页43</span><span class="pg-chip" data-page="44">页44</span><span class="pg-chip" data-page="45">页45</span>相对论速度叠加——不超光速 <span class="tag-key">核心</span></h3>
+
+<p>经典直觉：火箭以 0.8c 飞行，火箭又向前发射 0.5c 的子弹，子弹相对地面的速度 = 0.8c + 0.5c = 1.3c？<span class="exp">错！</span></p>
+
+<p>相对论速度叠加（S' 相对 S 以速度 u 沿 +x 运动）：</p>
+<p>$$\upsilon_x = \frac{\upsilon'_x + u}{1 + \frac{u\upsilon'_x}{c^2}},\qquad \upsilon'_x = \frac{\upsilon_x - u}{1 - \frac{u\upsilon_x}{c^2}}$$</p>
+
+<p>y 和 z 方向也有修正（因为 dt 和 dt' 不同）：</p>
+<p>$$\upsilon_y = \frac{\upsilon'_y \sqrt{1 - u^2/c^2}}{1 + \frac{u\upsilon'_x}{c^2}}$$</p>
+
+<p>验证火箭射子弹：u = 0.8c，υ'ₓ = 0.5c</p>
+<p>$$\upsilon_x = \frac{0.5c + 0.8c}{1 + \frac{0.8c \cdot 0.5c}{c^2}} = \frac{1.3c}{1.4} = 0.928c$$</p>
+
+<p><span class="exp">0.928c，不是 1.3c！</span> 分母的修正项 uv'/c² 就是保证不超光速的机制。</p>
+
+<p>验证光速自洽：令 υ' = c，υ = $c+u$/$1+u/c$ = c·$c+u$/$c+u$ = c——光速叠加任何速度还是 c。完美！</p>
+
+<blockquote>易错：<br>
+① 速度叠加公式的分母永远不要忘了！经典 0.8c + 0.5c = 1.3c 是错的。<br>
+② y、z 方向的速度变换有额外的 √$1−u²/c²$ 因子——因为时间膨胀影响了 dt。<br>
+③ 地面观测的两火箭接近速率 1.25c 不是任何物体的运动速度——它是同一参考系中两个物体坐标差的变化率，可以超过 c，不违反相对论。「相对速度」（用速度叠加公式算）和「接近速率」（同一参考系中的速度差）是两个不同的概念。
+</blockquote>
+
+<div class="checkpoint">原子以 0.5c 远离观察者，沿运动方向射出相对原子 0.8c 的电子。求电子相对观察者的速度。为什么不是 1.3c？
+<details class="cp-answer"><summary>参考答案</summary>
+u = 0.5c，υ'ₓ = 0.8c。<br>
+υₓ = $0.8c + 0.5c$/$1 + 0.5×0.8×c²/c²$ = 1.3c/1.4 = 0.928c。<br>
+不是 1.3c 的分母修正项 $1 + uυ'/c²$ 保证结果永远不超过 c。经典相加只在 v ≪ c 时近似成立。
+</details></div>
+
+<div class="checkpoint">两艘火箭在地面观测中分别以 0.5c 和 0.75c 相向飞行。求 B 相对于 A 的速度。地面观测到的接近速度是多少？接近速度是否违反相对论？
+<details class="cp-answer"><summary>参考答案</summary>
+S（地面）：u_A = 0.5c，υ_B = −0.75c。<br>
+S'（A）：υ' = $−0.75c − 0.5c$/$1 − 0.5×(−0.75$) = −1.25c/1.375 = −0.91c。<br>
+B 相对 A 的速度为 0.91c，不超光速！<br>
+地面测的接近速度 = 0.5c + 0.75c = 1.25c，这是两个物体在同一参考系中各自速度的算术和，不是任何一个物体的运动速度，不违反相对论。
+</details></div>
+
+<!-- ========== H2: 三、相对论动力学：E=mc² ========== -->
+<h2 id="s77127474">三、相对论动力学：E = mc²</h2>
+
+<h3 id="s85564630"><span class="pg-chip" data-page="47">页47</span><span class="pg-chip" data-page="48">页48</span><span class="pg-chip" data-page="49">页49</span><span class="pg-chip" data-page="50">页50</span><span class="pg-chip" data-page="51">页51</span><span class="pg-chip" data-page="52">页52</span><span class="pg-chip" data-page="53">页53</span><span class="pg-chip" data-page="54">页54</span><span class="pg-chip" data-page="55">页55</span><span class="pg-chip" data-page="56">页56</span><span class="pg-chip" data-page="57">页57</span><span class="pg-chip" data-page="58">页58</span>相对论质量、动量与质能关系 <span class="tag-must">必考</span></h3>
+
+<h4>质量随速度变化</h4>
+<p>从完全非弹性碰撞+动量守恒+速度叠加公式可严格推出，要保持动量守恒，质量必须随速度变化：</p>
+<p>$$m = \frac{m_0}{\sqrt{1 - \upsilon^2/c^2}} = \gamma m_0$$</p>
+<p>其中 m₀ 是 <span class="kp">静止质量（rest mass）</span>，m 是 <span class="kp">相对论质量</span>。<span class="exp">物体运动越快，质量越大。要加速一个已接近光速的物体，需要越来越大的力（因为质量在增大）。这就是为什么有质量物体永远达不到光速——需要无穷大的能量。</span></p>
+
+<h4>相对论动量与动力学方程</h4>
+<p>$$\vec{p} = m\vec{\upsilon} = \frac{m_0\vec{\upsilon}}{\sqrt{1 - \upsilon^2/c^2}} = \gamma m_0\vec{\upsilon}$$</p>
+<p>$$\vec{F} = \frac{d\vec{p}}{dt} = \frac{d$m\vec{\upsilon}$}{dt} = m\frac{d\vec{\upsilon}}{dt} + \vec{\upsilon}\frac{dm}{dt}$$</p>
+<p><span class="exp">注意：m 随速度变化，所以 F = m dv/dt + v dm/dt，不再是简单的 F = ma。</span></p>
+
+<h4>相对论动能——不是 ½m₀v²！</h4>
+<p>从动能定理 E_k = ∫F·dr 严格积分得到：</p>
+<p>$$E_k = mc^2 - m_0c^2 = $\gamma - 1$m_0c^2$$</p>
+
+<p>当 υ ≪ c 时做泰勒展开：</p>
+<p>$$E_k \approx \frac{1}{2}m_0\upsilon^2 + \frac{3}{8}m_0\frac{\upsilon^4}{c^2} + \cdots$$</p>
+<p><span class="exp">低速极限的首项就是经典动能 ½m₀v²！</span>这是理论自洽性的重要检验。</p>
+
+<h4>E = mc²——质能关系</h4>
+<p style="font-size:1.3rem;text-align:center;margin:1rem 0">$$\boxed{E = mc^2}$$</p>
+<p>物理学最著名的方程。质量为 m 的物体具有总能量 E = mc²。</p>
+<ul style="margin-left:1.5rem">
+  <li><span class="kp">静能（rest energy）</span>：E₀ = m₀c²，即使物体静止不动也拥有巨大能量</li>
+  <li><span class="kp">总能</span>：E = E₀ + E_k = mc² = γ m₀c²，静能+动能</li>
+</ul>
+
+<h4>核反应与质量亏损</h4>
+<p>核反应前后的能量守恒：</p>
+<p>$$m_{01}c^2 + E_{k1} = m_{02}c^2 + E_{k2}$$</p>
+<p>释放的能量：</p>
+<p>$$\Delta E = E_{k2} - E_{k1} = $m_{01} - m_{02}$c^2 = \Delta m_0 c^2$$</p>
+<p>其中 Δm₀ = m₀₁ − m₀₂ 是 <span class="kp">静质量亏损（mass defect）</span>。</p>
+
+<p>裂变实例（PPT E13）：1 mol ²³⁵U 裂变质量亏损 Δm = 0.215 g</p>
+<p>$$\Delta E = 0.215 \times 10^{-3} \times $3 \times 10^8$^2 = 1.935 \times 10^{13}\ \text{J}$$</p>
+<p><span class="exp">相当于 625 吨无烟煤燃烧的热量！</span>这就是核能的来源——微小的质量亏损乘以 c² 就是巨大的能量。</p>
+
+<p>聚变实例（PPT E14）：质子+中子→氘核，Δm₀ = 3.97×10⁻³⁰ kg，放出 ΔE ≈ 3.57×10⁻¹³ J。聚合成 1 kg 氘核释放约 1.07×10¹⁴ J。</p>
+
+<h4>能量-动量关系（能量三角形）</h4>
+<p>消去速度 υ，得到能量与动量的普适关系：</p>
+<p>$$E^2 = E_0^2 + $pc$^2 = $m_0c^2$^2 + $pc$^2$$</p>
+
+<p><span class="kp">能量三角形</span>：E 是斜边，E₀ = m₀c² 是一条直角边，pc 是另一条直角边。直观！</p>
+
+<p>极端情况：</p>
+<ul style="margin-left:1.5rem">
+  <li>υ ≪ c（低速）：pc ≪ E₀，E ≈ E₀ + p²/$2m₀$，回到经典动能</li>
+  <li>υ → c（极端相对论）：pc ≫ E₀，E ≈ pc</li>
+  <li>光子：m₀ = 0，E₀ = 0，E = pc（光子能量完全来自动量）</li>
+</ul>
+
+<blockquote>易错：<br>
+① 动能不是 ½m₀υ²！当 υ = 0.8c 时，经典动能 = 0.32m₀c²，相对论动能 = $γ−1$m₀c² = 0.667m₀c²——差了超过一倍！高速下必须用 E_k = $γ−1$m₀c²。<br>
+② E = mc² 中的 m 是动质量 γm₀，不是静质量 m₀。对于静止物体 E₀ = m₀c²。<br>
+③ 计算核反应释放能量用<strong>静质量亏损</strong> Δm₀（反应前后静质量之差），不是动质量之差。<br>
+④ $pc$² = E² − E₀²：已知动能和静能，可以直接求动量，不必先算速度。
+</blockquote>
+
+<div class="checkpoint">一个电子（m₀ = 9.11×10⁻³¹ kg）被加速到 0.99c。（1）求 γ；（2）求相对论动能；（3）如果用经典公式算动能，相差多少倍？
+<details class="cp-answer"><summary>参考答案</summary>
+$1$ γ = 1/√$1−0.99²$ = 1/√0.0199 ≈ 7.09<br>
+$2$ E_k = $γ−1$m₀c² = 6.09 × 9.11×10⁻³¹ × $3×10⁸$² ≈ 5.0×10⁻¹³ J<br>
+$3$ 经典动能：½m₀υ² = 0.5×9.11×10⁻³¹×$2.97×10⁸$² ≈ 4.0×10⁻¹⁴ J<br>
+比值：5.0×10⁻¹³ / 4.0×10⁻¹⁴ ≈ 12.5 倍！经典公式在高速下严重低估。
+</details></div>
+
+<div class="checkpoint">写出相对论能量-动量关系，并说明对光子（m₀ = 0）的结果。
+<details class="cp-answer"><summary>参考答案</summary>
+E² = $m₀c²$² + $pc$²。<br>
+对光子 m₀ = 0，得 E = pc，即光子能量与动量成正比。光子以光速运动且无静质量，其能量完全来自动量。
+</details></div>
+
+<!-- ===== 总结对比表 ===== -->
+<h2 id="s70379499">核心对比总结</h2>
+
+<table>
+<tr><th>物理量/概念</th><th>经典力学（Newton）</th><th>狭义相对论（Einstein）</th></tr>
+<tr><td>时间</td><td>绝对：Δt = Δt'</td><td>相对：<span class="kp">Δt = γΔt₀</span>（时间膨胀，动钟变慢）</td></tr>
+<tr><td>空间（长度）</td><td>绝对：Δx = Δx'</td><td>相对：<span class="kp">L = L₀/γ</span>（长度收缩，只在运动方向）</td></tr>
+<tr><td>同时性</td><td>绝对</td><td>相对：<span class="kp">与参考系有关</span>（异地同时不具不变性）</td></tr>
+<tr><td>质量</td><td>不变：m = m₀</td><td>随速度变化：<span class="kp">m = γm₀</span></td></tr>
+<tr><td>动量</td><td>p = mv</td><td>p = γm₀v</td></tr>
+<tr><td>动能</td><td>E_k = ½mv²</td><td>E_k = $γ−1$m₀c²</td></tr>
+<tr><td>静能</td><td>无此概念</td><td><span class="kp">E₀ = m₀c²</span></td></tr>
+<tr><td>总能量</td><td>只有动能</td><td><span class="kp">E = mc² = E₀ + E_k</span></td></tr>
+<tr><td>速度叠加</td><td>v = v' + u（无上限）</td><td>v = $v'+u$/$1+v'u/c²$（上限 c）</td></tr>
+<tr><td>时空关系</td><td>时空独立</td><td>时空统一（四维时空，洛伦兹变换）</td></tr>
+<tr><td>光</td><td>光速依赖参考系</td><td><span class="kp">c 在所有惯性系中相同</span>，是宇宙速度上限</td></tr>
+<tr><td>参考系变换</td><td>伽利略变换</td><td>洛伦兹变换</td></tr>
+<tr><td>低速极限</td><td>--</td><td>γ → 1，所有公式回到经典力学 ✓</td></tr>
+</table>
+
+<!-- ===== How ===== -->
+<h2 id="s28052119">How：相对论运动学解题流程</h2>
+
+<p style="margin-bottom:.8rem">相对论运动学问题的通用四步法：</p>
+<p><span class="kp">第一步：确定两个惯性参考系</span> -- 搞清楚谁是 S，谁是 S'，相对速度 u 是多少，沿什么方向运动。</p>
+<p><span class="kp">第二步：确定一个或两个（空间分离的）事件</span> -- 明确事件在哪个参考系的时空坐标（x, t）或（x', t'）。</p>
+<p><span class="kp">第三步：判断「原」量在哪个参考系</span> -- 固有时？问：「这两个事件在哪个参考系中是同一地点发生的？」那个系测的时间就是固有时。固有长度？问：「这个物体在哪个参考系中是静止的？」那个系测的长度就是固有长度。确定了就直接用 Δt = γΔt₀ 或 L = L₀/γ。</p>
+<p><span class="kp">第四步：洛伦兹变换贯通全题</span> -- 如果题目给的是不同位置的时空坐标（两个位置+两个时间），必须用完整的洛伦兹变换，不能只用时间膨胀和长度收缩的简化公式。</p>
+
+<blockquote>终极易错清单：<br>
+① 固有时（proper time）是 Δx' = 0 的时间间隔——两个事件<span class="exp">在同一地点</span>发生的参考系中测得的时间间隔。问自己：「这两个事件在哪个参考系中是同一地点？」<br>
+② γ ≥ 1 → Δt = γΔt₀ 让时间间隔变大（动钟变慢 → 外力观测到的时间拉长 → 数值更大）；L = L₀/γ 让长度变小（动尺变短 → 运动方向上压缩 → 数值更小）。<br>
+③ 长度收缩只发生在运动方向上，垂直于运动方向不变。<br>
+④ 不能同时用时间膨胀和长度收缩处理同一个量——要分清哪个量在哪个参考系是「原」的，决定用哪个公式。<br>
+⑤ 速度叠加公式的分母永远不要忘了！y、z 分量的变换有额外的 √$1−u²/c²$ 因子。<br>
+⑥ 同时性是相对的（异地同时不具不变性），但因果关系是绝对的——因为信号传递速度 ≤ c。<br>
+⑦ 动能是 E_k = $γ−1$m₀c²，不是 ½m₀υ²！高速下差距极大。<br>
+⑧ 核反应释放能量用静质量亏损 Δm₀（静质量之差），不是动质量之差。<br>
+⑨ E = mc² 中 m 是动质量 γm₀，E₀ = m₀c² 是静能。
+</blockquote></div><aside class="kn-rail"><div class="kn-rail-title">📑 原始幻灯片对照</div><div class="slide-card" id="slide-p1" data-page="1"><div class="slide-card-label">第1页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p001.jpg" loading="lazy" alt="第1页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Chapter 4<br>SPECIAL RELATIVITY<br>狭义相对论基础<br>Lecturer：曾淼旺（Marlon）<br>Email: zengmw@dgut.edu.cn</div></details></div>
+<div class="slide-card" id="slide-p2" data-page="2"><div class="slide-card-label">第2页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p002.jpg" loading="lazy" alt="第2页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Contents<br>4.1 Historical Background and Physical Base of Special Relativity<br>相对论产生的历史背景和物理基础<br>4.2 Basic Assumption of Special Relativity 狭义相对论的基本假设<br>4.3  Lorentz transformation   洛仑兹变换<br>4.4 Viewpoint of Space-Time of Special Relativity 相对论时空观<br>4.5 Composition of Velocities of Special Relativity 相对论的速度合<br>成<br>4.6 Dynamics of Special Relativity 相对论动力学基础<br>2</div></details></div>
+<div class="slide-card" id="slide-p3" data-page="3"><div class="slide-card-label">第3页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p003.jpg" loading="lazy" alt="第3页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">3<br>Classical physics：Galilean伽利略时期16th — 19th centry<br>over 300 years development, The Golden Age of Prosperity<br>Three theoretical systems:<br>1. Mechanics: classical mechanics, Newton’s Law, the law of gravitation<br>2. Electromagnetic motion: Electromagnetism, Maxwell’s equations, <br>optics<br>3. Thermodynamics：Three laws of Thermodynamics, Macroscopic <br>theory and microscopic theory of thermodynamics<br>4.1 Historical Background and Physical Base<br>of Special Relativity<br>相对论产生的历史背景和物理基础<br>Historical Background</div></details></div>
+<div class="slide-card" id="slide-p4" data-page="4"><div class="slide-card-label">第4页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p004.jpg" loading="lazy" alt="第4页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">4<br>1. Principle of mechanical relativity力学相对性原理<br>Inertial frame - reference frame in which Newton's <br>laws strictly hold<br>In a inertial frame, every <br>mechanical experiment can’t <br>judge the motion of the inertial <br>frame is still, or in uniform <br>linear motion.     在一个惯性系中<br>所做的任何力学实验，都不能判<br>断该惯性系是静止的，还是匀速<br>直线运动。<br>Galilean descript the phenomenon in a <br>uniformly linear moving boat</div></details></div>
+<div class="slide-card" id="slide-p5" data-page="5"><div class="slide-card-label">第5页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p005.jpg" loading="lazy" alt="第5页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">5<br>2. The space-time view of classical <br>mechanics 经典力学的时空观<br>(1) Simultaneity is absolute<br>同时性是绝对的。<br>(2)Time interval is absolute时间间隔是绝对的。<br>1<br>2<br>t<br>t<br><br><br><br>t<br>t<br><br><br>or<br>S：two events happen simultaneously <br>两事件同时发生，<br>t2-t1=0<br>S’ ：t2<br>’- t1<br>’= t2’- t1’=0<br>In S’ reference frame, they happen <br>simultaneously too.<br>1<br>2<br>t<br>t <br></div></details></div>
+<div class="slide-card" id="slide-p6" data-page="6"><div class="slide-card-label">第6页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p006.jpg" loading="lazy" alt="第6页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">6<br>(3)Space interval is absolute空间间隔(距离)是绝对的<br>2<br>2<br>2<br>(<br>)<br>(<br>)<br>(<br>)<br>d<br>x<br>y<br>z<br><br><br><br><br><br><br><br><br>2<br>2<br>2<br>(<br>)<br>(<br>)<br>(<br>)<br>x<br>y<br>z<br>d<br><br><br><br><br><br>2<br>1<br>(<br>)<br>x<br>x<br>x<br><br><br><br><br><br><br>Simultaneity, time interval, space interval are all absolute, they are independent <br>of the selection of the reference system. Besides, space and time is uncorrelated. <br>They are independent with things and motion. 同时性、时间间隔和空间距离<br>都是绝对的，与参考系的选择无关。而且，时间和空间是彼此独立的、互<br>不相关的，并且独立于物质和运动之外。<br>This is the time-space view of classic mechanics, also called <br>absolute time-space view. 这就是经典力学的时空观,   也称绝对时空观。</div></details></div>
+<div class="slide-card" id="slide-p7" data-page="7"><div class="slide-card-label">第7页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p007.jpg" loading="lazy" alt="第7页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">7<br>Assuming inertia reference frame of S and S’ are parallel, S’ moves with <br>constant velocity u along x-axis relative to frame S. When t=t’=0, the origin <br>of two frames O and O’ coincide 重合。<br>S frame：P(x,y,z,t)，<br>S’ frame：P(x’, y’, z’, t’ )<br>•P<br>x<br>y<br>S<br>u<br>ut<br>x<br>o<br>z<br>x<br>y<br>z<br>S<br>o<br>x<br>x<br>x<br>ut<br><br><br>y<br>y<br><br>z<br>z<br><br>t<br>t<br><br>3. Galilean transformation伽利略变换<br>description of a <br>reference frame<br>transformation<br>x<br>x<br>ut<br>y<br>y<br>z<br>z<br>t<br>t<br><br><br><br><br><br><br><br><br><br><br>or<br>description of another <br>reference frame</div></details></div>
+<div class="slide-card" id="slide-p8" data-page="8"><div class="slide-card-label">第8页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p008.jpg" loading="lazy" alt="第8页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">8<br>Transformation of velocity <br>and acceleration:<br>x<br>x<br>u<br><br><br><br><br>y<br>y<br><br><br><br>z<br>z<br><br><br><br>x<br>x<br>a<br>a<br><br>y<br>y<br>a<br>a<br><br>z<br>z<br>a<br>a<br><br>a<br>a<br><br><br><br>x<br>x<br>ut<br><br><br>y<br>y<br><br>z<br>z<br><br>t<br>t<br><br>•P<br>x<br>y<br>S<br>u<br>ut<br>x<br>o<br>z<br>x<br>y<br>z<br>S<br>o<br>x</div></details></div>
+<div class="slide-card" id="slide-p9" data-page="9"><div class="slide-card-label">第9页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p009.jpg" loading="lazy" alt="第9页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">9<br>4. The difficulty of Galilean transformation伽利略变<br>换的困难<br>(1)Classical electromagnetic theory does not have Galilean transformation <br>invariance<br>(2) Inconsistent with experimental results of high-speed motion <br>(propagation of light)<br>Speed of light in vaccume：<br>8<br>-1<br>0<br>0<br>1<br>3 10 m s<br>c<br><br><br><br><br>Michelson-Murray experiment <br>results: The speed of light has <br>nothing to do with the reference <br>system!<br>Contradict each <br>other 矛盾！<br>According to Galilean transformation：The speed is related to the selection <br>of the reference frame.<br>u<br>u<br>c <br>u<br>c</div></details></div>
+<div class="slide-card" id="slide-p10" data-page="10"><div class="slide-card-label">第10页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p010.jpg" loading="lazy" alt="第10页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">10<br>4.2 Basic Assumption of Special Relativity<br>狭义相对论的基本假设<br>1. Principle of relativity相对性原理<br>The laws of physics have the same mathematical form in all inertial systems. That is,<br>the laws of physics are independent of the choice of inertial frames; all inertial<br>frames are equivalent. 物理定律在所有的惯性系中都具有相同的数学形式。即物理<br>学定律与惯性系的选择无关，所有的惯性系都是等价的.<br>2. Principle of invariance of light speed光速不变原理<br>The speed of light in vacuum has the same magnitude c in all inertial<br>systems.That is, the speed of light in a vacuum observed by an observer in any<br>inertial frame is the same regardless of the relative motion between the light<br>source and the observer. 在所有惯性系中, 真空中的光速都具有相同的量值c。也<br>就是说，不管光源与观察者之间的相对运动如何，在任一惯性系中的观察者所观<br>测的真空中光速都是相等的。</div></details></div>
+<div class="slide-card" id="slide-p11" data-page="11"><div class="slide-card-label">第11页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p011.jpg" loading="lazy" alt="第11页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">11<br>1) Einstein’s theory is the development of Newton’s theory<br>All physical laws<br>Mechanic laws<br>2) Invariance of light speed is contradict with Galilean transformation.<br>3) Space-time view is changed.<br>Newtonian mechanics牛顿力学: Simultaneity, time interval, space <br>interval, they are independent of the selection of the reference system. are <br>absolute<br>Special relativity mechanics 狭义相对论力学: Invariance of light speed <br>makes that the simultaneity, time interval, space interval are relative。<br>Discuss</div></details></div>
+<div class="slide-card" id="slide-p12" data-page="12"><div class="slide-card-label">第12页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p012.jpg" loading="lazy" alt="第12页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">12<br>For example, Einstein’s train:<br>On the train，there are optical signal receivers at A and B position，<br>optical signal generator is at mid-point O position，when t=t’ =0, O sends <br>a optical signal.<br>A receives signal: event 1，B receives signal: event 2。<br>S’ reference frame:：<br>Reference of ground: S，reference of train：S’<br>S reference：Invariance of light speed c，A is facing light, A receives <br>signal ealier than B.<br>Event 1 and 2 is not simultaneouly, <br>, event 1 is ealier。<br>Event 1 and 2 occur simultaneouly;<br>l<br>l<br>A<br>B<br>O<br>S’<br>S<br>c<br>c<br>u<br>Simultaneity is relative！<br>同时性是相对的</div></details></div>
+<div class="slide-card" id="slide-p13" data-page="13"><div class="slide-card-label">第13页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p013.jpg" loading="lazy" alt="第13页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Contents<br>4.1 Historical Background and Physical Base of Special<br>Relativity 相对论产生的历史背景和物理基础<br>4.2 Basic Assumption of Special Relativity 狭义相对论的基<br>本假设<br>4.3  Lorentz transformation   洛仑兹变换<br>4.4 Viewpoint of Space-Time of Special Relativity 相对论时空<br>观<br>4.5 Composition of Velocities of Special Relativity 相对论的速<br>度合成<br>4.6 Dynamics of Special Relativity 相对论动力学基础<br>13</div></details></div>
+<div class="slide-card" id="slide-p14" data-page="14"><div class="slide-card-label">第14页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p014.jpg" loading="lazy" alt="第14页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">4.3 Lorentz transformation<br>洛仑兹变换<br>Assume that the inertial system S ´moves uniformly in a straight line <br>along the +x-axis at a velocity u relative to the inertial system S, the two <br>coordinate origins o and o‘ coincide at t=t'=0<br>At t=0, the origin sends a light pulse that reaches <br>P point after a period of time,<br>Obviously,  y’=y,  z’=z<br>So we need to find the relationship of (x, t) <br>and (x’, t’).<br>•P<br>x<br>y<br>S<br>u<br>ut<br>x<br>o<br>z<br>x<br>y<br>z<br>S<br>ox<br>)<br>,<br>,<br>,<br>(<br>:<br>S<br>)<br>,<br>,<br>,<br>(<br>:<br>S<br>t<br>z<br>y<br>x<br>P<br>t<br>z<br>y<br>x<br>P<br><br><br><br><br><br>14</div></details></div>
+<div class="slide-card" id="slide-p15" data-page="15"><div class="slide-card-label">第15页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p015.jpg" loading="lazy" alt="第15页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">(1)Transformation should be linear<br>)<br>,<br>(<br>)<br>,<br>(<br>t<br>x<br>t<br>x<br><br><br><br>)<br>,<br>(<br>)<br>,<br>(<br>t<br>x<br>t<br>x<br><br><br><br>and<br>，<br>Consider coordinate of point O：<br>for any time,<br>•P<br>x<br>y<br>S<br>u<br>ut<br>x<br>o<br>z<br>x<br>y<br>z<br>S<br>ox<br>S reference:   x=0<br>S’reference:    x’ = - ut’<br>i.e.：x= x’ +ut’=0<br>For any point p, since the <br>homogeneity of space-time the <br>linearity there：<br>)<br>(<br>t<br>u<br>x<br>x<br><br><br><br><br>For the same reason，consider O’，i.e.:    x’= x -ut=0<br>)<br>(<br>ut<br>x<br>x<br><br><br><br><br>For point P:<br>15</div></details></div>
+<div class="slide-card" id="slide-p16" data-page="16"><div class="slide-card-label">第16页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p016.jpg" loading="lazy" alt="第16页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">(2)Since the invariance of speed of light<br>•P<br>x<br>y<br>S<br>u<br>ut<br>x<br>o<br>z<br>x<br>y<br>z<br>S<br>ox<br>)<br>(<br>t<br>u<br>x<br>x<br><br><br><br><br>)<br>(<br>ut<br>x<br>x<br><br><br><br><br>t<br>x<br>u<br>t<br><br><br><br><br><br><br><br>2<br>1<br>substitue<br>y’=y,  z’=z<br>)<br>(<br>ut<br>x<br>x<br><br><br><br><br>t<br>x<br>u<br>t<br><br><br><br><br><br><br><br>2<br>1<br>2<br>2<br>2<br>2<br>2<br>t<br>c<br>z<br>y<br>x<br><br><br><br>……(1)<br>2<br>2<br>2<br>2<br>2<br>t<br>c<br>z<br>y<br>x<br><br><br><br><br><br><br><br>……(2)<br>In (2) and compare with (1)<br>2<br>2<br>1<br>1<br>c<br>u<br><br><br><br>16</div></details></div>
+<div class="slide-card" id="slide-p17" data-page="17"><div class="slide-card-label">第17页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p017.jpg" loading="lazy" alt="第17页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">finally<br>o<br>r<br>This is the Lorentz transformation洛仑兹坐标正变换<br>z<br>z<br>y<br>y<br>x<br>c<br>u<br>t<br>t<br>t<br>u<br>x<br>x<br><br><br><br><br><br><br><br><br><br><br><br><br>)<br>(<br>)<br>(<br>2<br><br><br>2<br>2<br>1<br>1<br>c<br>u<br><br><br><br>Inverse Lorentz transformation<br>洛仑兹坐标逆变换<br>2<br>2<br>2<br>2<br>2<br>1<br>1<br>c<br>u<br>x<br>c<br>u<br>t<br>t<br>c<br>u<br>ut<br>x<br>x<br><br><br><br><br><br><br><br><br>z<br>z<br>y<br>y<br><br><br><br><br>S       S’<br>S’         S<br>17<br>z<br>z<br>y<br>y<br>x<br>c<br>u<br>t<br>t<br>ut<br>x<br>x<br><br><br><br><br><br><br><br><br><br><br>)<br>(<br>)<br>(<br>2<br><br><br>2<br>2<br>1<br>1<br>c<br>u<br><br><br></div></details></div>
+<div class="slide-card" id="slide-p18" data-page="18"><div class="slide-card-label">第18页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p018.jpg" loading="lazy" alt="第18页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">(1) General relationship between <br>space and time transformations<br>(3) The Lorentz transformation reveals that the speed of <br>light, c, is the limit of the speed of motion of all objects<br>S ′       S<br>)<br>(<br>ut<br>x<br>x<br><br><br><br><br>y<br>y <br><br>)<br>(<br>2<br>c<br>ux<br>t<br>t<br><br><br><br><br>z<br>z <br><br>2<br>2<br>1<br>1<br>c<br>u<br><br><br><br>Discuss<br>The meaning of the Lorentz transformation<br>(2) The Lorentz transformation reveals the inseparable <br>relationship between time, space, and the motion of matter<br>When u&lt;&lt;c,  Lorentz transform turns into <br>Galilean transformation：<br>ut<br>x<br>x<br><br><br><br>y<br>y <br><br>z<br>z <br><br>t<br>t <br><br>18</div></details></div>
+<div class="slide-card" id="slide-p19" data-page="19"><div class="slide-card-label">第19页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p019.jpg" loading="lazy" alt="第19页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">E1：The reference frame S and S’ coincides(重合) at the beginning t=0,，<br>the axises of S and S’ are parallel, respectively. S’ moves along +x axis at <br>the speed 0.8c relative to S frame. When t=0, point o sends a light signal. <br>At t=1s, in S frame, the light reaches P1 and P2 at the same time. In  S’ <br>frame, what is the time-space coordinate of P1，P2?<br>y<br>y’<br>u<br>S<br>S’<br>z’<br>O’<br>O<br>p2<br>p1<br>x’<br>x<br>z<br>Solution：p1 in S frame, the coordinate is：(-c，0，0，1)，<br>2<br>2<br>1<br>c<br>u<br>ut<br>x<br>x<br><br><br><br><br>2<br>2<br>2<br>1<br>c<br>u<br>x<br>c<br>u<br>t<br>t<br><br><br><br><br>c<br>c<br>c<br>c<br>c<br>3<br>64<br>.0<br>1<br>8.0<br>2<br>2<br><br><br><br><br><br><br>3<br>)<br>8.0<br>(<br>1<br>)<br>(<br>8.0<br>1<br>2<br>2<br>2<br><br><br><br><br><br>c<br>c<br>c<br>c<br>c<br>According to Lorentz transformation，<br>P1 in S’ frame coordinate is：<br>19</div></details></div>
+<div class="slide-card" id="slide-p20" data-page="20"><div class="slide-card-label">第20页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p020.jpg" loading="lazy" alt="第20页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">0<br><br><br><br>y<br>y<br>0<br><br><br><br>z<br>z<br>Thus, p2  in S’ frame, the coordinate is (c/3，0，0，1/3)<br>thus，p1 in S’ frame, the coordinate is (-3c，0，0，3)<br>y<br>y’<br>u<br>S<br>S’<br>z’<br>O’<br>O<br>p2<br>p1<br>x’<br>x<br>z<br>P2 in S frame, the coordinate is (c，0，0，1)，<br>According to Lorentz transformation，in S’ frame, the <br>coordinate is<br>2<br>2<br>1<br>c<br>u<br>ut<br>x<br>x<br><br><br><br><br>2<br>2<br>2<br>1<br>c<br>u<br>x<br>c<br>u<br>t<br>t<br><br><br><br><br>3<br>64<br>.0<br>1<br>8.0<br>2<br>2<br>c<br>c<br>c<br>c<br>c<br><br><br><br><br>3<br>1<br>)<br>8.0<br>(<br>1<br>)<br>(<br>8.0<br>1<br>2<br>2<br>2<br><br><br><br><br>c<br>c<br>c<br>c<br>c<br>20</div></details></div>
+<div class="slide-card" id="slide-p21" data-page="21"><div class="slide-card-label">第21页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p021.jpg" loading="lazy" alt="第21页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">E2: Rocket B is moving along x-axis relative rocket A. A measures the<br>time-space coordinate of two events are x1=6 x104m, t1=2 x 10-4 s；<br>x2=12 x 104m，t2=1 x 10-4 s. If B measures that two events happen<br>simultaneouly, then：(1) what is the speed of B relative to A？<br>(2)when B measures, what is the space distance of two events?<br>Solution: (1) Let A be S frame, B be Sframe，the<br>speed of B relative to A is u。<br>According to Lorentz transformation,<br><br><br><br><br><br><br>x<br>c<br>u<br>t<br>t<br>2<br><br>When B mesures, the time interval<br>of two events is<br><br><br><br>]<br>[<br>1<br>2<br>2<br>1<br>2<br>1<br>2<br>x<br>x<br>c<br>u<br>t<br>t<br>t<br>t<br><br><br><br><br><br><br><br><br>21</div></details></div>
+<div class="slide-card" id="slide-p22" data-page="22"><div class="slide-card-label">第22页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p022.jpg" loading="lazy" alt="第22页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">since<br>0<br>1<br>2<br><br><br><br><br>t<br>t<br>x<br>c<br>u<br>t<br><br><br><br>2<br>then<br>2<br>s<br>m<br>10<br>5.1<br>10<br>6<br>10<br>10<br>9<br>1<br>8<br>4<br>4<br>16<br>2<br>c<br>x<br>t<br>c<br>u<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>According to Lorentz tranformaiton<br><br><br><br><br>m<br>10<br>20<br>.5<br>1<br>4<br>2<br>2<br>1<br>2<br>1<br>2<br>1<br>2<br><br><br><br><br><br><br><br><br><br><br><br><br>c<br>u<br>t<br>t<br>u<br>x<br>x<br>x<br>x<br>x<br><br>m<br>10<br>6<br>s,<br>10<br>4<br>1<br>2<br>4<br>1<br>2<br><br><br><br><br><br><br><br><br><br>x<br>x<br>x<br>t<br>t<br>t<br><br><br>Known that<br>(2)When B measures, the space distance<br><br><br><br>]<br>[<br>1<br>2<br>2<br>1<br>2<br>1<br>2<br>x<br>x<br>c<br>u<br>t<br>t<br>t<br>t<br><br><br><br><br><br><br><br><br>22</div></details></div>
+<div class="slide-card" id="slide-p23" data-page="23"><div class="slide-card-label">第23页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p023.jpg" loading="lazy" alt="第23页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">4.4 Viewpoint of Space time of Special<br>Relativity 相对论时空观<br>1. Length contraction长度收缩<br>The is a rigid rod placed along the x-axis，and stationary in <br>S’ frame. In S’ frame, the length of rod is<br>z<br>x<br>yS<br>u<br>o<br>x<br>y<br>z<br>S<br>o<br>x1<br>x2<br>1x<br>2x<br>1<br>2<br>0<br>x<br>x<br>l<br><br><br><br><br>When observed in S frame, rob <br>is moving, how to measure the <br>length of rod？<br>If a object is at rest relative to a <br>reference frame. The length measured <br>in this reference is called original <br>length.<br>23</div></details></div>
+<div class="slide-card" id="slide-p24" data-page="24"><div class="slide-card-label">第24页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p024.jpg" loading="lazy" alt="第24页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">According to Lorentz transformation<br>)]<br>(<br>)<br>[(<br>1<br>2<br>1<br>2<br>1<br>2<br>t<br>t<br>u<br>x<br>x<br>x<br>x<br><br><br><br><br><br><br><br><br>since：<br>0<br>1<br>2<br><br>t<br>t<br>)<br>(<br>ut<br>x<br>x<br><br><br><br><br>We have<br>2<br>2<br>0 1<br>c<br>u<br>l<br>l<br><br><br>0l<br><br>In S frame, the length l is shorter than the original <br>length lo . That is, the object is shortened in the direction <br>of motion. Original length is the longest.<br>What is the relationship of l and l0 ？<br>z<br>x<br>yS<br>u<br>o<br>x<br>y<br>z<br>S<br>o<br>x1<br>x2<br>1x<br>2x<br>1<br>2<br>x<br>x<br>l<br><br><br>Measure x1 and x2 at the same time，i.e. t2-t1=0。<br>24</div></details></div>
+<div class="slide-card" id="slide-p25" data-page="25"><div class="slide-card-label">第25页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p025.jpg" loading="lazy" alt="第25页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">conclusion：<br>Space interval is relative！<br>In any measurement reference, original length is the <br>longest；When measured in a relative moving reference <br>frame, the length is always shorter than original length.<br>长度收缩效应Length contraction occurs only in the <br>direction of relative motion. In the direction perpendicular <br>to its motion,  the length does not shrink. Length <br>contraction effect leads to changes in volume and density <br>of objects。<br>when u&lt;&lt;c,  l =l 0,   it becomes Newton's absolute space-<br>time view<br>25</div></details></div>
+<div class="slide-card" id="slide-p26" data-page="26"><div class="slide-card-label">第26页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p026.jpg" loading="lazy" alt="第26页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">E3：A 1 meter ruler is placed in S’ frame，it has an angle of <br>30 degree with o’x’-axis. In S frame, the ruler  is at a 45 <br>degree angle to the ox axis. Then what is the relative speed <br>u of S’ relative to S？In S frame, what is the length of ruler?<br>x x<br>y<br>y<br>o<br>o<br><br>u<br>Solution：<br>Relative motion in x direction<br>y<br>y<br><br><br><br>Since there are not relative motion in y direction<br><br><br>45<br>tan<br>30<br>tan<br><br>x<br>x<br><br><br>thus<br>x<br>y<br>x<br>y<br><br><br><br><br><br><br><br><br><br><br>45<br>tan<br>30<br>tan<br>26</div></details></div>
+<div class="slide-card" id="slide-p27" data-page="27"><div class="slide-card-label">第27页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p027.jpg" loading="lazy" alt="第27页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">According to “length contraction ”effect,<br>2)<br>(<br>1<br>c<br>u<br>x<br>x<br><br><br><br><br>i.e.<br>2)<br>(<br>1<br>c<br>u<br>x<br>x<br><br><br><br><br><br>c<br>c<br>u<br>816<br>.0<br>3<br>2 <br><br><br><br>45<br>tan<br>30<br>tan<br>1<br>2<br>2<br><br>c<br>u<br>Thus <br>so<br>Since <br>y<br>y<br><br><br><br><br><br>30<br>sin<br>45<br>sin<br>L<br>L<br><br><br>m<br>707<br>.0<br>45<br>sin<br>30<br>sin<br><br><br><br><br>L<br>L<br><br><br>x x<br>y<br>y<br>o<br>o<br><br>u<br>27</div></details></div>
+<div class="slide-card" id="slide-p28" data-page="28"><div class="slide-card-label">第28页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p028.jpg" loading="lazy" alt="第28页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">2. Time dilation时间膨胀<br>Assume two events occur at same position in S’ frame, but <br>different time, i.e.<br>S’ frame：<br>,0<br>1<br>2<br><br><br><br><br><br><br>x<br>x<br>x<br><br>S frame：<br>,<br>1<br>2<br>x<br>x<br>x<br><br><br><br>1<br>2<br>t<br>t<br>t<br><br><br><br>0<br>1<br>2<br><br><br><br><br><br><br>t<br>t<br>t<br><br>According to Lorentz transformation<br>)<br>(<br>2<br>c<br>x<br>u<br>t<br>t<br><br><br><br><br><br><br><br><br>Since  Δx’= 0,   then<br>2<br>2<br>1<br>c<br>u<br>t<br>t<br><br><br><br><br><br>)<br>(<br>2<br>c<br>x<br>u<br>t<br>t<br><br><br><br><br>t<br><br>)<br>(<br>t<br>u<br>x<br>x<br><br><br><br><br>=? 0<br>)<br>(<br>t<br>u<br>x<br>x<br><br><br><br><br><br><br><br><br>)<br>(<br>2<br>c<br>x<br>u<br>t<br>t<br><br><br><br><br><br><br><br><br>0<br>=? t' ？<br>28</div></details></div>
+<div class="slide-card" id="slide-p29" data-page="29"><div class="slide-card-label">第29页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p029.jpg" loading="lazy" alt="第29页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Δt’ is the time interval between two events which occur in <br>same position, it is measured in the stationary S’ frame. It <br>is called proper time inverval原时或固有时间.<br>2<br>2<br>1<br>c<br>u<br>t<br>t<br><br><br><br><br><br>t<br><br>Δ t  is the time interval measured in S frame. S frame <br>moves with constant velocity relative to S’ frame, Δ t  is <br>larger than Δ t’ .  <br>When measured in S frame，the clock in S’ is slower.<br>——Moving clock is slower动钟变慢<br>——Time dilation时间膨胀<br>29</div></details></div>
+<div class="slide-card" id="slide-p30" data-page="30"><div class="slide-card-label">第30页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p030.jpg" loading="lazy" alt="第30页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">30</div></details></div>
+<div class="slide-card" id="slide-p31" data-page="31"><div class="slide-card-label">第31页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p031.jpg" loading="lazy" alt="第31页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">31</div></details></div>
+<div class="slide-card" id="slide-p32" data-page="32"><div class="slide-card-label">第32页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p032.jpg" loading="lazy" alt="第32页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Time interval is relative！<br>conclusion：<br>•<br>when u&lt;&lt;c ，Δ t = Δ t’，time mesurement become Newton’s <br>absolute time-space view.<br>•<br>In all time interval measurements，proper time interval is the <br>shortest原时最短. When you measured the time interval in a <br>moving object, the time interval is always larger than proper time <br>interval.<br>•<br>Time dilation and moving clock is slower动钟变慢is relative.<br>每个惯性系中的观测者都会认为相对自己运动的钟比自己的钟走得<br>慢(动钟变慢)，即动钟变慢或时间膨胀效应是相对的。<br>•<br>The clocks are the same. 时间膨胀或钟慢效应，完全来自相对性时<br>空效应，与钟表的具体运转无关。<br>32</div></details></div>
+<div class="slide-card" id="slide-p33" data-page="33"><div class="slide-card-label">第33页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p033.jpg" loading="lazy" alt="第33页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Experiment verification<br>m<br>7.<br>658<br>10<br>2.2<br>10<br>3<br>998<br>.0<br>6<br>8<br><br><br><br><br><br><br><br><br><br>u<br>s<br>Solution：<br>But if according to relativity theory, how to calculate?<br>When cosmic rays interact with the atmosphere, they can generate <br>muon (μ子). The speed of muon (μ子) is 0.998c，if measured in lab, the <br>sationary lifetime of muon is 2.2x10-6s. If muon (μ子) is at 8000m <br>height from the ground and moving to the gournd, can it reach the <br>ground?<br>If according to classic mechanics，the moving distant is<br>Obviously ，μ子can’t reach the ground.<br>(1) Muon (μ子)<br>33</div></details></div>
+<div class="slide-card" id="slide-p34" data-page="34"><div class="slide-card-label">第34页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p034.jpg" loading="lazy" alt="第34页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">2<br>2 /<br>1<br>c<br>u<br>t<br>t<br><br><br><br><br><br><br><br><br>m<br>8000<br>m<br>10420<br>998<br>.0<br>1<br>10<br>2.2<br>10<br>3<br>998<br>.0<br>2<br>6<br>8<br><br><br><br><br><br><br><br><br><br><br><br><br><br>u<br>t<br>u<br>s<br>It verifies the time dilation effect时间膨胀效应.<br>But if according to relativity theory, the lifetime muon <br>is：<br>Take ground as the reference frame，the moving distance is<br>thus，muon can reach the ground.<br>Mesurement result：the flow rate of muon at the ground is <br>500 m-2/s<br>34</div></details></div>
+<div class="slide-card" id="slide-p35" data-page="35"><div class="slide-card-label">第35页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p035.jpg" loading="lazy" alt="第35页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">E5：Alpha Centauri半人马座星is the closest star to the solar system，<br>the distance from the Earth is 4.3x1016m. A spaceship is moving from <br>the Earth to Alpha Centauri, the speed relative to the Earth is 0.999c. 1) <br>If measured by clock in the earth, how many years it take to reach <br>Alpha Centauri? 2) If measured by clock in the spaceship, how many <br>years it requires？<br>Spaceship frame：proper time interval原时；<br>Earth frame：非原时<br>Solution：<br>35<br>年<br>55<br>.4<br>3600<br>24<br>365<br>10<br>3<br>999<br>.0<br>10<br>3.4<br>8<br>16<br><br><br><br><br><br><br><br><br><br><br>S<br>t<br>1) Measured by clock in the Earth,</div></details></div>
+<div class="slide-card" id="slide-p36" data-page="36"><div class="slide-card-label">第36页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p036.jpg" loading="lazy" alt="第36页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">2) Measured by the clock in spaceship, <br>年<br>203<br>.0<br>55<br>.4<br>999<br>.0<br>1<br>Δ<br>Δ<br>2<br>1<br><br><br><br><br><br><br><br>t<br>t<br><br>The time dilation effect makes it possible to carry out <br>interstellar navigation in the lifetime of human beings.<br>The closest star to Earth：4 light years<br>Altair牛郎星：16 light years<br>Vega织女星：26.3 light years<br>Beyond of the Galaxy system:<br>the Small Magellanic Cloud小麦哲伦云：<br>150 thousands light years<br>36</div></details></div>
+<div class="slide-card" id="slide-p37" data-page="37"><div class="slide-card-label">第37页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p037.jpg" loading="lazy" alt="第37页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">E6  Please proof：<br>(1)If in a inertia frame S’, two events occur in the same <br>location(Δx’=0). Then the time interval Δt’ in S’ is the shorest <br>comparing to Δt in any other frame S. <br>(2) If two events occur simultaneously in inertia frame S’( Δt’=0). <br>Then the distance Δx’ in S’ is the shorest comparing to Δx in any other <br>frame S .<br>Proof：<br>0<br>:<br>S<br><br><br><br>x<br><br>)<br>(<br>:<br>S<br>2<br>c<br>x<br>u<br>t<br>t<br><br><br><br><br><br><br><br><br>t<br>t<br><br><br><br><br><br><br>(2)<br>0<br>:<br>S<br><br><br><br>t<br><br>)<br>(<br>:<br>S<br>t<br>u<br>x<br>x<br><br><br><br><br><br><br><br><br>x<br>x<br><br><br><br><br><br><br>(1)<br>37</div></details></div>
+<div class="slide-card" id="slide-p38" data-page="38"><div class="slide-card-label">第38页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p038.jpg" loading="lazy" alt="第38页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">3. The relativity of simultaneity 同时的相对性<br>If event A<br>and B occur simultanously in different<br>locations in frame S, i.e.<br>,0<br>1<br>2<br><br><br><br>x<br>x<br>x<br><br>0<br>1<br>2<br><br><br><br>t<br>t<br>t<br><br>:<br>S<br>S’ :<br>)<br>(<br>2<br>1<br>2<br>c<br>x<br>u<br>t<br>t<br>t<br>t<br><br><br><br><br><br><br><br><br><br><br><br>0<br>2 <br><br><br>c<br>x<br>u<br><br>Events that appear to occur simultaneously in the S frame do not <br>appear to occur simultaneously in the S’ frame. Simultaneity is relative<br>同时性是相对的。<br>Only when events A and B occur simultaneously and in the same <br>location in inertial frame S, then in the view of other frame S’, events A <br>and B occur simultaneously.<br>0<br><br>?<br>0<br>?<br>0<br><br><br>or<br>38</div></details></div>
+<div class="slide-card" id="slide-p39" data-page="39"><div class="slide-card-label">第39页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p039.jpg" loading="lazy" alt="第39页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Since simultaneity is relative, is the sequence of events also <br>relative?<br>)<br>1<br>(<br>)<br>1<br>(<br>2<br>2<br>c<br>u<br>t<br>t<br>x<br>c<br>u<br>t<br><br><br><br><br><br><br><br><br><br><br><br>This means that if the A event occurs before the B event in the S <br>system, then in any other inertial system, the A event occurs before <br>the B event. That is, the causal relationship will not be reversed, and <br>time will not be reversed.因果关系不会颠倒，时间不会倒流。<br>If there is a causal relationship between events A and B,<br>and event B is caused by event A, then<br>)<br>(<br>2<br>1<br>2<br>c<br>x<br>u<br>t<br>t<br>t<br>t<br><br><br><br><br><br><br><br><br><br><br><br>c<br>t<br>x <br><br><br><br>since<br>0<br>39</div></details></div>
+<div class="slide-card" id="slide-p40" data-page="40"><div class="slide-card-label">第40页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p040.jpg" loading="lazy" alt="第40页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">t<br>z<br>t<br>y<br>t<br>x<br>z<br>y<br>x<br>d<br>d<br>,<br>d<br>d<br>,<br>d<br>d<br>:<br>S<br><br><br><br><br><br><br>t<br>z<br>t<br>y<br>t<br>x<br>z<br>y<br>x<br><br><br><br><br><br><br><br><br><br><br><br><br><br>d<br>d<br>,<br>d<br>d<br>,<br>d<br>d<br>:<br>S<br><br><br><br>)<br>(<br>ut<br>x<br>x<br><br><br><br><br>y<br>y <br><br>)<br>(<br>2c<br>ux<br>t<br>t<br><br><br><br><br>z<br>z <br><br>)<br>d<br>d<br>(<br>d<br>t<br>u<br>x<br>x<br><br><br><br><br>y<br>y<br>d<br>d<br><br><br>z<br>z<br>d<br>d<br><br><br>)<br>d<br>d<br>(<br>d<br>2c<br>x<br>u<br>t<br>t<br><br><br><br><br>Differential on both sides of the equations：<br>4.5 Composition of Velocities of Special <br>Relativity 相对论的速度合成<br>40</div></details></div>
+<div class="slide-card" id="slide-p41" data-page="41"><div class="slide-card-label">第41页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p041.jpg" loading="lazy" alt="第41页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">2<br>c<br>x<br>u<br>t<br>t<br>u<br>x<br>t<br>x<br>d<br>d<br>d<br>d<br>d<br>d<br><br><br><br><br><br>Divide equation 1 by equation 4：<br>t<br>x<br>x<br>d<br>d<br><br><br>t<br>x<br>x<br><br><br><br><br>d<br>d<br><br>then<br>2<br>1<br>c<br>u<br>u<br>x<br>x<br>x<br><br><br><br><br><br><br><br>t<br>x<br>c<br>u<br>u<br>t<br>x<br>d<br>d<br>d<br>d<br>2<br>1<br><br><br>)<br>d<br>d<br>(<br>d<br>t<br>u<br>x<br>x<br><br><br><br><br>y<br>y<br>d<br>d<br><br><br>z<br>z<br>d<br>d<br><br><br>)<br>d<br>d<br>(<br>d<br>2c<br>x<br>u<br>t<br>t<br><br><br><br><br>41</div></details></div>
+<div class="slide-card" id="slide-p42" data-page="42"><div class="slide-card-label">第42页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p042.jpg" loading="lazy" alt="第42页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">S          S’<br>2<br>1<br>c<br>u<br>u<br>x<br>x<br>x<br><br><br><br><br><br><br><br>2<br>2<br>2<br>1<br>/<br>1<br>c<br>u<br>c<br>u<br>x<br>y<br>y<br><br><br><br><br><br><br><br>2<br>2<br>2<br>1<br>/<br>1<br>c<br>u<br>c<br>u<br>x<br>z<br>z<br><br><br><br><br><br><br><br>Transformation<br>2<br>1<br>c<br>u<br>u<br>x<br>x<br>x<br><br><br><br><br><br><br><br><br>2<br>2<br>2<br>1<br>/<br>1<br>c<br>u<br>c<br>u<br>x<br>y<br>y<br><br><br><br><br><br><br><br><br>2<br>2<br>2<br>1<br>/<br>1<br>c<br>u<br>c<br>u<br>x<br>z<br>z<br><br><br><br><br><br><br><br><br>S’         S<br>When u&lt;&lt;c, Lorentz transformation becomes <br>Galilean transformation<br>42<br>Inverse transformation</div></details></div>
+<div class="slide-card" id="slide-p43" data-page="43"><div class="slide-card-label">第43页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p043.jpg" loading="lazy" alt="第43页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">E10：An atom leaves an observer at a speed of 0.5c，the <br>atom emits an electron forward向前发射一个电子in the <br>direction of motion at a speed of 0.8c relative to atom，find <br>the velocity of electrons relative to the observer.<br>Solution: the velocity of electrons <br>relative to the observer：<br>v =0.8c+0.5c=1.3c<br>S(observer)：<br>S´(atom)：<br>u=0.5c, <br>c<br>x<br>8.0<br><br><br><br>2<br>1<br>c<br>u<br>u<br>x<br>x<br>x<br><br><br><br><br><br><br><br><br>c<br>c<br>93<br>.0<br>4.1<br>3.1<br><br><br>错！<br>43</div></details></div>
+<div class="slide-card" id="slide-p44" data-page="44"><div class="slide-card-label">第44页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p044.jpg" loading="lazy" alt="第44页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">E11：Observing on the ground，The A and B rockets fly in <br>opposite directions at speeds of 0.5c and 0.75c, <br>respectively. Find：(1) Velocity of rocket B relative to A；<br>(2) The approaching velocities of two rockets observed on <br>the ground。<br>解(1) S(ground)：<br>S’(rocket A)：<br>u=0.5c (A), vx=   0.75c (B)<br>-<br>2<br>1<br>c<br>u<br>u<br>x<br>x<br>x<br><br><br><br><br><br><br><br>= - 0.91c<br>(2)vapproaching=0.5c+0.75c=1.25c<br>Does it violate违背the theory of <br>relativity？<br>44<br>z<br>x<br>yS<br>o<br>x<br>y<br>z<br>S<br>o<br>u<br>ø<br>A<br>B</div></details></div>
+<div class="slide-card" id="slide-p45" data-page="45"><div class="slide-card-label">第45页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p045.jpg" loading="lazy" alt="第45页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">E12：Observing on the ground，Rocket A flies to north at a <br>speed of 0.8c, while Rocket B flies to west at a speed of 0.6c, <br>what is the velocity of Rocket A relative to Rocket B?<br>Solution：S(ground)：<br>S’(B)：<br>c<br>u<br>c<br>y<br>x<br>6.0<br>:<br>B<br>,<br>8.0<br>,0<br>:<br>A<br><br><br><br><br><br><br>2<br>1<br>c<br>u<br>u<br>x<br>x<br>x<br><br><br><br><br><br><br><br>= 0.6c<br>2<br>2<br>2<br>1<br>/<br>1<br>c<br>u<br>c<br>u<br>x<br>y<br>y<br><br><br><br><br><br><br><br>= 0.64c<br>z<br>x<br>yS<br>u<br>o<br>x<br>y<br>z<br>S<br>o<br>A<br>B<br>j<br>i<br>y<br>x<br><br><br><br><br><br><br><br><br><br><br><br>jc<br>ic<br><br><br>64<br>.0<br>6.0<br><br><br>45</div></details></div>
+<div class="slide-card" id="slide-p46" data-page="46"><div class="slide-card-label">第46页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p046.jpg" loading="lazy" alt="第46页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">The steps for solving kinematics problem in special <br>relativity are as follows：<br>1. Determine two inertial reference frames for relative <br>motion;<br>2. Identify one or two events;<br>3. Represent the space-time coordinates of one or two <br>events in two inertial frames, or its space-time interval;<br>4. Discuss using Lorentz transformation.<br>Conclusion <br>46</div></details></div>
+<div class="slide-card" id="slide-p47" data-page="47"><div class="slide-card-label">第47页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p047.jpg" loading="lazy" alt="第47页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">4.6 Dynamics of Special Relativity<br>相对论动力学基础<br>Momentum of particle:<br>S frame: <br>A:  velocity v (to right), mass m，<br>B: static静止的, mass mo；<br>according to conservation law of <br>momentum:<br>Assuming two identical small balls A and B collide completely <br>inelastic完全非弹性碰撞, let‘s study the relationship between mass and <br>velocity.<br>mv =(m+mo)vx<br>(1)<br><br><br>m<br>p <br>B<br>mo<br>A<br>B<br>vx<br>x<br>y<br>S<br>A<br>m<br>v<br>o<br>1. Momentum and Mass in Relativity相对论中的动量<br>和质量<br>47</div></details></div>
+<div class="slide-card" id="slide-p48" data-page="48"><div class="slide-card-label">第48页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p048.jpg" loading="lazy" alt="第48页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">S´frame(moving at a speed of v to +x-axis relative to S frame):<br>A: static静止, mass mo，<br>B: moving at a speed of v to left, mass is m；<br>according to conservation law of momentum<br>-mv =(m+mo)    <br>(2)<br>x<br><br>mv =(m+mo)vx<br>(1)<br>v<br>B<br>m<br>A<br>mo<br>A<br>B<br>x<br><br>x´<br>y´<br>S´<br>B<br>mo<br>A<br>B<br>vx<br>x<br>y<br>S<br>A<br>m<br>v<br>o<br>o<br>v<br>48</div></details></div>
+<div class="slide-card" id="slide-p49" data-page="49"><div class="slide-card-label">第49页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p049.jpg" loading="lazy" alt="第49页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">According to the relativistic velocity transformation formula<br>相对论速度变换公式,<br>2<br>1<br>c<br>x<br>x<br>x<br><br><br><br><br><br><br><br><br>(3)<br>substitute vx and v’x of (1) and (2) into (3),<br>then<br>0<br>2<br>2<br>0<br>1<br>m<br>c<br>m<br>m<br><br><br><br><br><br>Relativistic <br>mass相对论<br>质量<br>If an object moves at a speed of v, the mass m during <br>motion is equal to γ times its static mass mo.<br>mv =(m+mo)vx<br>(1)<br>-mv =(m+mo)    <br>(2)<br>x<br><br>When v &lt;&lt;c，m=m0，it becomes classic mechanics.<br>49</div></details></div>
+<div class="slide-card" id="slide-p50" data-page="50"><div class="slide-card-label">第50页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p050.jpg" loading="lazy" alt="第50页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">The fact that the mass of an object varies with speed was <br>observed by W. Kaufmann in his experiments studying rays as <br>early as 1901. Einstein's formula of mass changing with speed was <br>later confirmed by many experimental facts, including the design <br>and operation of high-energy particle accelerator.<br>Basic Equations of Relativistic <br>Mechanics<br>2. Basic Equations of Relativistic <br>Mechanics相对论力学基本方程<br>2<br>2<br>0<br>/<br>1<br>c<br>m<br>m<br>p<br><br><br><br><br><br><br><br><br><br>t<br>p<br>F<br>d<br>d<br><br>牛顿力学方程<br>t<br>p<br>F<br>d<br>d<br><br><br>a<br>m<br>t<br>m<br><br><br><br><br>d<br>d<br>t<br>m<br>t<br>m<br>d<br>d<br>d<br>d<br><br><br><br><br><br><br>50</div></details></div>
+<div class="slide-card" id="slide-p51" data-page="51"><div class="slide-card-label">第51页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p051.jpg" loading="lazy" alt="第51页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">3. Energy and Mass Energy Relations in Relativity相<br>对论中的能量、质能关系<br>Substitute dp2 into Ek:<br>Let an object move from rest under the action of an external force F, and <br>according to the theorem of kinetic energy<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>0<br>0<br>2<br>0<br>0<br>d<br>2<br>1<br>d<br>d<br>d<br>d<br>d<br>p<br>m<br>p<br>m<br>p<br>r<br>t<br>p<br>r<br>F<br>Ek<br><br><br><br><br><br><br><br><br>m<br>m<br>k<br>m<br>c<br>E<br>0<br>d<br>2<br>2<br>0<br>2<br>c<br>m<br>mc <br><br>2<br>mc<br><br><br><br><br>)<br>d<br>2<br>d<br>d<br>(<br>2<br>p<br>p<br>p<br>p<br>p<br><br><br><br><br><br><br><br><br>,<br>/<br>1<br>2<br>2<br>0<br>c<br>m<br>m<br><br><br><br>2<br>2<br>0<br>2<br>2<br>2<br>2<br>c<br>m<br>m<br>c<br>m<br><br><br><br>0<br>d<br>d<br>2<br>2<br>2<br><br><br>p<br>m<br>mc<br>51</div></details></div>
+<div class="slide-card" id="slide-p52" data-page="52"><div class="slide-card-label">第52页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p052.jpg" loading="lazy" alt="第52页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Kinetic energy in relativity：<br>2<br>0<br>2<br>c<br>m<br>mc<br>E k<br><br><br>)<br>1<br>/<br>1<br>1<br>(<br>2<br>2<br>2<br>0<br><br><br><br>c<br>c<br>m<br><br>......<br>8<br>3<br>2<br>1<br>2<br>4<br>0<br>2<br>0<br><br><br><br>c<br>m<br>m<br><br><br>When v&lt;&lt;c时，<br>2<br>0<br>2<br>1<br><br>m<br>Ek <br>......)<br>6<br>4<br>2<br>5<br>3<br>1<br>4<br>2<br>3<br>1<br>2<br>1<br>1<br>1<br>1<br>(<br>3<br>2<br><br><br><br><br><br><br><br><br><br><br><br><br>x<br>x<br>x<br>x<br>52</div></details></div>
+<div class="slide-card" id="slide-p53" data-page="53"><div class="slide-card-label">第53页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p053.jpg" loading="lazy" alt="第53页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Thus, in relativity,<br>Kinetic energy<br>动能：<br>2<br>0<br>2<br>c<br>m<br>mc<br>E k<br><br><br>Static energy<br>静能：<br>2<br>0<br>0<br>c<br>m<br>E <br>Total energy   <br>总能：<br>2<br>0<br>mc<br>E<br>E<br>E<br>k <br><br><br>Mass-energy relationship <br>质能关系：<br>2<br>mc<br>E <br>One of the most meaningful conclusions of relativity is to directly <br>relate the mass (or even static mass) of an object to its energy。<br>For a closed system, the energy is conservative,<br>常量<br><br><br><br>i<br>i<br>i<br>i<br>c<br>m<br>E<br>2<br>常量<br><br><br>i<br>i<br>m<br>Conservation of <br>mass 质量守恒<br>53</div></details></div>
+<div class="slide-card" id="slide-p54" data-page="54"><div class="slide-card-label">第54页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p054.jpg" loading="lazy" alt="第54页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Where does the enormous energy released by atomic <br>bombing come from？<br>Before nuclear reaction<br>After nuclear reaction<br>2<br>1<br>01<br>1<br>k<br>E<br>m c<br>E<br><br><br>2<br>2<br>02<br>2<br>k<br>E<br>m c<br>E<br><br><br>Energy consevation能量守恒<br>2<br>2<br>02<br>1<br>2<br>01<br>k<br>k<br>E<br>c<br>m<br>E<br>c<br>m<br><br><br><br>Released energy during nuclear reaction:<br><br><br>2<br>0<br>2<br>02<br>01<br>1<br>2<br>c<br>m<br>c<br>m<br>m<br>E<br>E<br>E<br>k<br>k<br><br><br><br><br><br><br><br>02<br>01<br>0<br>m<br>m<br>m<br><br><br><br>refers to the reduction of total static mass <br>of the system after nuclear reaction, which is called mass <br>loss.<br>It can be seen that the energy released in nuclear reaction <br>comes from the mass loss before and after the reaction.<br>54</div></details></div>
+<div class="slide-card" id="slide-p55" data-page="55"><div class="slide-card-label">第55页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p055.jpg" loading="lazy" alt="第55页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">E13：In the nuclear reaction of atomic fission：<br>n<br>K<br>B<br>U<br>n<br>r<br>a<br>3<br>92<br>141<br>235<br><br><br><br><br>1mol:    236.133                   235.918<br>Mass loss of 1 mol substance reation：<br>Δm=236.133-235.918=0.215g<br>Released energy of reaction:<br>ΔE=c2 m=1.935×1013J=625吨无烟煤放出的热量!<br>The energy released by 1kg of uranium during <br>fission1kg铀在裂变时所释放的能量<br>相当于2×107kg炸药所释放出来的能量。<br>J<br>10<br>19<br>.8<br>236133<br>.0<br>10<br>935<br>.1<br>13<br>13<br><br><br><br>55</div></details></div>
+<div class="slide-card" id="slide-p56" data-page="56"><div class="slide-card-label">第56页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p056.jpg" loading="lazy" alt="第56页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">E14：nuclear fusion核聚变。When a proton and a neutron combine <br>to form a deuterium nucleus, the system releases energy to the <br>outside world当一个质子和一个中子结合成一个氘核时，系统会对外释<br>放能量。<br>Before <br>combination：<br>kg<br>10<br>34761<br>.3<br>10<br>67496<br>.1<br>10<br>67265<br>.1<br>27<br>27<br>27<br>10<br><br><br><br><br><br><br><br><br><br><br><br>n<br>p<br>m<br>m<br>m<br>After <br>combination：<br>kg<br>10<br>34364<br>.3<br>27<br>20<br><br><br><br><br>D<br>m<br>m<br>Mass loss质量亏损：<br>kg<br>10<br>97<br>.3<br>30<br>20<br>10<br>0<br><br><br><br><br><br><br>m<br>m<br>m<br>Released energy：<br>J<br>10<br>573<br>.3<br>13<br>2<br>0<br><br><br><br><br><br><br>c<br>m<br>E<br>The energy released by aggregating into 1kg deuterium is<br>聚合成1kg氘核所释放出的能量为：<br>1<br>14<br>27<br>13<br>kg<br>J<br>10<br>07<br>.1<br>10<br>34364<br>.3<br>10<br>573<br>.3<br><br><br><br><br><br><br><br><br><br><br>D<br>m<br>E<br>56</div></details></div>
+<div class="slide-card" id="slide-p57" data-page="57"><div class="slide-card-label">第57页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p057.jpg" loading="lazy" alt="第57页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">4. The relationship between energy and momentum <br>in relativity相对论的能量和动量关系<br>,<br>1<br>2<br>2<br>2<br>0<br>2<br>c<br>c<br>m<br>mc<br>E<br><br><br><br><br>2<br>2<br>0<br>1<br>c<br>m<br>p<br><br><br><br><br>Eliminate v, The relationship between momentum and<br>energy in relativity is<br>E<br>Eo<br>cp<br>Energy triangle能量<br>三角形<br>2<br>2<br>0<br>2<br>2<br>2<br>0<br>2<br>)<br>(<br>)<br>(<br>)<br>(<br>cp<br>E<br>cp<br>c<br>m<br>E<br><br><br><br><br>57</div></details></div>
+<div class="slide-card" id="slide-p58" data-page="58"><div class="slide-card-label">第58页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p058.jpg" loading="lazy" alt="第58页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">Conclusion：<br>2<br>2<br>0<br>1<br>c<br>m<br>m<br><br><br><br>2<br>0<br>0<br>c<br>m<br>E <br>E2=(m0c2)2+(cp)2=E0<br>2+(cp)2<br>2<br>2<br>0<br>1<br>c<br>m<br>m<br>p<br><br><br><br><br><br><br><br><br><br>)1<br>1<br>1<br>(<br>2<br>2<br>2<br>0<br>2<br>0<br>2<br><br><br><br><br><br>c<br>c<br>m<br>c<br>m<br>mc<br>Ek<br><br>k<br>E<br>E<br>c<br>c<br>m<br>mc<br>E<br><br><br><br><br><br>0<br>2<br>2<br>2<br>0<br>2<br>1<br><br>58</div></details></div>
+<div class="slide-card" id="slide-p59" data-page="59"><div class="slide-card-label">第59页</div><img class="slide-img" width="900" height="675" src="slides/ch4_p059.jpg" loading="lazy" alt="第59页" onclick="window.__epaLightbox&&window.__epaLightbox(this.src)"><details class="slide-text"><summary>原文文字</summary><div class="slide-text-body">E：The mass of a uniform thin straight rod at rest is mo, length is lo，<br>linear density is o=mo/lo . Calculate the linear density of the rod moving at <br>high speed v：<br>(1) The rod moves in a direction perpendicular to its length；<br>(2) The rod moves parallel to its length。<br>solution：<br>0<br>2<br>2<br>0<br>1<br><br><br><br><br><br><br>c<br>(1)<br>(2)<br>2<br>2<br>0<br>2<br>2<br>0<br>/<br>1<br>/<br>1<br>/<br>c<br>l<br>c<br>m<br>l<br>m<br><br><br><br><br><br><br><br>0<br>2<br>2<br>2<br>0<br>1<br><br><br><br><br><br><br><br>c<br>0<br>2<br>2<br>0<br>/<br>1<br>/<br>l<br>c<br>m<br>l<br>m<br><br><br><br><br><br>59</div></details></div></aside></div></div><div id="panel-test" class="tab-panel"><h2 style="text-align:center">章节测试</h2>
+<p style="text-align:center;color:var(--ink-light);font-size:0.95em">20 题</p>
+
+<div id="score-box"><div class="score-num" id="score-num">0</div><div class="score-label">总分</div></div>
+<div id="questions-container"></div>
+<div class="grading-bar no-print"><button onclick="gradeAll()" id="grade-btn">提交批改</button></div></div>
+
+<script>
+window.__epaLightbox = function(src){
+  var lb = document.getElementById('epa-lightbox');
+  if(!lb){ lb = document.createElement('div'); lb.id='epa-lightbox';
+    lb.innerHTML='<img>'; document.body.appendChild(lb);
+    lb.addEventListener('click', function(){ lb.style.display='none'; }); }
+  lb.querySelector('img').src = src; lb.style.display='flex';
+};
+document.addEventListener('click', function(e){
+  var chip = e.target.closest('.pg-chip'); if(!chip) return;
+  var pg = chip.getAttribute('data-page');
+  var card = document.getElementById('slide-p'+pg);
+  if(card){ card.scrollIntoView({behavior:'smooth', block:'center'});
+    card.classList.remove('flash'); void card.offsetWidth; card.classList.add('flash'); }
+});
+// Shrink any display formula too wide for its column so it stays fully visible.
+window.__epaFitFormulas = function __epaFitFormulas(){
+  var list = document.querySelectorAll('.kn-main mjx-container[display="true"]');
+  for(var i=0;i<list.length;i++){
+    var m = list[i], parent = m.parentElement; if(!parent) continue;
+    m.style.fontSize=''; // reset to measure natural width
+    var avail = parent.clientWidth, w = m.scrollWidth;
+    if(avail>0 && w>avail){ m.style.fontSize=(avail/w*0.97*100).toFixed(1)+'%'; }
+  }
+}
+function __epaScheduleFit(){
+  if(window.MathJax && MathJax.startup && MathJax.startup.promise){
+    MathJax.startup.promise.then(__epaFitFormulas);
+  } else { setTimeout(__epaFitFormulas, 900); }
+}
+if(document.readyState!=='loading'){ __epaScheduleFit(); }
+else { document.addEventListener('DOMContentLoaded', __epaScheduleFit); }
+var __epaFitT=null;
+window.addEventListener('resize', function(){ clearTimeout(__epaFitT); __epaFitT=setTimeout(__epaFitFormulas,200); });
+</script>
+<script>
+var Q = [{"type": "tf", "difficulty": "basic", "points": ["kc4.1"], "question": "在狭义相对论中，真空中光速在所有惯性系中都等于 c，与光源和观察者的相对运动无关。", "options": [], "answer": 1, "explanation": "这正是光速不变原理的内容——狭义相对论的第二条基本假设。Michelson-Morley 实验证明了这一点。", "kc_id": "ch4-q1", "cognitive_level": "understand", "pitfall": ""}, {"type": "tf", "difficulty": "basic", "points": ["kc4.0"], "question": "在经典力学（伽利略变换）中，同时性是绝对的，即在一个惯性系中同时发生的两个事件，在所有其他惯性系中也同时发生。", "options": [], "answer": 1, "explanation": "经典绝对时空观中，t'=t 保证了同时性在所有惯性系中的不变性。相对论推翻了这一点——同时性是相对的。", "kc_id": "ch4-q2", "cognitive_level": "understand", "pitfall": ""}, {"type": "tf", "difficulty": "basic", "points": ["kc4.4"], "question": "一根尺子以高速沿长度方向运动时，地面观察者测得其长度比静止时测的长度更长。", "options": [], "answer": 0, "explanation": "动尺变短！运动物体在运动方向上长度收缩：L = L₀/γ &lt; L₀。固有长度（静止时测的）是最长的，运动测量值总是更短。", "kc_id": "ch4-q3", "cognitive_level": "understand", "pitfall": ""}, {"type": "choice", "difficulty": "basic", "points": ["kc4.3"], "question": "μ 子以 0.998c 的速度从高空飞向地面。在实验室参考系中测得 μ 子的寿命比其静止寿命长，这是因为：", "options": ["μ 子在运动中质量变大导致衰变变慢", "时间膨胀效应——运动时钟变慢", "μ 子飞行轨迹变长", "光速在 μ 子参考系中变化了"], "answer": 1, "explanation": "实验室参考系中 μ 子以高速运动，动钟变慢（时间膨胀），其寿命被放大 γ 倍：Δt = γτ₀。实验测得 μ 子飞行距离远超经典预计，完美验证了时间膨胀。选项 A 说的是事实但时间膨胀才是根本原因；选项 C 错误；选项 D 违反光速不变。", "kc_id": "ch4-q4", "cognitive_level": "understand", "pitfall": ""}, {"type": "choice", "difficulty": "medium", "points": ["kc4.3"], "question": "关于固有时（proper time）Δt₀ 的说法，正确的是：", "options": ["固有时是在任何惯性系中测得的最长的时间间隔", "固有时测量时两事件必须同时发生", "固有时是两事件在同一地点发生的那个参考系中测得的时间间隔", "固有时是两事件在任意两个参考系中测量的时间差的平均值"], "answer": 2, "explanation": "固有时 Δt₀ 的定义：两事件在同一地点发生（Δx' = 0）的那个参考系中测得的时间间隔。γ ≥ 1 所以 Δt = γΔt₀ ≥ Δt₀，固有时最短而非最长——A 错误。固有时不需要事件同时——C 错误。D 没有物理意义。", "kc_id": "ch4-q5", "cognitive_level": "apply", "pitfall": ""}, {"type": "calc", "difficulty": "medium", "points": ["kc4.3"], "question": "一艘飞船以 0.8c 的速度相对地球飞行。飞船上的时钟测得某物理过程持续了 6.0 s。在地球上观测，该过程持续多长时间？（γ = 5/3）", "answer": -1, "steps": [{"step": "判断固有时", "content": "过程发生在飞船上同一地点（飞船参考系中 Δx' = 0），故飞船上测的 Δt₀ = 6.0 s 是固有时。地球是运动参考系，测的时间间隔更大。", "score": 2}, {"step": "计算 γ", "content": "由 v/c = 0.8：γ = 1/\\sqrt{1-0.8^2} = 1/\\sqrt{0.36} = 1/0.6 = 5/3 ≈ 1.667", "score": 2}, {"step": "时间膨胀公式", "content": "Δt = γΔt₀ = (5/3) × 6.0 = 10.0 s", "score": 3}], "explanation": "飞船系中同一地点的事件，飞船钟测得固有时 Δt₀ = 6.0 s。地球系是相对运动的参考系，测得 Δt = γΔt₀ = (5/3)×6.0 = 10.0 s，比固有时长。这体现「动钟变慢」——地球观察者看到飞船上的钟走得慢。", "kc_id": "ch4-q6", "cognitive_level": "apply", "pitfall": "", "options": []}, {"type": "calc", "difficulty": "medium", "points": ["kc4.4"], "question": "一根杆静止时长度为 2.0 m。当它以 0.6c 的速度沿杆长方向运动时，地面上的观察者测得杆的长度为多少？", "answer": -1, "steps": [{"step": "判断固有长度", "content": "杆静止时测的长度 L₀ = 2.0 m 是固有长度（最长）。地面系中杆在运动，测得的长度 L 将变短。", "score": 2}, {"step": "计算 γ", "content": "γ = 1/\\sqrt{1-0.6^2} = 1/\\sqrt{0.64} = 1/0.8 = 1.25", "score": 2}, {"step": "长度收缩公式", "content": "L = L₀/γ = 2.0 / 1.25 = 1.6 m", "score": 3}], "explanation": "固有长度 L₀ = 2.0 m 是杆静止时的长度。运动时 L = L₀\\sqrt{1-v^2/c^2} = 2.0×0.8 = 1.6 m，运动方向缩短了 20%。注意长度收缩只在运动方向，垂直方向不变。", "kc_id": "ch4-q7", "cognitive_level": "apply", "pitfall": "", "options": []}, {"type": "calc", "difficulty": "medium", "points": ["kc4.5"], "question": "一艘飞船以 0.6c 相对地球飞行，飞船上向前发射一个相对于飞船速度为 0.6c 的探测器。求探测器相对地球的速度（以 c 为单位，保留三位小数）。", "answer": -1, "steps": [{"step": "确定 u 和 v'", "content": "S'（飞船）相对 S（地球）：u = 0.6c。探测器在 S' 中速度 v'_x = 0.6c。", "score": 2}, {"step": "速度叠加公式", "content": "v_x = (v'_x + u)/(1 + u·v'_x/c^2) = (0.6c + 0.6c)/(1 + 0.6×0.6×c^2/c^2)", "score": 3}, {"step": "计算", "content": "v_x = 1.2c/(1 + 0.36) = 1.2c/1.36 ≈ 0.882c", "score": 2}], "explanation": "经典相加 0.6c+0.6c = 1.2c 是错的！相对论速度叠加的分母修正项 (1+uv'/c²) 保证了结果 0.882c &lt; c，不超光速。这是光速作为速度上限的体现。", "kc_id": "ch4-q8", "cognitive_level": "apply", "pitfall": "", "options": []}, {"type": "choice", "difficulty": "medium", "points": ["kc4.3", "kc4.4"], "question": "飞船以 0.8c 飞向距离地球 8 光年的星球。下列哪个说法是正确的？", "options": ["从地球看，飞船钟测的旅程时间小于地球上测的旅程时间", "从地球看，飞船的长度不变", "地球测到的旅程时间为 6.4 年", "飞船上测到的地球-星球距离仍然是 8 光年"], "answer": 0, "explanation": "地球测旅程时间 Δt = 8 ly/0.8c = 10 年（非固有时，因为出发和到达不在同一地点）。飞船系中这是同一地点的两个事件（飞船自身经历），故飞船上测的时间是固有时：Δt₀ = Δt/γ = 10/1.667 ≈ 6.0 年，小于地球测的 10 年。所以 A 正确（地球看，飞船钟走得更慢，测量的间隔更短）。B：运动方向长度收缩；C：地球测 10 年不是 6.4 年；D：飞船看到距离收缩。", "kc_id": "ch4-q9", "cognitive_level": "apply", "pitfall": ""}, {"type": "calc", "difficulty": "hard", "points": ["kc4.6"], "question": "在核裂变中，1 mol ²³⁵U 反应前后总静质量亏损 0.215 g。求释放的能量（用科学计数法表示，单位 J，保留 3 位有效数字，格式：1.94×10¹³）。", "answer": -1, "steps": [{"step": "确定质量亏损", "content": "Δm₀ = 0.215 g = 0.215×10^{-3} kg = 2.15×10^{-4} kg", "score": 2}, {"step": "质能方程", "content": "ΔE = Δm₀c^2，其中 c = 3×10^8 m/s", "score": 2}, {"step": "计算", "content": "ΔE = 2.15×10^{-4} × (3×10^8)^2 = 2.15×10^{-4} × 9×10^{16} = 1.935×10^{13} J ≈ 1.94×10^{13} J", "score": 3}], "explanation": "核反应释放的能量来自静质量亏损。ΔE = Δm₀c²。仅 0.215 g 的质量亏损就放出约 1.94×10¹³ J 能量，相当于 625 吨无烟煤燃烧的热量！这展示了 c² 因子的巨大放大效应。", "kc_id": "ch4-q10", "cognitive_level": "analyze", "pitfall": "", "options": []}, {"type": "calc", "difficulty": "medium", "points": ["kc4.6"], "question": "一个静止质量为 m₀ 的粒子以 0.6c 运动，其动能是多少？用 m₀c² 的倍数表示。", "answer": -1, "steps": [{"step": "计算 γ", "content": "γ = 1/\\sqrt{1-0.6^2} = 1/\\sqrt{0.64} = 1/0.8 = 1.25", "score": 2}, {"step": "相对论动能公式", "content": "E_k = (γ-1)m₀c^2", "score": 2}, {"step": "代入", "content": "E_k = (1.25-1)m₀c^2 = 0.25m₀c^2", "score": 3}], "explanation": "相对论动能 E_k = (γ-1)m₀c²。当 v = 0.6c 时 γ = 1.25，E_k = 0.25m₀c²。如果用经典公式 ½m₀(0.6c)² = 0.18m₀c²，明显低估了。", "kc_id": "ch4-q11", "cognitive_level": "apply", "pitfall": "", "options": []}, {"type": "choice", "difficulty": "hard", "points": ["kc4.3"], "question": "爱因斯坦火车思想实验中，车厢中点 O 发出闪光。地面观察者看到光先到达车尾后到达车头。这说明了什么？", "options": ["地面参考系中光速与车厢运动方向有关", "地面参考系中的信号传播速度超过光速", "在列车参考系中光速比地面参考系中小", "同时性是相对的——列车参考系中同时的事件在地面参考系中可以不同时"], "answer": 3, "explanation": "爱因斯坦火车实验直接证明了同时性的相对性。车上观察者：光同时到达两端（因等距、光速同）。地面观察者：光速仍是 c，但车尾迎着光走（更近），车头远离光走（更远），所以光先到尾后到头。关键在于光速在地面系中也是 c（光速不变）——选项 A 和 D 都违反了光速不变原理。", "kc_id": "ch4-q12", "cognitive_level": "analyze", "pitfall": ""}, {"type": "calc", "difficulty": "medium", "points": ["kc4.2"], "question": "S' 系相对 S 系以 0.6c 沿 +x 方向运动。在 S 系中，事件 A 的坐标为 x_A = 0，t_A = 0；事件 B 的坐标为 x_B = 3×10^8 m，t_B = 1.0 s。求 S' 系中两事件的时间间隔 Δt'。已知 γ = 1.25。", "answer": -1, "steps": [{"step": "确定 Δx 和 Δt 在 S 系中", "content": "Δx = x_B − x_A = 3×10^8 m = c·1s = c s（1 光秒），Δt = t_B − t_A = 1.0 s，u = 0.6c，γ = 1.25", "score": 2}, {"step": "洛伦兹时间变换", "content": "Δt' = γ(Δt − uΔx/c^2) = 1.25(1.0 − 0.6c × c·1s / c^2) = 1.25(1.0 − 0.6) = 1.25 × 0.4", "score": 3}, {"step": "计算", "content": "Δt' = 0.5 s", "score": 2}], "explanation": "用洛伦兹变换 Δt' = γ(Δt − uΔx/c²)。在 S 系中 Δt = 1.0 s，但 S' 系测到的时间间隔只有 0.5 s——因为在 S' 系中两事件发生在不同位置（Δx' ≠ 0），所以 Δt' 不是固有时。时空混合项 uΔx/c² 修正了时间间隔。", "kc_id": "ch4-q13", "cognitive_level": "apply", "pitfall": "", "options": []}, {"type": "choice", "difficulty": "hard", "points": ["kc4.4"], "question": "一根 1 m 长的杆静止在 S' 系中，与 x' 轴夹角 30°。S' 相对 S 以速度 u 沿 x 轴运动。S 系中杆与 x 轴夹角变为 45°。则杆在 S 系中的长度最接近：", "options": ["1.414 m", "1.0 m", "0.707 m", "0.5 m"], "answer": 2, "explanation": "y 方向无收缩：Δy = Δy'。tan30° = Δy'/Δx' → Δx' = Δy'/tan30°。tan45° = Δy/Δx = 1 → Δx = Δy = Δy'。故 Δx/Δx' = tan30°/1 = 0.577 = \\sqrt{1−u²/c²} → u = 0.816c。杆长 L = \\sqrt{Δx² + Δy²} = \\sqrt{Δy'² + Δy'²} = Δy'·\\sqrt{2}。又 L₀ = \\sqrt{Δx'²+Δy'²} = 1 m，而 Δx' = Δy'/tan30° → 代回得 L = L₀·(sin30°/sin45°) = 1×(0.5/0.707) = 0.707 m。长度变短了！", "kc_id": "ch4-q14", "cognitive_level": "analyze", "pitfall": ""}, {"type": "calc", "difficulty": "hard", "points": ["kc4.6"], "question": "γ = 1.25 时，粒子动能与静能之比 E_k/E₀ 是多少？", "answer": -1, "steps": [{"step": "公式", "content": "E_k = (γ−1)m₀c^2，E₀ = m₀c^2", "score": 2}, {"step": "比值", "content": "E_k/E₀ = (γ−1)m₀c^2 / (m₀c^2) = γ−1", "score": 3}, {"step": "代入", "content": "E_k/E₀ = 1.25 − 1 = 0.25", "score": 2}], "explanation": "动能与静能之比 E_k/E₀ = γ−1，这是一个简洁而重要的关系。γ = 1.25 对应 v = 0.6c，此时动能只有静能的 25%。当 v → c 时 γ → ∞，动能远超静能。", "kc_id": "ch4-q15", "cognitive_level": "analyze", "pitfall": "", "options": []}, {"type": "tf", "difficulty": "hard", "points": ["kc4.3", "kc4.4"], "question": "一艘飞船以高速飞离地球。从飞船上的宇航员看来，地球上的时钟也变慢了（地球上的时间膨胀了）。这是否意味着双方看到的效应是对称的、因而存在矛盾？实际上不矛盾——因为「同时」的定义在飞船和地球参考系中不同。", "options": [], "answer": 1, "explanation": "这被称为「双生子佯谬」（实际不是佯谬）。时间膨胀是相对的——每个惯性系中的观察者都认为相对于自己运动的钟变慢。这看起来矛盾，但因为同时性是相对的，双方对「什么时候」做比较的定义本身就不同，所以逻辑自洽。双生子佯谬中，如果一方经历了加速（转弯返回），不对称的加速度打破了对称性。", "kc_id": "ch4-q16", "cognitive_level": "analyze", "pitfall": ""}, {"kc_id": "kc4.3", "cognitive_level": "apply", "difficulty": "medium", "type": "calc", "points": 8, "question": "静止 μ 子的平均寿命 τ₀ = 2.2×10⁻⁶ s。来自高空的宇宙线 μ 子以 v = 0.998c 高速飞向地面。问：(1) 在实验室系中测得 μ 子的平均寿命是多少？(2) 它能飞行的平均距离是多少？", "options": [], "answer": -1, "explanation": "(1) 固有时间 τ₀（在 μ 子静止系中测得的寿命）。实验室系中：τ = γτ₀。γ = 1/√(1-0.998²) = 1/√(1-0.996004) = 1/√0.003996 = 1/0.06321 ≈ 15.8。τ = 15.8 × 2.2×10⁻⁶ = 3.48×10⁻⁵ s。\n\n(2) 飞行距离：L = v·τ = 0.998×3×10⁸×3.48×10⁻⁵ = 1.04×10⁴ m ≈ 10.4 km。\n\n这是 μ 子地面实验的经典验证——μ 子诞生于约 10 km 高空，若没有时间膨胀效应，它只能飞行 cτ₀ = 660 m 就到不了地面。", "pitfall": "固有时间 τ₀ 是在 μ 子自身参考系（它认为自己是静止的）中测得的寿命。实验室看 μ 子运动 → 钟变慢 → 寿命延长。不要弄反方向：如果误把实验室时间当固有时，τ = τ₀/γ，μ 子寿命反而变短，那就飞不到地面了——与实验事实矛盾。"}, {"kc_id": "kc4.4", "cognitive_level": "apply", "difficulty": "medium", "type": "calc", "points": 6, "question": "一根米尺在 S'系中与 x' 轴成 30° 角。S'系相对 S 系沿 x 轴以速度 v 运动。在 S 系中测得该尺与 x 轴成 45° 角。求相对速度 v。", "options": [], "answer": -1, "explanation": "在 S'系（固有系）：L₀ₓ = L₀ cos30° = 1 × √3/2 = √3/2 m；L₀_y = L₀ sin30° = 1 × 1/2 = 0.5 m。\n\n在 S 系：长度收缩仅发生在 x 方向（运动方向）：Lₓ = L₀ₓ√(1-v²/c²)；L_y = L₀_y = 0.5 m（y 方向不收缩）。\n\nS 系中角度：tan45° = L_y/Lₓ = 1 → L_y = Lₓ。\n\n所以 0.5 = (√3/2)·√(1-v²/c²) → √(1-v²/c²) = 0.5/(√3/2) = 1/√3。\n\n1 - v²/c² = 1/3 → v²/c² = 2/3 → v = c·√(2/3) ≈ 0.816c。", "pitfall": "长度收缩只在运动方向发生！垂直于运动方向的长度不变。此题是利用「不收缩的 y 方向」作为桥梁来求「收缩的 x 方向」的比例，从而反解 v。"}, {"kc_id": "kc4.6", "cognitive_level": "apply", "difficulty": "medium", "type": "calc", "points": 8, "question": "一个电子的静质量 m₀ = 9.11×10⁻³¹ kg。求：(1) 电子以 v = 0.99c 运动时的动能；(2) 若该动能由经典公式 ½mv² 计算，误差有多大？", "options": [], "answer": -1, "explanation": "(1) γ = 1/√(1-0.99²) = 1/√0.0199 = 1/0.1411 ≈ 7.09。相对论动能：E_k = (γ-1)m₀c² = 6.09 × 9.11×10⁻³¹ × (3×10⁸)² = 6.09 × 8.20×10⁻¹⁴ = 4.99×10⁻¹³ J ≈ 3.12 MeV。\n\n(2) 经典公式：E_k_classical = ½m₀v² = 0.5 × 9.11×10⁻³¹ × (0.99×3×10⁸)² = 0.5 × 9.11×10⁻³¹ × 8.82×10¹⁶ = 4.02×10⁻¹⁴ J。\n\n相对论结果 / 经典结果 ≈ 12.4 倍。经典公式严重低估！", "pitfall": "当 v > 0.1c 时，经典动能 ½mv² 的误差就不可忽略。v = 0.99c 时误差超过 10 倍。相对论动能必须用 (γ-1)m₀c²。注意：不是 mc² 减去 ½mv²，而是 mc² - m₀c²。"}, {"kc_id": "kc4.3", "cognitive_level": "understand", "difficulty": "basic", "type": "choice", "points": 3, "question": "关于同时性的相对性，下列说法正确的是：", "options": ["在一个惯性系中同时同地发生的两事件，在另一惯性系中一定不同时", "在一个惯性系中同时不同地发生的两事件，在另一惯性系中一定不同时", "同时性是绝对的，与参考系无关", "同时性的相对性只存在于高速运动，低速时同时性是绝对的"], "answer": 1, "explanation": "由洛伦兹变换：Δt' = γ(Δt - vΔx/c²)。S 系中同时 Δt=0 但不同地 Δx≠0 → Δt' = -γvΔx/c² ≠ 0，S'系中一定不同时。\n\n如果两事件在 S 系中同地同时（Δx=0, Δt=0），则 Δt' = 0 ——在所有惯性系中都是同地同时的。\n\n同时性的相对性是相对论时空观的本质特征，不是高速近似——即使 v 很小，只要 v≠0 且 Δx≠0（空间距离足够大），Δt' 就可能显著不为零。", "pitfall": "D 选项是典型错误——同时性的相对性是精确结果，不存在「低速时同时性恢复绝对」这种说法。只是低速下不同参考系的时差很小、不易察觉而已。"}];
+var LABELS = {"page_title": "章节测试", "section": {"choice": "一、选择题", "multi": "二、多选题", "tf": "三、判断题", "fill": "四、填空题", "short": "五、简答题", "calc": "六、计算题", "code": "七、代码题", "essay": "八、问答题", "comprehensive": "九、综合题"}, "section_order": ["choice", "multi", "tf", "fill", "short", "calc", "code", "essay", "comprehensive"], "points_suffix": "分", "true_label": "正确", "false_label": "错误", "placeholder": "在此作答...", "code_placeholder": "在此编写代码...", "pitfall_prefix": "易错提醒：", "correct_label": "正确", "wrong_label": "错误", "partial_label": "部分正确", "answer_prefix": "正确答案：", "reference_label": "参考答案", "graded_label": "已批改", "grade_button": "提交批改", "score_label": "总分", "duration_prefix": "满分 100 分 | 建议 ", "duration_suffix": " 分钟 | 选择答案后点击提交批改"};
+
+// ─── Answer normalization (robust to how the JSON was authored) ──────
+// tf / choice answers may arrive as int index, boolean, letter ("A"),
+// or label string ("正确"/"错误"/"对"/"错"). All are coerced to an
+// option index so grading never silently fails on a type mismatch.
+
+function tfAnswerIndex(ans) {
+  // option 0 = true_label (正确), option 1 = false_label (错误)
+  if (typeof ans === 'boolean') return ans ? 0 : 1;
+  if (typeof ans === 'number') return ans === 0 ? 0 : 1;
+  var s = ('' + ans).trim().toLowerCase();
+  var truthy = ['0', 't', 'true', '正确', '对', '是', 'yes', 'y', '√', '✓'];
+  var falsy  = ['1', 'f', 'false', '错误', '错', '否', 'no', 'n', '×', 'x'];
+  if (truthy.indexOf(s) !== -1) return 0;
+  if (falsy.indexOf(s) !== -1) return 1;
+  return ans ? 0 : 1;
+}
+
+function choiceAnswerIndex(ans, options) {
+  if (typeof ans === 'number') return ans;
+  var s = ('' + ans).trim();
+  if (/^[A-Za-z]$/.test(s)) return s.toUpperCase().charCodeAt(0) - 65;
+  if (/^\d+$/.test(s)) return parseInt(s, 10);
+  if (options) {
+    for (var i = 0; i < options.length; i++) {
+      if (('' + options[i]).trim() === s) return i;
+    }
+  }
+  return parseInt(s, 10);
+}
+
+function multiAnswerSet(ans, options) {
+  var arr = Array.isArray(ans) ? ans : [ans];
+  var set = {};
+  for (var i = 0; i < arr.length; i++) {
+    set[choiceAnswerIndex(arr[i], options)] = true;
+  }
+  return set;
+}
+
+// Normalize free text for fill-in-the-blank comparison: trim, lowercase,
+// drop surrounding whitespace and common punctuation, unify full/half width.
+function normText(s) {
+  s = ('' + s).trim().toLowerCase();
+  s = s.replace(/[\s　]+/g, '');
+  s = s.replace(/[.,;:!?。，、；：！？“”"'（）()【】\[\]<>《》]/g, '');
+  // full-width ASCII -> half-width
+  s = s.replace(/[！-～]/g, function (c) {
+    return String.fromCharCode(c.charCodeAt(0) - 0xfee0);
+  });
+  return s;
+}
+
+// How many blanks does a fill question have? Count underscore / ＿ runs.
+function fillBlankCount(question) {
+  var m = ('' + question).match(/(_{2,}|＿+)/g);
+  return m ? m.length : 0;
+}
+
+// Coerce a fill `answer` into an array (one entry per blank) of accepted
+// answer lists. Handles: string, [synonyms], [[blank1 syns],[blank2 syns]].
+function fillBlankAnswers(ans, nBlanks) {
+  if (nBlanks < 1) nBlanks = 1;
+  if (!Array.isArray(ans)) return padBlanks([[ans]], nBlanks);
+  if (ans.length && Array.isArray(ans[0])) return padBlanks(ans, nBlanks);
+  // flat array of strings
+  if (nBlanks === 1) return [ans];                 // synonyms for one blank
+  if (ans.length === nBlanks) {                    // one answer per blank
+    return ans.map(function (a) { return [a]; });
+  }
+  return padBlanks([ans], nBlanks);                // ambiguous -> all on blank 1
+}
+
+function padBlanks(arr, n) {
+  var out = arr.slice(0, n);
+  while (out.length < n) out.push(['']);
+  return out;
+}
+
+// ─── Build ───────────────────────────────────────────────────────────
+
+function build() {
+  var container = document.getElementById('questions-container');
+  if (!container) { console.error('ExamPass: questions-container not found'); return; }
+
+  // Stable-sort questions by section order so headings group correctly
+  // regardless of input order.
+  var order = LABELS.section_order || [];
+  Q.forEach(function (q, i) { q._i = i; });
+  Q.sort(function (a, b) {
+    var oa = order.indexOf(a.type); if (oa === -1) oa = 99;
+    var ob = order.indexOf(b.type); if (ob === -1) ob = 99;
+    return oa - ob || a._i - b._i;
+  });
+
+  var h = '';
+  var sec = '';
+  var titles = LABELS.section;
+
+  for (var i = 0; i < Q.length; i++) {
+    var q = Q[i];
+    if (q.type !== sec) {
+      sec = q.type;
+      if (titles[q.type]) h += '<h3>' + titles[q.type] + '</h3>';
+    }
+
+    var qid = 'q' + i;
+    h += '<div class="q-card" id="card-' + qid + '">';
+    h += '<div class="q-num">' + (i + 1) + '. (' + q.points + ' ' + LABELS.points_suffix + ')</div>';
+
+    if (q.type === 'fill') {
+      h += '<div class="q-text">' + renderFill(q, qid) + '</div>';
+    } else {
+      h += '<div class="q-text">' + q.question + '</div>';
+    }
+
+    if (q.type === 'choice') {
+      var opts = q.options || [];
+      for (var j = 0; j < opts.length; j++) {
+        h += '<label class="option" id="opt-' + qid + '-' + j + '" onclick="sel(\'' + qid + '\',' + j + ')">';
+        h += '<input type="radio" name="' + qid + '" value="' + j + '">' + String.fromCharCode(65 + j) + '. ' + opts[j] + '</label>';
+      }
+    } else if (q.type === 'multi') {
+      var mopts = q.options || [];
+      for (var k = 0; k < mopts.length; k++) {
+        h += '<label class="option" id="opt-' + qid + '-' + k + '" onclick="toggle(\'' + qid + '\',' + k + ')">';
+        h += '<input type="checkbox" name="' + qid + '" value="' + k + '">' + String.fromCharCode(65 + k) + '. ' + mopts[k] + '</label>';
+      }
+    } else if (q.type === 'tf') {
+      h += '<label class="option" id="opt-' + qid + '-0" onclick="sel(\'' + qid + '\',0)">';
+      h += '<input type="radio" name="' + qid + '" value="0">' + LABELS.true_label + '</label>';
+      h += '<label class="option" id="opt-' + qid + '-1" onclick="sel(\'' + qid + '\',1)">';
+      h += '<input type="radio" name="' + qid + '" value="1">' + LABELS.false_label + '</label>';
+    } else if (q.type === 'fill') {
+      // inputs already rendered inline inside q-text
+    } else if (q.type === 'code') {
+      h += '<textarea class="q-textarea q-code" id="text-' + qid + '" placeholder="' + (LABELS.code_placeholder || LABELS.placeholder) + '" rows="8" spellcheck="false"></textarea>';
+    } else {
+      h += '<textarea class="q-textarea" id="text-' + qid + '" placeholder="' + LABELS.placeholder + '" rows="3"></textarea>';
+    }
+
+    h += '<div class="result" id="result-' + qid + '">';
+    h += '<span class="badge" id="badge-' + qid + '"></span><span id="correct-' + qid + '"></span>';
+    h += '<div class="explanation">' + (q.explanation || '') + '</div>';
+    if (q.pitfall) {
+      h += '<div class="pitfall">' + LABELS.pitfall_prefix + q.pitfall + '</div>';
+    }
+    h += '</div></div>';
+  }
+
+  container.innerHTML = h;
+
+  if (window.MathJax && MathJax.typesetPromise) {
+    MathJax.typesetPromise([container]).catch(function (err) {
+      console.error('MathJax typeset error:', err);
+    });
+  }
+}
+
+// Render fill question text with inline <input> boxes replacing blanks.
+function renderFill(q, qid) {
+  var nBlanks = fillBlankCount(q.question);
+  var k = 0;
+  var html = ('' + q.question).replace(/(_{2,}|＿+)/g, function () {
+    var inp = '<input type="text" class="fill-input" id="fill-' + qid + '-' + k + '" autocomplete="off" spellcheck="false">';
+    k++;
+    return inp;
+  });
+  if (k === 0) {
+    // No markers in text -> append boxes based on answer shape
+    var n = fillBlankAnswers(q.answer, 1).length;
+    var ans = q.answer;
+    if (Array.isArray(ans)) n = Array.isArray(ans[0]) ? ans.length : (ans.length || 1);
+    if (n < 1) n = 1;
+    html += '<div class="fill-row">';
+    for (var b = 0; b < n; b++) {
+      if (n > 1) html += '<span class="fill-tag">' + (b + 1) + '.</span>';
+      html += '<input type="text" class="fill-input" id="fill-' + qid + '-' + b + '" autocomplete="off" spellcheck="false">';
+    }
+    html += '</div>';
+  }
+  return html;
+}
+
+document.addEventListener('DOMContentLoaded', build);
+if (document.readyState === 'interactive' || document.readyState === 'complete') {
+  build();
+}
+
+// ─── Selection handlers ──────────────────────────────────────────────
+
+function sel(qid, idx) {
+  var prefix = 'opt-' + qid + '-';
+  var all = document.querySelectorAll('[id^="' + prefix + '"]');
+  for (var i = 0; i < all.length; i++) all[i].classList.remove('selected');
+  var target = document.getElementById('opt-' + qid + '-' + idx);
+  if (target) target.classList.add('selected');
+  var radio = document.querySelector('input[name="' + qid + '"][value="' + idx + '"]');
+  if (radio) radio.checked = true;
+}
+
+function toggle(qid, idx) {
+  var box = document.querySelector('input[name="' + qid + '"][value="' + idx + '"]');
+  var label = document.getElementById('opt-' + qid + '-' + idx);
+  if (!box) return;
+  box.checked = !box.checked;
+  if (label) label.classList.toggle('selected', box.checked);
+}
+
+// ─── Grading ─────────────────────────────────────────────────────────
+
+function gradeAll() {
+  var score = 0;
+  for (var i = 0; i < Q.length; i++) {
+    var q = Q[i];
+    var qid = 'q' + i;
+    var card = document.getElementById('card-' + qid);
+    var result = document.getElementById('result-' + qid);
+    var badge = document.getElementById('badge-' + qid);
+    var correctEl = document.getElementById('correct-' + qid);
+    if (!card || !result) continue;
+
+    result.style.display = 'block';
+
+    if (q.type === 'choice' || q.type === 'tf') {
+      score += gradeSingle(q, qid, card, badge, correctEl);
+    } else if (q.type === 'multi') {
+      score += gradeMulti(q, qid, card, badge, correctEl);
+    } else if (q.type === 'fill') {
+      score += gradeFill(q, qid, card, badge, correctEl);
+    } else {
+      card.classList.add('correct');
+      badge.className = 'badge badge-ref';
+      badge.textContent = LABELS.reference_label;
+    }
+  }
+
+  var sb = document.getElementById('score-box');
+  if (sb) {
+    sb.style.display = 'block';
+    document.getElementById('score-num').textContent = roundScore(score);
+    sb.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  var opts = document.querySelectorAll('.option');
+  for (var a = 0; a < opts.length; a++) opts[a].style.pointerEvents = 'none';
+  var tas = document.querySelectorAll('.q-textarea');
+  for (var b = 0; b < tas.length; b++) tas[b].disabled = true;
+  var fis = document.querySelectorAll('.fill-input');
+  for (var c = 0; c < fis.length; c++) fis[c].disabled = true;
+
+  var btn = document.getElementById('grade-btn');
+  if (btn) { btn.disabled = true; btn.textContent = LABELS.graded_label; }
+
+  if (window.MathJax && MathJax.typesetPromise) {
+    MathJax.typesetPromise().catch(function (err) {
+      console.error('MathJax typeset error:', err);
+    });
+  }
+}
+
+function roundScore(s) {
+  return Math.round(s * 10) / 10;
+}
+
+function gradeSingle(q, qid, card, badge, correctEl) {
+  var ansIdx = q.type === 'tf' ? tfAnswerIndex(q.answer) : choiceAnswerIndex(q.answer, q.options);
+  var radio = document.querySelector('input[name="' + qid + '"]:checked');
+  if (radio && parseInt(radio.value, 10) === ansIdx) {
+    card.classList.add('correct');
+    badge.className = 'badge badge-ok';
+    badge.textContent = LABELS.correct_label;
+    correctEl.innerHTML = '';
+    var ok = document.getElementById('opt-' + qid + '-' + ansIdx);
+    if (ok) ok.classList.add('correct-answer');
+    return q.points;
+  }
+  card.classList.add('wrong');
+  badge.className = 'badge badge-no';
+  badge.textContent = LABELS.wrong_label;
+  var ansText = q.type === 'choice'
+    ? String.fromCharCode(65 + ansIdx) + '. ' + (q.options ? q.options[ansIdx] : '')
+    : (ansIdx === 0 ? LABELS.true_label : LABELS.false_label);
+  correctEl.innerHTML = LABELS.answer_prefix + ansText;
+  if (radio) {
+    var wrongOpt = document.getElementById('opt-' + qid + '-' + radio.value);
+    if (wrongOpt) wrongOpt.classList.add('wrong-answer');
+  }
+  var corr = document.getElementById('opt-' + qid + '-' + ansIdx);
+  if (corr) corr.classList.add('correct-answer');
+  return 0;
+}
+
+function gradeMulti(q, qid, card, badge, correctEl) {
+  var want = multiAnswerSet(q.answer, q.options);
+  var wantKeys = Object.keys(want).map(Number);
+  var checked = document.querySelectorAll('input[name="' + qid + '"]:checked');
+  var picked = [];
+  for (var i = 0; i < checked.length; i++) picked.push(parseInt(checked[i].value, 10));
+
+  var anyWrong = false, hitCorrect = 0;
+  for (var p = 0; p < picked.length; p++) {
+    if (want[picked[p]]) hitCorrect++;
+    else anyWrong = true;
+  }
+
+  // reveal correct / wrong option markers
+  var mopts = q.options || [];
+  for (var j = 0; j < mopts.length; j++) {
+    var el = document.getElementById('opt-' + qid + '-' + j);
+    if (!el) continue;
+    if (want[j]) el.classList.add('correct-answer');
+    else if (picked.indexOf(j) !== -1) el.classList.add('wrong-answer');
+  }
+
+  var earned;
+  if (!anyWrong && hitCorrect === wantKeys.length && picked.length === wantKeys.length) {
+    earned = q.points;
+    card.classList.add('correct');
+    badge.className = 'badge badge-ok';
+    badge.textContent = LABELS.correct_label;
+    correctEl.innerHTML = '';
+  } else if (!anyWrong && hitCorrect > 0) {
+    // 少选不错选 -> partial credit
+    earned = roundScore(q.points * hitCorrect / wantKeys.length);
+    card.classList.add('partial');
+    badge.className = 'badge badge-partial';
+    badge.textContent = LABELS.partial_label;
+    correctEl.innerHTML = LABELS.answer_prefix + multiAnswerText(wantKeys, mopts);
+  } else {
+    earned = 0;
+    card.classList.add('wrong');
+    badge.className = 'badge badge-no';
+    badge.textContent = LABELS.wrong_label;
+    correctEl.innerHTML = LABELS.answer_prefix + multiAnswerText(wantKeys, mopts);
+  }
+  return earned;
+}
+
+function multiAnswerText(keys, options) {
+  return keys.sort(function (a, b) { return a - b; }).map(function (k) {
+    return String.fromCharCode(65 + k) + '. ' + (options ? options[k] : '');
+  }).join('  ');
+}
+
+function gradeFill(q, qid, card, badge, correctEl) {
+  var nBlanks = fillBlankCount(q.question);
+  var blanks = fillBlankAnswers(q.answer, nBlanks);
+  var n = blanks.length;
+  var hit = 0;
+  var displays = [];
+
+  for (var b = 0; b < n; b++) {
+    var inp = document.getElementById('fill-' + qid + '-' + b);
+    var accepted = blanks[b] || [''];
+    var user = inp ? normText(inp.value) : '';
+    var ok = false;
+    for (var a = 0; a < accepted.length; a++) {
+      if (accepted[a] !== '' && normText(accepted[a]) === user && user !== '') { ok = true; break; }
+    }
+    if (inp) inp.classList.add(ok ? 'fill-ok' : 'fill-no');
+    if (ok) hit++;
+    displays.push((n > 1 ? (b + 1) + '. ' : '') + accepted.filter(function (x) { return x !== ''; }).join(' / '));
+  }
+
+  var earned = roundScore(q.points * hit / n);
+  correctEl.innerHTML = LABELS.answer_prefix + displays.join('   ');
+
+  if (hit === n) {
+    card.classList.add('correct');
+    badge.className = 'badge badge-ok';
+    badge.textContent = LABELS.correct_label;
+  } else if (hit > 0) {
+    card.classList.add('partial');
+    badge.className = 'badge badge-partial';
+    badge.textContent = LABELS.partial_label;
+  } else {
+    card.classList.add('wrong');
+    badge.className = 'badge badge-no';
+    badge.textContent = LABELS.wrong_label;
+  }
+  return earned;
+}
+
+</script>
+<script>
+document.addEventListener('click', function(e){
+  var btn = e.target.closest('#epa-tabs .tab-btn'); if(!btn) return;
+  var tab = btn.getAttribute('data-tab');
+  document.querySelectorAll('#epa-tabs .tab-btn').forEach(function(b){ b.classList.toggle('active', b===btn); });
+  document.querySelectorAll('.tab-panel').forEach(function(p){
+    p.classList.toggle('active', p.id === 'panel-' + tab); });
+  // The test panel is display:none on load, so build()'s MathJax typeset ran
+  // on hidden content (collapsing formula question cards to 0 height). Re-run
+  // build() the first time the panel is visible so it renders + typesets at the
+  // real size. Guarded so user answers aren't wiped on later switches.
+  if(tab === 'test' && !window.__epaTestBuilt){
+    window.__epaTestBuilt = true;
+    if(typeof build === 'function'){ try { build(); } catch(err){} }
+  }
+  if(window.__epaFitFormulas) setTimeout(window.__epaFitFormulas, 50);
+  window.scrollTo(0, 0);
+});
+</script>
+</body>
+</html>
